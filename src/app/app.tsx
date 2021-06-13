@@ -9,7 +9,7 @@ export const App = () => {
     <CenterLayout>OK Computer</CenterLayout>
   ) : (
     <CenterLayout>
-      <Button large onClick={signIn} icon="user">
+      <Button large onClick={signIn}>
         Sign In with Google
       </Button>
     </CenterLayout>
