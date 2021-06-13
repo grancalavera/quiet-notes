@@ -1,0 +1,5 @@
+@import "../app/bem.scss";
+
+@include b("toolbar") {
+  background-color: deeppink;
+}

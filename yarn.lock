@@ -2729,6 +2729,11 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
+bem-cn@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/bem-cn/-/bem-cn-3.0.1.tgz#6c9e8d45d422d64f89dec16f9abd3af7fac6690b"
+  integrity sha512-kWC76a09vSk6cJXDYsH1erjxdBf856HTxl0IHOvYItSmBC6wQCsRCf9bmKR0hmeUDcUP5XPMr8MNXDgKbKJi0A==
+
 bfj@^7.0.2:
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/bfj/-/bfj-7.0.2.tgz#1988ce76f3add9ac2913fd8ba47aad9e651bfbb2"

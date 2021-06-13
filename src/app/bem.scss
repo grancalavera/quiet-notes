@@ -1,0 +1,7 @@
+$ns: "quiet-notes";
+
+@mixin b($block) {
+  .#{$ns}-#{$block} {
+    @content;
+  }
+}

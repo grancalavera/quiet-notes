@@ -2,9 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import "./index.scss";
+import { Toolbar } from "./toolbar/toolbar";
 
 ReactDOM.render(
-  <React.StrictMode>Quiet Notes</React.StrictMode>,
+  <React.StrictMode>
+    <Toolbar />
+  </React.StrictMode>,
   document.getElementById("root")
 );
 
