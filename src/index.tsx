@@ -3,10 +3,12 @@ import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import "./index.scss";
 import { Toolbar } from "./toolbar/toolbar";
+import { App } from "./app";
 
 ReactDOM.render(
   <React.StrictMode>
     <Toolbar />
+    <App />
   </React.StrictMode>,
   document.getElementById("root")
 );
