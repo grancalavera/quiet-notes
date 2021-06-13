@@ -1,0 +1,10 @@
+@import "../app/bem.scss";
+
+@include b("header") {
+  text-align: right;
+  padding: 0.5rem;
+
+  > * {
+    margin-left: 0.5rem;
+  }
+}

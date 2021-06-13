@@ -1,14 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import reportWebVitals from "./reportWebVitals";
+import { Header } from "./header/header";
 import "./index.scss";
-import { Toolbar } from "./toolbar/toolbar";
-import { App } from "./app/app";
+import { AppLayout } from "./layout/app-layout";
+import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Toolbar />
-    <App />
+    <AppLayout header={<Header />}></AppLayout>
   </React.StrictMode>,
   document.getElementById("root")
 );

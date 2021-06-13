@@ -1,11 +1,11 @@
 import { SignOut } from "../app/auth";
 import { block } from "../app/bem";
 import { useAuthState } from "../firebase/firebase";
-import "./toolbar.scss";
+import "./header.scss";
 
-const b = block("toolbar");
+const b = block("header");
 
-export const Toolbar = () => {
+export const Header = () => {
   const [user] = useAuthState();
   return user ? (
     <div className={b()}>
