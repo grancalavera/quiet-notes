@@ -1,13 +1,19 @@
+import { FocusStyleManager } from "@blueprintjs/core";
 import React from "react";
 import ReactDOM from "react-dom";
+import { App } from "./app/app";
 import { Header } from "./header/header";
 import "./index.scss";
 import { AppLayout } from "./layout/app-layout";
 import reportWebVitals from "./reportWebVitals";
 
+FocusStyleManager.onlyShowFocusOnTabs();
+
 ReactDOM.render(
   <React.StrictMode>
-    <AppLayout header={<Header />}></AppLayout>
+    <AppLayout header={<Header />}>
+      <App />
+    </AppLayout>
   </React.StrictMode>,
   document.getElementById("root")
 );
