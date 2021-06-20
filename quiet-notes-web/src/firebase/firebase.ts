@@ -18,7 +18,15 @@ if (!firebase.apps.length) {
 }
 
 const auth = firebase.auth();
-// const firestore = firebase.firestore();
+const firestore = firebase.firestore();
+
+if (process.env.NODE_ENV === "development") {
+  auth.useEmulator(process.env.REACT_APP_FIREBASE_EMULATOR_AUTH!);
+  firestore.useEmulator(
+    "localhost",
+    parseInt(process.env.REACT_APP_FIREBASE_EMULATOR_FIRESTORE_PORT!)
+  );
+}
 
 export const signIn = () => {
   const provider = new firebase.auth.GoogleAuthProvider();
