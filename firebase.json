@@ -10,10 +10,11 @@
     "predeploy": [
       "npm --prefix \"$RESOURCE_DIR\" run lint",
       "npm --prefix \"$RESOURCE_DIR\" run build"
-    ]
+    ],
+    "source": "quiet-notes-functions"
   },
   "hosting": {
-    "public": "build",
+    "public": "quiet-notes-web/build",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
