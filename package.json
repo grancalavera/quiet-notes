@@ -27,7 +27,7 @@
   "scripts": {
     "start": "BROWSER=none react-scripts start",
     "build": "react-scripts build",
-    "build:ci": "yarn && yarn test --watchAll=false --passWithNoTests && yarn build",
+    "build:ci": "yarn install --frozen-lockfile && yarn test --watchAll=false --passWithNoTests && yarn build",
     "test": "react-scripts test"
   },
   "eslintConfig": {
