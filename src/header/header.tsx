@@ -58,6 +58,9 @@ const Profile = () => {
       <p>
         <em>{user?.email}</em>
       </p>
+      <p>
+        <em>{user?.uid}</em>
+      </p>
       <Button onClick={signOut}>Sign Out</Button>
     </div>
   );
