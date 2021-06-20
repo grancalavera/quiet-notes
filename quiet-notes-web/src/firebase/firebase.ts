@@ -20,7 +20,10 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 
-if (process.env.NODE_ENV === "development") {
+if (
+  process.env.NODE_ENV === "development" &&
+  process.env.REACT_APP_FIREBASE_USE_EMULATORS === "true"
+) {
   auth.useEmulator(process.env.REACT_APP_FIREBASE_EMULATOR_AUTH!);
   firestore.useEmulator(
     "localhost",

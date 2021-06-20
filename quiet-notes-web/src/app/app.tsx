@@ -1,7 +1,6 @@
-import { Button, Callout, EditableText } from "@blueprintjs/core";
+import { Button, Callout } from "@blueprintjs/core";
 import React from "react";
 import create, { State } from "zustand";
-import { loremIpsum } from "../app/lorem-ipsum";
 import { signIn, useAuthState } from "../firebase/firebase";
 import { CenterLayout } from "../layout/center-layout";
 import { NotebookLayout } from "../layout/notebook-layout";
@@ -33,16 +32,12 @@ const useNotebookState = create<NotebookState>((set) => ({
 }));
 
 const NotebookContainer = () => {
-  return (
-    <NotebookLayout
-      sidebar={<NotesList />}
-      content={<EditableText multiline defaultValue={loremIpsum} onChange={() => {}} />}
-    />
-  );
+  return <NotebookLayout sidebar={<NotesList />} content={<>Nothing</>} />;
 };
 
 const NotesList = () => {
-  const [notes] = useNotesCollection();
+  const [user] = useAuthState();
+  const [notes] = useNotesCollection(user);
 
   return notes ? (
     <div className="bp3-running-text" style={{ marginTop: 10 }}>

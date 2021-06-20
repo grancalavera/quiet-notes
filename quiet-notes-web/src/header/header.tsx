@@ -11,9 +11,7 @@ export const Header = () => {
 
   return user ? (
     <div className={b()}>
-      <H3>
-        Quiet Notes <span>({process.env.NODE_ENV})</span>
-      </H3>
+      <H3>Quiet Notes</H3>
       <Profile />
     </div>
   ) : null;
