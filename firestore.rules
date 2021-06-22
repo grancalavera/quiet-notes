@@ -2,16 +2,16 @@ rules_version = '2';
 service cloud.firestore {
 
   function isAuthor() {
-    return request.auth != null && request.auth.uid == resource.data.uid;
+    return request.auth != null && request.auth.uid == resource.data.author.uid;
   }
 
   match /databases/{database}/documents {
 
-    match /notes/{noteId} {
+    match /notes/{note} {
       allow create: if request.auth != null;
       allow read: if isAuthor();
       allow update: if isAuthor();
-      allow delete: if isAuthor()
+      allow delete: if isAuthor();
     }
   }
 }

@@ -1,7 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-import * as fbhAuth from "react-firebase-hooks/auth";
+import * as firebaseHooks from "react-firebase-hooks/auth";
 
 // https://stackoverflow.com/questions/43331011/firebase-app-named-default-already-exists-app-duplicate-app
 if (!firebase.apps.length) {
@@ -14,7 +14,8 @@ if (!firebase.apps.length) {
     appId: "1:730652202246:web:a4b7f52a8b4ae087e9ba87",
   });
 } else {
-  firebase.app(); // if already initialized, use that one
+  // if already initialized, use that one
+  firebase.app();
 }
 
 const auth = firebase.auth();
@@ -31,11 +32,21 @@ if (
   );
 }
 
-export const signIn = () => {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider);
-};
-
+export const signIn = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
 export const signOut = () => auth.signOut();
+export const useAuthState = () => firebaseHooks.useAuthState(auth);
 
-export const useAuthState = () => fbhAuth.useAuthState(auth);
+export const useUserInfo = (): firebase.UserInfo | undefined => {
+  const [user] = useAuthState();
+
+  return user
+    ? {
+        uid: user.uid,
+        providerId: user.providerId,
+        photoURL: user.photoURL,
+        phoneNumber: user.phoneNumber,
+        email: user.email,
+        displayName: user.displayName,
+      }
+    : undefined;
+};
