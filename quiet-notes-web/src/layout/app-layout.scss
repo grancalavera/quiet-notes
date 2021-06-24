@@ -1,11 +1,47 @@
+@import "~@blueprintjs/core/lib/scss/variables";
 @import "../app/bem.scss";
+@import "../app/constants.scss";
 
 @include b("app-layout") {
+  display: grid;
   height: 100vh;
-  width: 100vw;
+  grid-template-columns: minmax(150px, 300px) 1fr;
+  grid-template-rows: auto auto 1fr;
 
-  &__body {
-    width: 100%;
-    height: 100%;
+  grid-template-areas:
+    "header header"
+    "sidebar-toolbar editor-toolbar"
+    "sidebar editor";
+
+  &__header {
+    grid-area: header;
+  }
+
+  &__sidebar-toolbar {
+    grid-area: sidebar-toolbar;
+  }
+
+  &__editor-toolbar {
+    grid-area: editor-toolbar;
+  }
+
+  &__sidebar {
+    grid-area: sidebar;
+  }
+
+  &__editor {
+    grid-area: editor;
+  }
+
+  &__left {
+    border-right: 1px solid $gray5;
+  }
+}
+
+.bp3-dark {
+  @include b("app-layout") {
+    &__left {
+      border-right-color: $dark-gray1;
+    }
   }
 }

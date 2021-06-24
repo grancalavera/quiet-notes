@@ -1,8 +1,28 @@
+import { Button } from "@blueprintjs/core";
 import React from "react";
-import { NotebookLayout } from "../layout/notebook-layout";
-import { NoteEditorContainer } from "./notebook-note-editor-container";
+import { signIn, useAuthState } from "../firebase/firebase";
+import { AppLayout } from "../layout/app-layout";
+import { CenterLayout } from "../layout/center-layout";
+import { Header } from "./notebook-header";
+import { NoteEditorContainer } from "./notebook-note-editor";
 import { NotesList } from "./notebook-note-list";
+import { EditorToolbar } from "./notebook-toolbars";
 
-export const NotebookContainer = () => {
-  return <NotebookLayout sidebar={<NotesList />} content={<NoteEditorContainer />} />;
+export const Notebook = () => {
+  const [user] = useAuthState();
+
+  return user ? (
+    <AppLayout
+      header={<Header />}
+      sidebar={<NotesList />}
+      editorToolbar={<EditorToolbar />}
+      editor={<NoteEditorContainer />}
+    />
+  ) : (
+    <CenterLayout>
+      <Button large onClick={signIn}>
+        Sign In with Google
+      </Button>
+    </CenterLayout>
+  );
 };

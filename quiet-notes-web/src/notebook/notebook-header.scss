@@ -1,9 +1,9 @@
 @import "~@blueprintjs/core/lib/scss/variables";
 @import "../app/bem.scss";
+@import "../app/constants.scss";
 
 @include b("header") {
-  padding: 0.5rem;
-  padding-top: 0.75rem;
+  padding: $qn-padding;
   display: flex;
   background-color: $light-gray3;
   align-items: center;

@@ -1,0 +1,13 @@
+@import "../app/bem.scss";
+@import "../app/constants.scss";
+
+@include b("notes-list") {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $qn-padding;
+
+  &__preview {
+    margin-bottom: $qn-margin;
+  }
+}

@@ -1,0 +1,13 @@
+@import "../app/bem.scss";
+@import "../app/constants.scss";
+
+@include b("note-editor") {
+  overflow: hidden;
+  height: 100%;
+  padding: $qn-padding * 2;
+
+  &__editable-text {
+    width: 100%;
+    height: 100%;
+  }
+}

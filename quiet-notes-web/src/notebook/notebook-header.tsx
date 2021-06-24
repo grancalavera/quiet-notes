@@ -1,9 +1,9 @@
 import { Button, H3, Icon } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import { useBlock } from "../app/bem";
-import { useTheme } from "../app/use-theme";
 import { signOut, useAuthState } from "../firebase/firebase";
-import "./header.scss";
+import { ToggleThemeButton } from "../theme/theme";
+import "./notebook-header.scss";
 
 export const Header = () => {
   const [user] = useAuthState();
@@ -39,18 +39,12 @@ const Avatar = (props: { size?: number }) => {
 
 const Profile = () => {
   const b = useBlock("profile");
-  const [theme, toggleTheme] = useTheme((s) => [s.theme, s.toggle]);
 
   const [user] = useAuthState();
 
   const content = (
     <div className={b("content").mix("bp3-running-text")}>
-      <Button
-        icon={theme === "dark" ? "flash" : "moon"}
-        className={b("theme-switch")}
-        minimal
-        onClick={toggleTheme}
-      />
+      <ToggleThemeButton className={b("theme-switch")} />
       <Avatar size={80} />
       <p>
         <strong>{user?.displayName}</strong>
