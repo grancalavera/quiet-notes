@@ -1,0 +1,30 @@
+{
+  "ignoreUnresolved": [],
+  "ignoreUnimported": [
+    "src/setupTests.ts"
+  ],
+  "ignoreUnused": [
+    "@testing-library/jest-dom",
+    "@testing-library/react",
+    "@testing-library/user-event",
+    "@types/jest",
+    "@types/node",
+    "@types/react",
+    "@types/react-dom",
+    "normalize.css",
+    "react-scripts",
+    "sass",
+    "typescript",
+    "unimported"
+  ],
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/*.stories.{js,jsx,ts,tsx}",
+    "**/*.tests.{js,jsx,ts,tsx}",
+    "**/*.test.{js,jsx,ts,tsx}",
+    "**/*.spec.{js,jsx,ts,tsx}",
+    "**/tests/**",
+    "**/__tests__/**",
+    "**/*.d.ts"
+  ]
+}
