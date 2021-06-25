@@ -1,29 +1,47 @@
 import firebase from "firebase/app";
+import { nanoid } from "nanoid";
 
 export interface Note {
+  id: string;
   title: string;
   content: string;
   author: firebase.UserInfo;
 }
 
-export interface WriteNote extends Note {
-  createdAt: firebase.firestore.FieldValue;
-  modifiedAt: firebase.firestore.FieldValue;
+export interface NoteMeta {
+  _createdAt: Date;
+  _updatedAt: Date;
+}
+
+export interface WriteNoteStub extends Note {
+  _createdAt: firebase.firestore.FieldValue;
+  _updatedAt: firebase.firestore.FieldValue;
+}
+
+export interface WriteNoteUpdate extends Note {
+  _updatedAt: firebase.firestore.FieldValue;
 }
 
 export interface ReadNote extends Note {
-  id: string;
-  createdAt: Date;
-  modifiedAt: Date;
+  _createdAt: Date;
+  _updatedAt: Date;
 }
 
-export interface RawReadNote extends Note {
-  createdAt: firebase.firestore.Timestamp;
-  modifiedAt: firebase.firestore.Timestamp;
+export interface FirebaseReadNoteMeta {
+  _createdAt: firebase.firestore.Timestamp;
+  _updatedAt: firebase.firestore.Timestamp;
 }
 
-export const createNoteDraft = (author: firebase.UserInfo): Note => ({
+export const noteStub = (author: firebase.UserInfo): WriteNoteStub => ({
   author,
+  id: nanoid() + "howdy? :)",
   title: "",
   content: "",
+  _createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  _updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+});
+
+export const updateNote = (note: Note): WriteNoteUpdate => ({
+  ...note,
+  _updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
 });

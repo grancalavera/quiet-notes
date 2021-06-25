@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
 import { useUserInfo } from "../firebase/firebase";
 import { useNotebookState } from "./notebook-local-state";
-import { createNoteDraft, ReadNote } from "./notebook-model";
+import { noteStub, ReadNote } from "./notebook-model";
 
 const noteCollectionRef = firebase.firestore().collection("notes");
 
@@ -27,13 +27,13 @@ export const useCreateNote = () => {
 
   const createNote = useCallback(() => {
     setIsLoading(true);
+
+    const { id, ...note } = noteStub(author!);
+    console.log(id, note);
+
     (async () => {
-      const result = await noteCollectionRef.add({
-        ...createNoteDraft(author!),
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        modifiedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      });
-      selectNote(result.id);
+      await noteCollectionRef.doc(id).set(note);
+      selectNote(id);
       setIsLoading(false);
     })();
   }, [author, selectNote]);
