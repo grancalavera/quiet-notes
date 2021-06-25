@@ -1,8 +1,8 @@
-import { Button, H3, Icon } from "@blueprintjs/core";
-import { Popover2 } from "@blueprintjs/popover2";
+import { Button, H3, Icon, Popover } from "@blueprintjs/core";
 import { useBlock } from "../app/bem";
 import { signOut, useAuthState } from "../firebase/firebase";
 import { ToggleThemeButton } from "../theme/theme";
+import { useTheme } from "../theme/use-theme";
 import "./notebook-header.scss";
 
 export const Header = () => {
@@ -33,7 +33,7 @@ const Avatar = (props: { size?: number }) => {
       }}
     ></span>
   ) : (
-    <Icon icon="user" iconSize={size} />
+    <Icon icon="user" size={size} />
   );
 };
 
@@ -60,8 +60,18 @@ const Profile = () => {
   );
 
   return (
-    <Popover2 className={b().toString()} content={content} position="bottom-right">
+    <Popover
+      className={b()}
+      content={content}
+      position="bottom-right"
+      // Under normal circumstances Popover inherits the theme from the container, but
+      // since we're using this popover to also change the theme, it doesn't always pick
+      // up the correct theme. Closing and reopening it forces it to pick up the theme,
+      // but is unacceptable having the wrong theme for a bit. See:
+      // https://blueprintjs.com/docs/versions/4/#core/components/popover.dark-theme
+      popoverClassName={useTheme((s) => s.className)}
+    >
       <Avatar />
-    </Popover2>
+    </Popover>
   );
 };

@@ -3,6 +3,7 @@ import create, { State } from "zustand";
 type QuietNotesTheme = "light" | "dark";
 
 interface ThemeState extends State {
+  className?: string;
   theme: QuietNotesTheme;
   toggle: () => void;
 }
@@ -19,7 +20,8 @@ export const useTheme = create<ThemeState>((set, get) => ({
   toggle: () =>
     set(() => {
       const theme: QuietNotesTheme = get().theme === "light" ? "dark" : "light";
+      const className = theme === "dark" ? "bp4-dark" : undefined;
       saveTheme(theme);
-      return { theme };
+      return { theme, className };
     }),
 }));

@@ -7,9 +7,9 @@ export const Theme: FC = ({ children }) => {
 
   useEffect(() => {
     if (theme === "dark") {
-      document.body.classList.add("bp3-dark");
+      document.body.classList.add("bp4-dark");
     } else {
-      document.body.classList.remove("bp3-dark");
+      document.body.classList.remove("bp4-dark");
     }
   }, [theme]);
 
