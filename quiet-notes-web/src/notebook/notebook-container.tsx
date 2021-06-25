@@ -1,15 +1,21 @@
 import { Button } from "@blueprintjs/core";
-import React from "react";
+import React, { useEffect } from "react";
 import { signIn, useAuthState } from "../firebase/firebase";
 import { AppLayout } from "../layout/app-layout";
 import { CenterLayout } from "../layout/center-layout";
 import { Header } from "./notebook-header";
 import { NoteEditorContainer } from "./notebook-note-editor";
 import { NotesList } from "./notebook-note-list";
+import { useNotebookState } from "./notebook-state";
 import { EditorToolbar } from "./notebook-toolbars";
 
 export const Notebook = () => {
   const [user] = useAuthState();
+  const resetNotebook = useNotebookState((s) => s.reset);
+
+  useEffect(() => {
+    !user && resetNotebook();
+  }, [user, resetNotebook]);
 
   return user ? (
     <AppLayout
