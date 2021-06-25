@@ -1,10 +1,24 @@
 import firebase from "firebase";
 import { useCallback, useState } from "react";
+import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
 import { useUserInfo } from "../firebase/firebase";
-import { noteCollectionRef } from "./notebook-hooks";
-import { createNoteDraft } from "./notebook-model";
-import { useNotebookState } from "./notebook-state";
-import "./notebook-toolbars.scss";
+import { useNotebookState } from "./notebook-local-state";
+import { createNoteDraft, ReadNote } from "./notebook-model";
+
+const noteCollectionRef = firebase.firestore().collection("notes");
+
+export const useNotesCollection = (userInfo: firebase.UserInfo | null | undefined) => {
+  const query = noteCollectionRef
+    .where("author.uid", "==", userInfo?.uid ?? "")
+    .orderBy("modifiedAt", "desc");
+
+  return useCollectionData<ReadNote>(query, { idField: "id" });
+};
+
+export const useNote = (id: string) =>
+  useDocumentData<ReadNote>(noteCollectionRef.doc(id), {
+    snapshotListenOptions: { includeMetadataChanges: true },
+  });
 
 export const useCreateNote = () => {
   const author = useUserInfo();

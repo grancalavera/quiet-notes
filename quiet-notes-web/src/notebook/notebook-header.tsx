@@ -43,7 +43,7 @@ const Profile = () => {
   const [user] = useAuthState();
 
   const content = (
-    <div className={b("content").mix("bp3-running-text")}>
+    <div className={b("content")}>
       <ToggleThemeButton className={b("theme-switch")} />
       <Avatar size={80} />
       <p>

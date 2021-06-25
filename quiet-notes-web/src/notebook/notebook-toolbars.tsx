@@ -1,7 +1,7 @@
 import { Button } from "@blueprintjs/core";
 import { block } from "../app/bem";
 import "./notebook-toolbars.scss";
-import { useCreateNote } from "./notebook-use-create-note";
+import { useCreateNote } from "./notebook-server-state";
 
 const b = block("toolbar");
 

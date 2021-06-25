@@ -1,12 +1,11 @@
 import { Callout } from "@blueprintjs/core";
 import React from "react";
-import { useAuthState } from "../firebase/firebase";
-import { useNotesCollection } from "./notebook-hooks";
-import { ReadNote } from "./notebook-model";
-import { useNotebookState } from "./notebook-state";
-import "./notebook-notes-list.scss";
-
 import { block } from "../app/bem";
+import { useAuthState } from "../firebase/firebase";
+import { useNotebookState } from "./notebook-local-state";
+import { ReadNote } from "./notebook-model";
+import "./notebook-notes-list.scss";
+import { useNotesCollection } from "./notebook-server-state";
 
 const b = block("notes-list");
 

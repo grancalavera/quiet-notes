@@ -6,7 +6,7 @@ import { CenterLayout } from "../layout/center-layout";
 import { Header } from "./notebook-header";
 import { NoteEditorContainer } from "./notebook-note-editor";
 import { NotesList } from "./notebook-note-list";
-import { useNotebookState } from "./notebook-state";
+import { useNotebookState } from "./notebook-local-state";
 import { EditorToolbar } from "./notebook-toolbars";
 
 export const Notebook = () => {
