@@ -1,15 +1,19 @@
-import { EditableText, NonIdealState } from "@blueprintjs/core";
+import { NonIdealState, TextArea } from "@blueprintjs/core";
 import React, { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { block } from "../app/bem";
-import { useNotebookState } from "./notebook-local-state";
+import { useNotebookState, useUpdateNote } from "./notebook-local-state";
 import "./notebook-note-editor.scss";
 import { useNote } from "./notebook-server-state";
 const b = block("note-editor");
 
 export const NoteEditorContainer = () => {
   const selectedNote = useNotebookState((s) => s.selectedNote);
-  return selectedNote ? <NoteEditor noteId={selectedNote} /> : <NonIdealNoteEditor />;
+  return selectedNote ? (
+    <NoteEditor noteId={selectedNote} key={selectedNote} />
+  ) : (
+    <NonIdealNoteEditor />
+  );
 };
 
 const NoteEditor = (props: { noteId: string }) => {
@@ -17,22 +21,23 @@ const NoteEditor = (props: { noteId: string }) => {
 
   const [note] = useNote(props.noteId);
   const [update] = useDebounce(draft, 1000);
+  const updateNote = useUpdateNote();
 
   useEffect(() => {
     setDraft((current) => (current === note?.content ? current : note?.content ?? ""));
   }, [note?.content]);
 
   useEffect(() => {
-    console.log("updated note:", update);
-  }, [update]);
+    if (note && update && note.content !== update) {
+      updateNote(note, update);
+    }
+  }, [update, note, updateNote]);
+
+  useEffect(() => () => console.log("unmount"), []);
 
   return (
     <div className={b()}>
-      <EditableText
-        className={b("editable-text").toString()}
-        value={draft}
-        onChange={setDraft}
-      />
+      <TextArea value={draft} onChange={(e) => setDraft(e.target.value)} fill />
     </div>
   );
 };

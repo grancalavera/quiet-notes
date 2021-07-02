@@ -16,6 +16,7 @@ export const useNotesCollection = (userInfo: firebase.UserInfo | null | undefine
 export const useNote = (id: string) =>
   useDocumentData<ReadNote>(noteCollectionRef.doc(id), {
     snapshotListenOptions: { includeMetadataChanges: true },
+    idField: "id",
   });
 
 export const useUpsertNote = () => {

@@ -36,7 +36,7 @@ export const useUpdateNote = () => {
 
   return useCallback(
     (current: Note, content: string) => {
-      const title = trim(truncate(content, { length: 20 }));
+      const title = trim(content.split("\n")[0] ?? "");
       const note = writeNoteUpdate({ ...current, content, title });
       upsertNote(note);
     },
