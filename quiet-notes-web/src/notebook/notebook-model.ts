@@ -32,16 +32,16 @@ export interface FirebaseReadNoteMeta {
   _updatedAt: firebase.firestore.Timestamp;
 }
 
-export const noteStub = (author: firebase.UserInfo): WriteNoteStub => ({
+export const writeNoteStub = (author: firebase.UserInfo): WriteNoteStub => ({
   author,
-  id: nanoid() + "howdy? :)",
+  id: nanoid(),
   title: "",
   content: "",
   _createdAt: firebase.firestore.FieldValue.serverTimestamp(),
   _updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
 });
 
-export const updateNote = (note: Note): WriteNoteUpdate => ({
+export const writeNoteUpdate = (note: Note): WriteNoteUpdate => ({
   ...note,
   _updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
 });

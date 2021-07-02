@@ -1,16 +1,17 @@
-import { Button } from "@blueprintjs/core";
+import { Button, Tooltip } from "@blueprintjs/core";
 import { block } from "../app/bem";
+import { useCreateNote } from "./notebook-local-state";
 import "./notebook-toolbars.scss";
-import { useCreateNote } from "./notebook-server-state";
 
 const b = block("toolbar");
 
 export const EditorToolbar = () => {
-  const [createNote, isLoading] = useCreateNote();
-
+  const createNote = useCreateNote();
   return (
     <div className={b({}).mix(b("editor"))}>
-      <Button icon="new-object" minimal onClick={createNote} loading={isLoading} />
+      <Tooltip content="create note">
+        <Button icon={"new-object"} minimal onClick={createNote}></Button>
+      </Tooltip>
     </div>
   );
 };

@@ -36,17 +36,19 @@ export const signIn = () => auth.signInWithPopup(new firebase.auth.GoogleAuthPro
 export const signOut = () => auth.signOut();
 export const useAuthState = () => firebaseHooks.useAuthState(auth);
 
-export const useUserInfo = (): firebase.UserInfo | undefined => {
+export const useUserInfo = (): firebase.UserInfo => {
   const [user] = useAuthState();
 
-  return user
-    ? {
-        uid: user.uid,
-        providerId: user.providerId,
-        photoURL: user.photoURL,
-        phoneNumber: user.phoneNumber,
-        email: user.email,
-        displayName: user.displayName,
-      }
-    : undefined;
+  if (!user) {
+    throw new Error("not authenticated");
+  } else {
+    return {
+      uid: user.uid,
+      providerId: user.providerId,
+      photoURL: user.photoURL,
+      phoneNumber: user.phoneNumber,
+      email: user.email,
+      displayName: user.displayName,
+    };
+  }
 };

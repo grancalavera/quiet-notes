@@ -1,10 +1,10 @@
-import { Button, EditableText, NonIdealState } from "@blueprintjs/core";
+import { EditableText, NonIdealState } from "@blueprintjs/core";
 import React, { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { block } from "../app/bem";
 import { useNotebookState } from "./notebook-local-state";
 import "./notebook-note-editor.scss";
-import { useCreateNote, useNote } from "./notebook-server-state";
+import { useNote } from "./notebook-server-state";
 const b = block("note-editor");
 
 export const NoteEditorContainer = () => {
@@ -37,17 +37,9 @@ const NoteEditor = (props: { noteId: string }) => {
   );
 };
 
-const NonIdealNoteEditor = () => {
-  const [createNote, isLoading] = useCreateNote();
-
-  return (
-    <NonIdealState
-      icon="new-object"
-      action={
-        <Button minimal onClick={createNote} loading={isLoading}>
-          Create Note
-        </Button>
-      }
-    />
-  );
-};
+const NonIdealNoteEditor = () => (
+  <NonIdealState
+    icon="warning-sign"
+    title="Select an existing note or create a new note"
+  />
+);
