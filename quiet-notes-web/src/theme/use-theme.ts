@@ -20,7 +20,7 @@ export const useTheme = create<ThemeState>((set, get) => ({
   toggle: () =>
     set(() => {
       const theme: QuietNotesTheme = get().theme === "light" ? "dark" : "light";
-      const className = theme === "dark" ? "bp4-dark" : undefined;
+      const className = theme === "dark" ? "bp3-dark" : undefined;
       saveTheme(theme);
       return { theme, className };
     }),

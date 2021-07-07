@@ -1,4 +1,4 @@
-import { trim, truncate } from "lodash";
+import { trim } from "lodash";
 import { useCallback } from "react";
 import create, { State } from "zustand";
 import { useUserInfo } from "../firebase/firebase";

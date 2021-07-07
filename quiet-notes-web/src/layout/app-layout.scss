@@ -36,12 +36,8 @@
   &__left {
     border-right: 1px solid $gray5;
   }
-}
 
-.bp4-dark {
-  @include b("app-layout") {
-    &__left {
-      border-right-color: $dark-gray1;
-    }
+  .bp3-dark &__left {
+    border-right-color: $dark-gray1;
   }
 }

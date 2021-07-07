@@ -33,7 +33,7 @@ const Avatar = (props: { size?: number }) => {
       }}
     ></span>
   ) : (
-    <Icon icon="user" size={size} />
+    <Icon icon="user" iconSize={size} />
   );
 };
 

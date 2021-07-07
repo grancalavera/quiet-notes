@@ -7,9 +7,9 @@
   padding: $qn-padding * 2;
 
   textarea {
-    &.bp4-input,
-    &.bp4-input.bp4-large,
-    &.bp4-input.bp4-small {
+    &.bp3-input,
+    &.bp3-input.bp3-large,
+    &.bp3-input.bp3-small {
       resize: none;
       height: 100%;
     }
