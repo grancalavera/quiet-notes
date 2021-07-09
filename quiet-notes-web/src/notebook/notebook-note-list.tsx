@@ -1,4 +1,4 @@
-import { Button, H6 } from "@blueprintjs/core";
+import { Callout } from "@blueprintjs/core";
 import React from "react";
 import { block } from "../app/bem";
 import { useAuthState } from "../firebase/firebase";
@@ -23,27 +23,19 @@ export const NotesList = () => {
 };
 
 const NotePreview = ({ note }: { note: ReadNote }) => {
-  const selectedNote = useNotebookState((s) => s.selectedNote);
+  const selectedNoteId = useNotebookState((s) => s.selectedNote);
   const selectNote = useNotebookState((s) => s.selectNote);
-  const isSelected = note.id === selectedNote;
+  const isSelected = note.id === selectedNoteId;
 
   return (
-    <div className={b("list-item").toString()} onClick={() => selectNote(note.id)}>
-      <div className={b("list-item-detail", { isSelected })}>
-        <H6 className={b("note-title")}>{note.title || "New Note"}</H6>
-        <Button
-          className={b("delete-note").toString()}
-          icon="trash"
-          minimal
-          onClick={(
-            e:
-              | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.MouseEvent<HTMLElement, MouseEvent>
-          ) => {
-            e.stopPropagation();
-          }}
-        />
-      </div>
-    </div>
+    <Callout
+      className={b("list-item", { isSelected }).toString()}
+      intent={isSelected ? "primary" : "none"}
+      icon="document"
+      onClick={() => selectNote(note.id)}
+      title={note.title || "New Note"}
+    >
+      <p>A snippet from the note...</p>
+    </Callout>
   );
 };

@@ -1,5 +1,4 @@
 import firebase from "firebase";
-import { useCallback } from "react";
 import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
 import { ReadNote, WriteNoteStub, WriteNoteUpdate } from "./notebook-model";
 
@@ -19,10 +18,7 @@ export const useNote = (id: string) =>
     idField: "id",
   });
 
-export const useUpsertNote = () => {
-  const upsertNote = useCallback(({ id, ...note }: WriteNoteStub | WriteNoteUpdate) => {
-    noteCollectionRef.doc(id).set(note);
-  }, []);
+export const upsertNote = ({ id, ...note }: WriteNoteStub | WriteNoteUpdate) =>
+  noteCollectionRef.doc(id).set(note);
 
-  return upsertNote;
-};
+export const deleteNote = (id: string) => noteCollectionRef.doc(id).delete();

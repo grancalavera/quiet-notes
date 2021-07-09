@@ -8,42 +8,16 @@
   overflow-x: hidden;
   padding: $qn-padding;
 
-  &__list-item-detail {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  &__list-item {
     user-select: none;
-    padding: $qn-padding;
+    margin-block-end: $qn-margin;
   }
 
-  &__note-title {
-    color: $pt-text-color-muted;
+  &__list-item:hover {
+    background-color: rgba($pt-intent-primary, 0.15);
   }
 
-  &__list-item-detail:hover &__note-title,
-  &__list-item-detail--isSelected &__note-title {
-    color: $pt-text-color;
-  }
-
-  &__list-item-detail > .bp3-heading {
-    margin: 0;
-    flex-grow: 1;
-  }
-
-  &__list-item-detail &__delete-note {
-    visibility: hidden;
-  }
-
-  &__list-item-detail:hover &__delete-note {
-    visibility: visible;
-  }
-
-  .bp3-dark &__note-title {
-    color: $pt-dark-text-color-muted;
-  }
-
-  .bp3-dark &__list-item-detail:hover &__note-title,
-  .bp3-dark &__list-item-detail--isSelected &__note-title {
-    color: $pt-dark-text-color;
+  .bp3-dark &__list-item:hover {
+    background-color: rgba($pt-intent-primary, 0.25);
   }
 }

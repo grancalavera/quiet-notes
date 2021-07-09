@@ -20,7 +20,7 @@ const NoteEditor = (props: { noteId: string }) => {
   const [draft, setDraft] = useState("");
 
   const [note] = useNote(props.noteId);
-  const [update] = useDebounce(draft, 1000);
+  const [debouncedDraft] = useDebounce(draft, 1000);
   const updateNote = useUpdateNote();
 
   useEffect(() => {
@@ -28,12 +28,10 @@ const NoteEditor = (props: { noteId: string }) => {
   }, [note?.content]);
 
   useEffect(() => {
-    if (note && update && note.content !== update) {
-      updateNote(note, update);
+    if (note && debouncedDraft && note.content !== debouncedDraft) {
+      updateNote(note, debouncedDraft);
     }
-  }, [update, note, updateNote]);
-
-  useEffect(() => () => console.log("unmount"), []);
+  }, [debouncedDraft, note, updateNote]);
 
   return (
     <div className={b()}>
