@@ -4,6 +4,7 @@ import create, { State } from "zustand";
 import { useUserInfo } from "../firebase/firebase";
 import { Note, writeNoteStub, writeNoteUpdate } from "./notebook-model";
 import { upsertNote } from "./notebook-server-state";
+
 export interface NotebookState extends State {
   selectedNote?: string;
   selectNote: (id: string) => void;

@@ -7,6 +7,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: $qn-padding;
+  padding-top: 0;
 
   &__list-item {
     user-select: none;
