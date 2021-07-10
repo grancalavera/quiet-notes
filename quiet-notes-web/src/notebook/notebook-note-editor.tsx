@@ -1,14 +1,14 @@
 import { NonIdealState, TextArea } from "@blueprintjs/core";
-import React, { useEffect, useState } from "react";
-import { useDebounce } from "use-debounce";
+import React, { useEffect } from "react";
 import { block } from "../app/bem";
-import { useNotebookState, useUpdateNote } from "./notebook-local-state";
+import { useNotebookState, useNoteEditorState } from "./notebook-local-state";
 import "./notebook-note-editor.scss";
-import { useNote } from "./notebook-server-state";
+import { useNoteOnce } from "./notebook-server-state";
 const b = block("note-editor");
 
 export const NoteEditorContainer = () => {
   const selectedNoteId = useNotebookState((s) => s.selectedNoteId);
+
   return selectedNoteId ? (
     <NoteEditor noteId={selectedNoteId} key={selectedNoteId} />
   ) : (
@@ -17,26 +17,38 @@ export const NoteEditorContainer = () => {
 };
 
 const NoteEditor = (props: { noteId: string }) => {
-  const [draft, setDraft] = useState("");
+  const openNote = useNoteEditorState((s) => s.open);
+  const isEditorIdle = useNoteEditorState((s) => s.editor.kind === "EditorIdle");
 
-  const [note] = useNote(props.noteId);
-  const [debouncedDraft] = useDebounce(draft, 1000);
-  const updateNote = useUpdateNote();
-
-  useEffect(() => {
-    setDraft((current) => (current === note?.content ? current : note?.content ?? ""));
-  }, [note?.content]);
+  const [note] = useNoteOnce(props.noteId);
 
   useEffect(() => {
-    if (note && debouncedDraft && note.content !== debouncedDraft) {
-      updateNote(note, debouncedDraft);
+    if (note && isEditorIdle) {
+      openNote(note);
     }
-  }, [debouncedDraft, note, updateNote]);
+  }, [note, openNote, isEditorIdle]);
 
   return (
     <div className={b()}>
-      <TextArea value={draft} onChange={(e) => setDraft(e.target.value)} fill />
+      <NoteDraft />
     </div>
+  );
+};
+
+const NoteDraft = () => {
+  const editorState = useNoteEditorState((s) => s.editor);
+  const changeDraft = useNoteEditorState((s) => s.change);
+
+  return (
+    <>
+      {editorState.kind !== "EditorIdle" && (
+        <TextArea
+          value={editorState.draft}
+          onChange={(e) => changeDraft(e.target.value)}
+          fill
+        />
+      )}
+    </>
   );
 };
 

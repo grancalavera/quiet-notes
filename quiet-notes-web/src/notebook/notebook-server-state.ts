@@ -1,5 +1,9 @@
 import firebase from "firebase";
-import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
+import {
+  useCollectionData,
+  useDocumentData,
+  useDocumentDataOnce,
+} from "react-firebase-hooks/firestore";
 import { ReadNote, WriteNoteStub, WriteNoteUpdate } from "./notebook-model";
 
 const noteCollectionRef = firebase.firestore().collection("notes");
@@ -15,6 +19,11 @@ export const useNotesCollection = (userInfo: firebase.UserInfo | null | undefine
 export const useNote = (id: string) =>
   useDocumentData<ReadNote>(noteCollectionRef.doc(id), {
     snapshotListenOptions: { includeMetadataChanges: true },
+    idField: "id",
+  });
+
+export const useNoteOnce = (id: string) =>
+  useDocumentDataOnce<ReadNote>(noteCollectionRef.doc(id), {
     idField: "id",
   });
 

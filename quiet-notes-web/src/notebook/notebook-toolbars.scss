@@ -4,6 +4,7 @@
 @include b("toolbar") {
   height: 100%;
   padding: $qn-padding;
+  padding-bottom: 0;
   display: flex;
   justify-content: flex-end;
 }
