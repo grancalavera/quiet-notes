@@ -27,17 +27,20 @@
 
   &__sidebar {
     grid-area: sidebar;
+    overflow: hidden;
   }
 
   &__editor {
     grid-area: editor;
   }
 
-  &__left {
+  &__sidebar-toolbar,
+  &__sidebar {
     border-right: 1px solid $gray5;
   }
 
-  .bp3-dark &__left {
+  .bp3-dark &__sidebar-toolbar,
+  .bp3-dark &__sidebar {
     border-right-color: $dark-gray1;
   }
 }

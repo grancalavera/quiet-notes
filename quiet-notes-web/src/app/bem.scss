@@ -1,7 +1,7 @@
-$ns: "quiet-notes";
+@import "./constants.scss";
 
 @mixin b($block) {
-  .#{$ns}-#{$block} {
+  .#{$qn-namespace}-#{$block} {
     @content;
   }
 }
