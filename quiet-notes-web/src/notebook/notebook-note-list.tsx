@@ -23,7 +23,7 @@ export const NotesList = () => {
 };
 
 const NotePreview = ({ note }: { note: ReadNote }) => {
-  const selectedNoteId = useNotebookState((s) => s.selectedNote);
+  const selectedNoteId = useNotebookState((s) => s.selectedNoteId);
   const selectNote = useNotebookState((s) => s.selectNote);
   const isSelected = note.id === selectedNoteId;
 

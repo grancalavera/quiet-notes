@@ -6,15 +6,15 @@ import { Note, writeNoteStub, writeNoteUpdate } from "./notebook-model";
 import { upsertNote } from "./notebook-server-state";
 
 export interface NotebookState extends State {
-  selectedNote?: string;
+  selectedNoteId?: string;
   selectNote: (id: string) => void;
   deselectNote: () => void;
   reset: () => void;
 }
 
 export const useNotebookState = create<NotebookState>((set, get) => ({
-  selectNote: (selectedNote) => set({ selectedNote }),
-  deselectNote: () => set(({ selectedNote, ...state }) => state, true),
+  selectNote: (selectedNote) => set({ selectedNoteId: selectedNote }),
+  deselectNote: () => set(({ selectedNoteId, ...state }) => state, true),
   reset: () => {
     get().deselectNote();
   },

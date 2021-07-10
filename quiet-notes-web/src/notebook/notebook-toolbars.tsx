@@ -7,12 +7,12 @@ import "./notebook-toolbars.scss";
 const b = block("toolbar");
 
 export const EditorToolbar = () => {
-  const selectedNote = useNotebookState((s) => s.selectedNote);
+  const selectedNote = useNotebookState((s) => s.selectedNoteId);
 
   return (
     <div className={b()}>
       {!!selectedNote && (
-        <ButtonGroup>
+        <ButtonGroup minimal>
           <Button icon="trash" onClick={() => deleteNote(selectedNote)} />
           <Button icon="floppy-disk" />
         </ButtonGroup>

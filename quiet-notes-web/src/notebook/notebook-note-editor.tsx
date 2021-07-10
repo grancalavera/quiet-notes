@@ -8,9 +8,9 @@ import { useNote } from "./notebook-server-state";
 const b = block("note-editor");
 
 export const NoteEditorContainer = () => {
-  const selectedNote = useNotebookState((s) => s.selectedNote);
-  return selectedNote ? (
-    <NoteEditor noteId={selectedNote} key={selectedNote} />
+  const selectedNoteId = useNotebookState((s) => s.selectedNoteId);
+  return selectedNoteId ? (
+    <NoteEditor noteId={selectedNoteId} key={selectedNoteId} />
   ) : (
     <NonIdealNoteEditor />
   );
