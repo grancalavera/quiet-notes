@@ -11,11 +11,11 @@ import { EditorToolbar, SidebarToolbar } from "./notebook-toolbars";
 
 export const Notebook = () => {
   const [user] = useAuthState();
-  const resetNotebook = useNotebookState((s) => s.reset);
+  const closeNote = useNotebookState((s) => s.closeNote);
 
   useEffect(() => {
-    !user && resetNotebook();
-  }, [user, resetNotebook]);
+    !user && closeNote();
+  }, [user, closeNote]);
 
   return user ? (
     <AppLayout

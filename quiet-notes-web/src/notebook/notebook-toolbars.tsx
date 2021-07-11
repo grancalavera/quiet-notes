@@ -7,18 +7,35 @@ import "./notebook-toolbars.scss";
 const b = block("toolbar");
 
 export const EditorToolbar = () => {
-  const selectedNote = useNotebookState((s) => s.selectedNoteId);
-
+  const hasSelectedNote = useNotebookState((s) => !!s.selectedNoteId);
   return (
     <div className={b()}>
-      {!!selectedNote && (
+      {!!hasSelectedNote && (
         <ButtonGroup>
-          <Button icon="trash" onClick={() => deleteNote(selectedNote)} />
+          <DeleteNoteButton />
           <SaveNoteButton />
-          <Button icon="cross" />
+          <CloseNoteButton />
         </ButtonGroup>
       )}
     </div>
+  );
+};
+
+const DeleteNoteButton = () => {
+  const selectedNoteId = useNotebookState((s) => s.selectedNoteId);
+  const closeNote = useNotebookState((s) => s.closeNote);
+  return (
+    <>
+      {selectedNoteId && (
+        <Button
+          icon="trash"
+          onClick={() => {
+            deleteNote(selectedNoteId);
+            closeNote();
+          }}
+        />
+      )}
+    </>
   );
 };
 
@@ -34,6 +51,11 @@ const SaveNoteButton = () => {
       loading={isSaving}
     />
   );
+};
+
+const CloseNoteButton = () => {
+  const closeNote = useNotebookState((s) => s.closeNote);
+  return <Button icon="cross" onClick={closeNote} />;
 };
 
 export const SidebarToolbar = () => {

@@ -6,21 +6,6 @@ import { assertNever } from "../utils/assert-never";
 import { Note, writeNoteStub, writeNoteUpdate } from "./notebook-model";
 import { upsertNote } from "./notebook-server-state";
 
-export interface NotebookState extends State {
-  //
-  selectedNoteId?: string;
-  selectNote: (id: string) => void;
-  deselectNote: () => void;
-  reset: () => void;
-  //
-  editor: Editor;
-  open: (note: Note) => void;
-  close: () => void;
-  change: (content: string) => void;
-  save: () => Promise<void>;
-  isSaving: boolean;
-}
-
 export const useCreateNote = () => {
   const author = useUserInfo();
   const selectNote = useNotebookState((s) => s.selectNote);
@@ -121,16 +106,31 @@ const openNote = (editor: Editor, note: Note): Editor => {
   }
 };
 
+export interface NotebookState extends State {
+  selectedNoteId?: string;
+  selectNote: (id: string) => void;
+  closeNote: () => void;
+  editor: Editor;
+  open: (note: Note) => void;
+  change: (content: string) => void;
+  save: () => Promise<void>;
+  isSaving: boolean;
+}
+
 export const useNotebookState = create<NotebookState>((set, get) => ({
-  //
   selectNote: (selectedNoteId) => set({ selectedNoteId }),
-  deselectNote: () => set(({ selectedNoteId, ...state }) => state, true),
-  reset: () => get().deselectNote(),
-  //
   editor: editorIdle,
   isSaving: false,
   open: (note) => set({ editor: openNote(get().editor, note) }),
-  close: () => set({ editor: editorIdle }),
+  closeNote: () =>
+    set(
+      ({ selectedNoteId, editor, isSaving, ...state }) => ({
+        editor: editorIdle,
+        isSaving: false,
+        ...state,
+      }),
+      true
+    ),
   change: (draft) => set({ editor: changeNote(get().editor, draft) }),
   save: async () => {
     const editor = get().editor;

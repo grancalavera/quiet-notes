@@ -1,6 +1,7 @@
-import { NonIdealState, TextArea } from "@blueprintjs/core";
+import { NonIdealState, Spinner, TextArea } from "@blueprintjs/core";
 import React, { useEffect } from "react";
 import { block } from "../app/bem";
+import { CenterLayout } from "../layout/center-layout";
 import { useNotebookState } from "./notebook-local-state";
 import "./notebook-note-editor.scss";
 import { useNoteOnce } from "./notebook-server-state";
@@ -18,8 +19,7 @@ export const NoteEditorContainer = () => {
 
 const NoteEditor = (props: { noteId: string }) => {
   const openNote = useNotebookState((s) => s.open);
-
-  const [note] = useNoteOnce(props.noteId);
+  const [note, isLoading] = useNoteOnce(props.noteId);
 
   useEffect(() => {
     note && openNote(note);
@@ -27,7 +27,13 @@ const NoteEditor = (props: { noteId: string }) => {
 
   return (
     <div className={b()}>
-      <NoteDraft />
+      {isLoading ? (
+        <CenterLayout>
+          <Spinner />{" "}
+        </CenterLayout>
+      ) : (
+        <NoteDraft />
+      )}
     </div>
   );
 };
