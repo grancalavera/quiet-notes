@@ -45,6 +45,8 @@ export interface NoteEditorState extends State {
   open: (note: Note) => void;
   close: () => void;
   change: (content: string) => void;
+  save: () => Promise<void>;
+  isLoading: boolean;
 }
 
 type Editor = EditorIdle | NoteUntouched | NoteDraft;
@@ -81,9 +83,7 @@ const noteDraft = (note: Note, draft: string): Editor => ({
 
 export const useNoteEditorState = create<NoteEditorState>((set, get) => ({
   editor: editorIdle,
-  isIdle: true,
-  isDraft: false,
-  isUntouched: false,
+  isLoading: false,
   open: (note) => set({ editor: noteUntouched(note) }),
   close: () => set({ editor: editorIdle }),
   change: (draft) => {
@@ -107,4 +107,28 @@ export const useNoteEditorState = create<NoteEditorState>((set, get) => ({
         assertNever(editor);
     }
   },
+  save: async () => {
+    const editor = get().editor;
+    if (editor.kind === "NoteDraft") {
+      set({ isLoading: true });
+      const content = editor.draft;
+      const title = deriveNoteTitle(content);
+      const note = { ...editor.note, content, title };
+      const write = writeNoteUpdate(note);
+      await upsertNote(write);
+      set({ editor: mergeNote(get().editor, note), isLoading: false });
+    }
+  },
 }));
+
+const deriveNoteTitle = (content: string): string => trim(content.split("\n")[0] ?? "");
+
+const mergeNote = (editor: Editor, note: Note): Editor => {
+  if (editor.kind === "EditorIdle") {
+    return editor;
+  } else if (note.content === editor.draft) {
+    return noteUntouched(note);
+  } else {
+    return noteDraft(note, editor.draft);
+  }
+};

@@ -28,7 +28,16 @@ export const EditorToolbar = () => {
 
 const SaveNoteButton = () => {
   const isDisabled = useNoteEditorState((s) => s.editor.kind !== "NoteDraft");
-  return <Button icon="floppy-disk" disabled={isDisabled} />;
+  const isLoading = useNoteEditorState((s) => s.isLoading);
+  const saveNote = useNoteEditorState((s) => s.save);
+  return (
+    <Button
+      icon="floppy-disk"
+      disabled={isDisabled}
+      onClick={saveNote}
+      loading={isLoading}
+    />
+  );
 };
 
 export const SidebarToolbar = () => {
@@ -36,7 +45,7 @@ export const SidebarToolbar = () => {
   return (
     <div className={b()}>
       <Tooltip content="create note">
-        <Button icon={"new-object"} onClick={createNote}></Button>
+        <Button icon={"new-object"} onClick={createNote} />
       </Tooltip>
     </div>
   );
