@@ -1,10 +1,6 @@
 import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import { block } from "../app/bem";
-import {
-  useCreateNote,
-  useNotebookState,
-  useNoteEditorState,
-} from "./notebook-local-state";
+import { useCreateNote, useNotebookState } from "./notebook-local-state";
 import { deleteNote } from "./notebook-server-state";
 import "./notebook-toolbars.scss";
 
@@ -27,15 +23,15 @@ export const EditorToolbar = () => {
 };
 
 const SaveNoteButton = () => {
-  const isDisabled = useNoteEditorState((s) => s.editor.kind !== "NoteDraft");
-  const isLoading = useNoteEditorState((s) => s.isLoading);
-  const saveNote = useNoteEditorState((s) => s.save);
+  const isDisabled = useNotebookState((s) => s.editor.kind !== "NoteDraft");
+  const isSaving = useNotebookState((s) => s.isSaving);
+  const saveNote = useNotebookState((s) => s.save);
   return (
     <Button
       icon="floppy-disk"
       disabled={isDisabled}
       onClick={saveNote}
-      loading={isLoading}
+      loading={isSaving}
     />
   );
 };

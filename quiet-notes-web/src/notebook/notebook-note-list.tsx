@@ -34,8 +34,6 @@ const NotePreview = ({ note }: { note: ReadNote }) => {
       icon="document"
       onClick={() => selectNote(note.id)}
       title={note.title || "New Note"}
-    >
-      <p>A snippet from the note...</p>
-    </Callout>
+    ></Callout>
   );
 };

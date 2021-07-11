@@ -1,7 +1,7 @@
 import { NonIdealState, TextArea } from "@blueprintjs/core";
 import React, { useEffect } from "react";
 import { block } from "../app/bem";
-import { useNotebookState, useNoteEditorState } from "./notebook-local-state";
+import { useNotebookState } from "./notebook-local-state";
 import "./notebook-note-editor.scss";
 import { useNoteOnce } from "./notebook-server-state";
 const b = block("note-editor");
@@ -17,16 +17,13 @@ export const NoteEditorContainer = () => {
 };
 
 const NoteEditor = (props: { noteId: string }) => {
-  const openNote = useNoteEditorState((s) => s.open);
-  const isEditorIdle = useNoteEditorState((s) => s.editor.kind === "EditorIdle");
+  const openNote = useNotebookState((s) => s.open);
 
   const [note] = useNoteOnce(props.noteId);
 
   useEffect(() => {
-    if (note && isEditorIdle) {
-      openNote(note);
-    }
-  }, [note, openNote, isEditorIdle]);
+    note && openNote(note);
+  }, [note, openNote]);
 
   return (
     <div className={b()}>
@@ -36,8 +33,8 @@ const NoteEditor = (props: { noteId: string }) => {
 };
 
 const NoteDraft = () => {
-  const editorState = useNoteEditorState((s) => s.editor);
-  const changeDraft = useNoteEditorState((s) => s.change);
+  const editorState = useNotebookState((s) => s.editor);
+  const changeDraft = useNotebookState((s) => s.change);
 
   return (
     <>
