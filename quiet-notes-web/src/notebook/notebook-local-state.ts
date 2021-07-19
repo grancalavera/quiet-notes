@@ -3,26 +3,17 @@ import { useCallback } from "react";
 import create, { State } from "zustand";
 import { useUserInfo } from "../firebase/firebase";
 import { assertNever } from "../utils/assert-never";
-import { Note, writeNoteStub, writeNoteUpdate } from "./notebook-model";
-import { upsertNote } from "./notebook-server-state";
+import { Note } from "./notebook-model";
+import { createNote, updateNote } from "./notebook-server-state";
 
 export const useCreateNote = () => {
   const author = useUserInfo();
   const selectNote = useNotebookState((s) => s.selectNote);
 
-  return useCallback(() => {
-    const note = writeNoteStub(author);
-    selectNote(note.id);
-    upsertNote(note);
+  return useCallback(async () => {
+    const id = await createNote(author);
+    selectNote(id);
   }, [selectNote, author]);
-};
-
-export const useUpdateNote = () => {
-  return useCallback((current: Note, content: string) => {
-    const title = trim(content.split("\n")[0] ?? "");
-    const note = writeNoteUpdate({ ...current, content, title });
-    upsertNote(note);
-  }, []);
 };
 
 type Editor = EditorIdle | NoteUntouched | NoteDraft;
@@ -139,8 +130,7 @@ export const useNotebookState = create<NotebookState>((set, get) => ({
       const content = editor.draft;
       const title = deriveNoteTitle(content);
       const note = { ...editor.note, content, title };
-      const write = writeNoteUpdate(note);
-      await upsertNote(write);
+      await updateNote(note);
       set({ editor: mergeNote(get().editor, note), isSaving: false });
     }
   },

@@ -1,17 +1,16 @@
 import { Callout } from "@blueprintjs/core";
+import { truncate } from "lodash";
 import React from "react";
 import { block } from "../app/bem";
-import { useAuthState } from "../firebase/firebase";
 import { useNotebookState } from "./notebook-local-state";
-import { ReadNote } from "./notebook-model";
+import { Note } from "./notebook-model";
 import "./notebook-notes-list.scss";
 import { useNotesCollection } from "./notebook-server-state";
 
 const b = block("notes-list");
 
 export const NotesList = () => {
-  const [user] = useAuthState();
-  const [notes] = useNotesCollection(user);
+  const [notes] = useNotesCollection();
 
   return notes ? (
     <div className={b()}>
@@ -22,7 +21,7 @@ export const NotesList = () => {
   ) : null;
 };
 
-const NotePreview = ({ note }: { note: ReadNote }) => {
+const NotePreview = ({ note }: { note: Note }) => {
   const selectedNoteId = useNotebookState((s) => s.selectedNoteId);
   const selectNote = useNotebookState((s) => s.selectNote);
   const isSelected = note.id === selectedNoteId;
@@ -33,7 +32,13 @@ const NotePreview = ({ note }: { note: ReadNote }) => {
       intent={isSelected ? "primary" : "none"}
       icon="document"
       onClick={() => selectNote(note.id)}
-      title={note.title || "New Note"}
-    ></Callout>
+      title={truncate(note.title, { length: 25 }) || "New Note"}
+    >
+      <p>
+        {note._createdAt && <span>created: {note._createdAt.toISOString()}</span>}
+        <br />
+        {note._updatedAt && <span>updated: {note._updatedAt.toISOString()}</span>}
+      </p>
+    </Callout>
   );
 };
