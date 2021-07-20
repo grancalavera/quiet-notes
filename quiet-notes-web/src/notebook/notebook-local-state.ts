@@ -1,19 +1,30 @@
 import { trim } from "lodash";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import create, { State } from "zustand";
+import { AppError } from "../app/app-error";
 import { useUserInfo } from "../firebase/firebase";
 import { assertNever } from "../utils/assert-never";
 import { Note } from "./notebook-model";
-import { createNote, updateNote } from "./notebook-server-state";
+import {
+  updateNote,
+  useCreateNote as useFirebaseCreateNote,
+} from "./notebook-server-state";
 
 export const useCreateNote = () => {
   const author = useUserInfo();
   const selectNote = useNotebookState((s) => s.selectNote);
+  const handleError = useNotebookState((s) => s.handleError);
+
+  const [createNote, , error] = useFirebaseCreateNote();
+
+  useEffect(() => {
+    error && handleError(error);
+  }, [error, handleError]);
 
   return useCallback(async () => {
     const id = await createNote(author);
-    selectNote(id);
-  }, [selectNote, author]);
+    id && selectNote(id);
+  }, [selectNote, author, createNote]);
 };
 
 type Editor = EditorIdle | NoteUntouched | NoteDraft;
@@ -98,6 +109,10 @@ const openNote = (editor: Editor, note: Note): Editor => {
 };
 
 export interface NotebookState extends State {
+  errors: AppError[];
+  handleError: (error: AppError) => void;
+  dismissError: () => void;
+
   selectedNoteId?: string;
   selectNote: (id: string) => void;
   closeNote: () => void;
@@ -109,6 +124,10 @@ export interface NotebookState extends State {
 }
 
 export const useNotebookState = create<NotebookState>((set, get) => ({
+  errors: [],
+  handleError: (error) => set(({ errors }) => ({ errors: [...errors, error] })),
+  dismissError: () => set(({ errors }) => ({ errors: errors.slice(1) })),
+
   selectNote: (selectedNoteId) => set({ selectedNoteId }),
   editor: editorIdle,
   isSaving: false,

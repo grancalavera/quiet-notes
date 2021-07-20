@@ -1,4 +1,4 @@
-import { Classes, NonIdealState, Spinner, TextArea } from "@blueprintjs/core";
+import { NonIdealState, Spinner, TextArea } from "@blueprintjs/core";
 import React, { useEffect } from "react";
 import { block } from "../app/bem";
 import { CenterLayout } from "../layout/center-layout";

@@ -1,12 +1,9 @@
 import firebase from "firebase";
 import { nanoid } from "nanoid";
-import {
-  useCollectionData,
-  useDocumentData,
-  useDocumentDataOnce,
-} from "react-firebase-hooks/firestore";
+import { useCallback, useState } from "react";
+import { useCollectionData, useDocumentDataOnce } from "react-firebase-hooks/firestore";
 import { useUserInfo } from "../firebase/firebase";
-import { isNote, Note } from "./notebook-model";
+import { Note } from "./notebook-model";
 
 const noteCollectionRef = firebase.firestore().collection("notes");
 
@@ -23,13 +20,6 @@ export const useNotesCollection = () => {
   });
 };
 
-export const useNote = (id: string) =>
-  useDocumentData<Note>(noteCollectionRef.doc(id), {
-    snapshotListenOptions: { includeMetadataChanges: true },
-    idField: "id",
-    transform: fromReadModel,
-  });
-
 export const useNoteOnce = (id: string) =>
   useDocumentDataOnce<Note>(noteCollectionRef.doc(id), {
     idField: "id",
@@ -40,6 +30,31 @@ export const createNote = async (author: firebase.UserInfo): Promise<string> => 
   const { id, ...note } = authorToWriteModel(author);
   await noteCollectionRef.doc(id).set(note);
   return id;
+};
+
+export const useCreateNote = () => {
+  const [error, setError] = useState<firebase.FirebaseError | undefined>();
+  const [loading, setLoading] = useState(false);
+
+  const createNote = useCallback(
+    async (author: firebase.UserInfo): Promise<string | undefined> => {
+      const { id, ...note } = authorToWriteModel(author);
+      let result: string | undefined;
+      setLoading(true);
+
+      try {
+        await noteCollectionRef.doc(id).set(note);
+      } catch (e) {
+        setError(e);
+      }
+
+      setLoading(false);
+      return result;
+    },
+    []
+  );
+
+  return [createNote, loading, error] as const;
 };
 
 export const updateNote = (update: Note) => {
