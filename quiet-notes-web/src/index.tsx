@@ -5,14 +5,17 @@ import "./index.scss";
 import { Notebook } from "./notebook/notebook-container";
 import reportWebVitals from "./reportWebVitals";
 import { Theme } from "./theme/theme";
+import { AppErrorBoundary } from "./app/app-error-boundary";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
 ReactDOM.render(
   <React.StrictMode>
-    <Theme>
-      <Notebook />
-    </Theme>
+    <AppErrorBoundary>
+      <Theme>
+        <Notebook />
+      </Theme>
+    </AppErrorBoundary>
   </React.StrictMode>,
   document.getElementById("root")
 );

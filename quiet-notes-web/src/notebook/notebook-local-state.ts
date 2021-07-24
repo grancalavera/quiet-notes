@@ -6,6 +6,7 @@ import { useUserInfo } from "../firebase/firebase";
 import { assertNever } from "../utils/assert-never";
 import { Note } from "./notebook-model";
 import {
+  deleteNote,
   updateNote,
   useCreateNote as useFirebaseCreateNote,
 } from "./notebook-server-state";
@@ -27,9 +28,9 @@ export const useCreateNote = () => {
   }, [selectNote, author, createNote]);
 };
 
-type Editor = EditorIdle | NoteUntouched | NoteDraft;
+export type Editor = EditorIdle | NoteUntouched | NoteDraft;
 
-interface EditorIdle {
+export interface EditorIdle {
   kind: "EditorIdle";
 }
 
@@ -128,7 +129,15 @@ export const useNotebookState = create<NotebookState>((set, get) => ({
   handleError: (error) => set(({ errors }) => ({ errors: [...errors, error] })),
   dismissError: () => set(({ errors }) => ({ errors: errors.slice(1) })),
 
-  selectNote: (selectedNoteId) => set({ selectedNoteId }),
+  selectNote: (selectedNoteId) => {
+    const editor = get().editor;
+
+    if (editor.kind !== "EditorIdle" && editor.draft === "") {
+      deleteNote(editor.note.id);
+    }
+
+    set({ selectedNoteId });
+  },
   editor: editorIdle,
   isSaving: false,
   open: (note) => set({ editor: openNote(get().editor, note) }),

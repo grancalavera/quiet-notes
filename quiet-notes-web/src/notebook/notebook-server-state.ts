@@ -44,6 +44,7 @@ export const useCreateNote = () => {
 
       try {
         await noteCollectionRef.doc(id).set(note);
+        result = id;
       } catch (e) {
         setError(e);
       }

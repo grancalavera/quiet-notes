@@ -12,7 +12,6 @@ import { EditorToolbar, SidebarToolbar } from "./notebook-toolbars";
 export const Notebook = () => {
   const [user] = useAuthState();
   const closeNote = useNotebookState((s) => s.closeNote);
-
   useEffect(() => {
     !user && closeNote();
   }, [user, closeNote]);

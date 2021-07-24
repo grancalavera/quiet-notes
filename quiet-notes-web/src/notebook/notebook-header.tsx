@@ -1,24 +1,17 @@
-import { Button, Classes, H3, Icon, Popover } from "@blueprintjs/core";
+import { Button, H3, Icon, Popover } from "@blueprintjs/core";
 import { useBlock } from "../app/bem";
 import { signOut, useAuthState } from "../firebase/firebase";
 import { ToggleThemeButton } from "../theme/theme";
 import { useTheme } from "../theme/use-theme";
 import "./notebook-header.scss";
-import { useNotebookState } from "./notebook-local-state";
 
 export const Header = () => {
   const [user] = useAuthState();
   const b = useBlock("header");
-  const errors = useNotebookState((s) => s.errors);
-  const dismissError = useNotebookState((s) => s.dismissError);
 
   return user ? (
     <div className={b()}>
       <H3>Quiet Notes</H3>
-      <span className={[Classes.SMALL].join(" ")}>
-        {errors.length > 0 && JSON.stringify(errors, null, 2)}
-        {errors.length > 0 && <Button onClick={() => dismissError()}>Clear</Button>}
-      </span>
       <Profile />
     </div>
   ) : null;
