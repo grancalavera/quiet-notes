@@ -1,6 +1,5 @@
 import { Callout, Classes } from "@blueprintjs/core";
 import { truncate } from "lodash";
-import React from "react";
 import { block } from "../app/bem";
 import { formatDate } from "../date/format";
 import { useNotebookState } from "./notebook-local-state";

@@ -1,5 +1,5 @@
 import { Button } from "@blueprintjs/core";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { signIn, useAuthState } from "../firebase/firebase";
 import { AppLayout } from "../layout/app-layout";
 import { CenterLayout } from "../layout/center-layout";

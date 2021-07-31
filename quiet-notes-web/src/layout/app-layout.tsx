@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { block } from "../app/bem";
 import "./app-layout.scss";
 

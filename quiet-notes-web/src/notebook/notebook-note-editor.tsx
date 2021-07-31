@@ -1,5 +1,5 @@
 import { NonIdealState, Spinner, TextArea } from "@blueprintjs/core";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { block } from "../app/bem";
 import { CenterLayout } from "../layout/center-layout";
 import { Editor, EditorIdle, useNotebookState } from "./notebook-local-state";
