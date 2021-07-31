@@ -62,7 +62,7 @@ const noteDraft = (note: Note, draft: string): Editor => ({
 
 const deriveNoteTitle = (content: string): string => trim(content.split("\n")[0] ?? "");
 
-const changeNote = (editor: Editor, draft: string): Editor => {
+const updateDraft = (editor: Editor, draft: string): Editor => {
   switch (editor.kind) {
     case "EditorIdle":
       return editor;
@@ -109,6 +109,22 @@ const openNote = (editor: Editor, note: Note): Editor => {
   }
 };
 
+const saveDraft = async (editor: NoteDraft): Promise<Note> => {
+  const content = editor.draft;
+  const title = deriveNoteTitle(content);
+  const note = { ...editor.note, content, title };
+  await updateNote(note);
+  return note;
+};
+
+const closeNote = async (editor: Editor): Promise<void> => {
+  if (editor.kind !== "EditorIdle" && editor.draft === "") {
+    await deleteNote(editor.note.id);
+  } else if (editor.kind === "NoteDraft") {
+    await saveDraft(editor);
+  }
+};
+
 export interface NotebookState extends State {
   errors: AppError[];
   handleError: (error: AppError) => void;
@@ -126,39 +142,41 @@ export interface NotebookState extends State {
 
 export const useNotebookState = create<NotebookState>((set, get) => ({
   errors: [],
-  handleError: (error) => set(({ errors }) => ({ errors: [...errors, error] })),
-  dismissError: () => set(({ errors }) => ({ errors: errors.slice(1) })),
-
-  selectNote: (selectedNoteId) => {
-    const editor = get().editor;
-
-    if (editor.kind !== "EditorIdle" && editor.draft === "") {
-      deleteNote(editor.note.id);
-    }
-
-    set({ selectedNoteId });
-  },
   editor: editorIdle,
   isSaving: false,
+
+  handleError: (error) => set(({ errors }) => ({ errors: [...errors, error] })),
+
+  dismissError: () => set(({ errors }) => ({ errors: errors.slice(1) })),
+
+  selectNote: async (selectedNoteId) => {
+    const editor = get().editor;
+    await closeNote(editor);
+    set({ selectedNoteId });
+  },
+
   open: (note) => set({ editor: openNote(get().editor, note) }),
-  closeNote: () =>
-    set(
+
+  closeNote: async () => {
+    const editor = get().editor;
+    await closeNote(editor);
+    return set(
       ({ selectedNoteId, editor, isSaving, ...state }) => ({
         editor: editorIdle,
         isSaving: false,
         ...state,
       }),
       true
-    ),
-  change: (draft) => set({ editor: changeNote(get().editor, draft) }),
+    );
+  },
+
+  change: (draft) => set({ editor: updateDraft(get().editor, draft) }),
+
   save: async () => {
     const editor = get().editor;
     if (editor.kind === "NoteDraft") {
       set({ isSaving: true });
-      const content = editor.draft;
-      const title = deriveNoteTitle(content);
-      const note = { ...editor.note, content, title };
-      await updateNote(note);
+      const note = await saveDraft(editor);
       set({ editor: mergeNote(get().editor, note), isSaving: false });
     }
   },
