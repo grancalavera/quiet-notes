@@ -2,7 +2,7 @@ import { trim } from "lodash";
 import { useCallback, useEffect } from "react";
 import create, { State } from "zustand";
 import { AppError } from "../app/app-error";
-import { useUserInfo } from "../firebase/firebase";
+import { useUser } from "../app/app-state";
 import { assertNever } from "../utils/assert-never";
 import { Note } from "./notebook-model";
 import {
@@ -12,7 +12,7 @@ import {
 } from "./notebook-server-state";
 
 export const useCreateNote = () => {
-  const author = useUserInfo();
+  const author = useUser();
   const selectNote = useNotebookState((s) => s.selectNote);
   const handleError = useNotebookState((s) => s.handleError);
 

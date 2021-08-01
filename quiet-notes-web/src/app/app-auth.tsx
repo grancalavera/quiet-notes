@@ -1,9 +1,9 @@
 import { Button, Spinner } from "@blueprintjs/core";
 import firebase from "firebase/app";
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
+import * as firebaseHooks from "react-firebase-hooks/auth";
 import { Redirect, Route, RouteProps, useLocation } from "react-router-dom";
 import { CenterLayout } from "../layout/center-layout";
-import { useResolveAuthState } from "./app-resolve-auth-state";
 import { useAppState } from "./app-state";
 
 interface LocationState {
@@ -17,49 +17,43 @@ export const PrivateRoute = ({
   ...rest
 }: PrivateRouteProps &
   RouteProps<string> &
-  Omit<PrivateRouteProps, keyof RouteProps>) => {
-  const location = useLocation();
-
-  return (
-    <Route {...rest}>
-      <AuthState
-        authenticated={children}
-        notAuthenticated={
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: location },
-            }}
-          />
-        }
-      />
-    </Route>
-  );
-};
-
-export const LoginPage = () => {
-  return (
+  Omit<PrivateRouteProps, keyof RouteProps>) => (
+  <Route {...rest}>
     <AuthState
-      authenticated={
+      authenticated={children}
+      notAuthenticated={
         <Redirect
-          to={useLocation<LocationState | undefined>().state?.from?.pathname ?? "/"}
+          to={{
+            pathname: "/login",
+            state: { from: useLocation() },
+          }}
         />
       }
-      notAuthenticated={
-        <CenterLayout>
-          <Button
-            large
-            onClick={() => {
-              firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
-            }}
-          >
-            Sign In with Google
-          </Button>
-        </CenterLayout>
-      }
     />
-  );
-};
+  </Route>
+);
+
+export const LoginPage = () => (
+  <AuthState
+    authenticated={
+      <Redirect
+        to={useLocation<LocationState | undefined>().state?.from?.pathname ?? "/"}
+      />
+    }
+    notAuthenticated={
+      <CenterLayout>
+        <Button
+          large
+          onClick={() => {
+            firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+          }}
+        >
+          Sign In with Google
+        </Button>
+      </CenterLayout>
+    }
+  />
+);
 
 interface AuthStateProps {
   authenticated: ReactNode;
@@ -67,22 +61,30 @@ interface AuthStateProps {
 }
 
 const AuthState = ({ authenticated, notAuthenticated }: AuthStateProps) => {
-  const authState = useResolveAuthState();
   const setUser = useAppState((s) => s.setUser);
-  const [ready, setReady] = useState(false);
+  const reset = useAppState((s) => s.reset);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, isLoading] = firebaseHooks.useAuthState(firebase.auth());
 
   useEffect(() => {
-    if (authState.kind === "Authenticated") {
-      setUser(authState.user);
-      setReady(true);
+    if (user) {
+      setUser(user);
+      setIsAuthenticated(true);
     }
-  }, [authState, setUser]);
+  }, [setUser, user]);
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      reset();
+      setIsAuthenticated(false);
+    }
+  }, [isLoading, reset, user]);
 
   return (
     <>
-      {ready && authenticated}
-      {authState.kind === "NotAuthenticated" && notAuthenticated}
-      {authState.kind === "Authenticating" && (
+      {isAuthenticated && authenticated}
+      {!isLoading && !user && notAuthenticated}
+      {isLoading && (
         <CenterLayout>
           <Spinner />
         </CenterLayout>

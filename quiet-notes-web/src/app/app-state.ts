@@ -4,19 +4,21 @@ import firebase from "firebase/app";
 interface AppState extends State {
   getUser: () => firebase.User;
   setUser: (user: firebase.User) => void;
-  unsetUser: () => void;
+  reset: () => void;
 }
 
-const userNotSet = (): firebase.User => {
+const throwUserNotSet = (): firebase.User => {
   throw new Error("User not set");
 };
 
 export const useAppState = create<AppState>((set) => ({
-  getUser: userNotSet,
+  getUser: throwUserNotSet,
 
   setUser: (user: firebase.User) => {
     set({ getUser: () => user });
   },
 
-  unsetUser: () => set({ getUser: userNotSet }),
+  reset: () => set({ getUser: throwUserNotSet }),
 }));
+
+export const useUser = () => useAppState((s) => s.getUser());

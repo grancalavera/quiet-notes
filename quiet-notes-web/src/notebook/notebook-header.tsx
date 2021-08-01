@@ -1,26 +1,26 @@
 import { Button, H3, Icon, Popover } from "@blueprintjs/core";
+import firebase from "firebase/app";
+import { useUser } from "../app/app-state";
 import { useBlock } from "../app/bem";
-import { signOut, useAuthState } from "../firebase/firebase";
 import { ToggleThemeButton } from "../theme/theme";
 import { useTheme } from "../theme/use-theme";
 import "./notebook-header.scss";
 
 export const Header = () => {
-  const [user] = useAuthState();
   const b = useBlock("header");
 
-  return user ? (
+  return (
     <div className={b()}>
       <H3>Quiet Notes</H3>
       <Profile />
     </div>
-  ) : null;
+  );
 };
 
 const Avatar = (props: { size?: number }) => {
   const b = useBlock("avatar");
   const size = props.size ?? 30;
-  const [user] = useAuthState();
+  const user = useUser();
 
   return user?.photoURL ? (
     <span
@@ -39,8 +39,7 @@ const Avatar = (props: { size?: number }) => {
 
 const Profile = () => {
   const b = useBlock("profile");
-
-  const [user] = useAuthState();
+  const user = useUser();
 
   const content = (
     <div className={b("content")}>
@@ -55,7 +54,7 @@ const Profile = () => {
       <p>
         <em>{user?.uid}</em>
       </p>
-      <Button onClick={signOut}>Sign Out</Button>
+      <Button onClick={() => firebase.auth().signOut()}>Sign Out</Button>
     </div>
   );
 

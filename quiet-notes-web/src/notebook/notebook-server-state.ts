@@ -2,16 +2,16 @@ import firebase from "firebase";
 import { nanoid } from "nanoid";
 import { useCallback, useState } from "react";
 import { useCollectionData, useDocumentDataOnce } from "react-firebase-hooks/firestore";
-import { useUserInfo } from "../firebase/firebase";
+import { useUser } from "../app/app-state";
 import { Note } from "./notebook-model";
 
 const noteCollectionRef = firebase.firestore().collection("notes");
 
 export const useNotesCollection = () => {
-  const userInfo = useUserInfo();
+  const user = useUser();
 
   const query = noteCollectionRef
-    .where("author.uid", "==", userInfo.uid ?? "")
+    .where("author.uid", "==", user.uid ?? "")
     .orderBy("_updatedAt", "desc");
 
   return useCollectionData<Note>(query, {
