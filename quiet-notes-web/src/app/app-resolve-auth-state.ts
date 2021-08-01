@@ -17,9 +17,6 @@ interface Authenticating {
   kind: "Authenticating";
 }
 
-export const isAuthenticated = (state: AuthState): state is Authenticated =>
-  state.kind === "Authenticated";
-
 export const useResolveAuthState = () => {
   const [authState, setAuthState] = useState<AuthState>({ kind: "Authenticating" });
   const [user, isLoading] = useAuthState();

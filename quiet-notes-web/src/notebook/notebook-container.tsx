@@ -1,5 +1,8 @@
+import { useAppState } from "../app/app-state";
+
 export const Notebook = () => {
-  return <h1>Notebook</h1>;
+  const getUser = useAppState((s) => s.getUser);
+  return <h1>Notebook: {getUser().displayName}</h1>;
 };
 
 // export const Notebook = () => {

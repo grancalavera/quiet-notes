@@ -1,17 +1,22 @@
-import { State } from "zustand";
+import create, { State } from "zustand";
 import firebase from "firebase/app";
-import create from "zustand/vanilla";
 
 interface AppState extends State {
   getUser: () => firebase.User;
+  setUser: (user: firebase.User) => void;
+  unsetUser: () => void;
 }
 
-export const useAppState = create<AppState>((set, get) => ({
-  getUser: () => {
-    throw new Error("AppState not initialized");
-  },
+const userNotSet = (): firebase.User => {
+  throw new Error("User not set");
+};
 
-  initialise: (user: firebase.User) => () => {
+export const useAppState = create<AppState>((set) => ({
+  getUser: userNotSet,
+
+  setUser: (user: firebase.User) => {
     set({ getUser: () => user });
   },
+
+  unsetUser: () => set({ getUser: userNotSet }),
 }));
