@@ -5,12 +5,12 @@ import { useCollectionData, useDocumentDataOnce } from "react-firebase-hooks/fir
 import { useUser } from "../app/app-state";
 import { Note } from "./notebook-model";
 
-const noteCollectionRef = firebase.firestore().collection("notes");
+const noteCollectionRef = () => firebase.firestore().collection("notes");
 
 export const useNotesCollection = () => {
   const user = useUser();
 
-  const query = noteCollectionRef
+  const query = noteCollectionRef()
     .where("author.uid", "==", user.uid ?? "")
     .orderBy("_updatedAt", "desc");
 
@@ -21,14 +21,14 @@ export const useNotesCollection = () => {
 };
 
 export const useNoteOnce = (id: string) =>
-  useDocumentDataOnce<Note>(noteCollectionRef.doc(id), {
+  useDocumentDataOnce<Note>(noteCollectionRef().doc(id), {
     idField: "id",
     transform: fromReadModel,
   });
 
 export const createNote = async (author: firebase.UserInfo): Promise<string> => {
   const { id, ...note } = authorToWriteModel(author);
-  await noteCollectionRef.doc(id).set(note);
+  await noteCollectionRef().doc(id).set(note);
   return id;
 };
 
@@ -43,7 +43,7 @@ export const useCreateNote = () => {
       setLoading(true);
 
       try {
-        await noteCollectionRef.doc(id).set(note);
+        await noteCollectionRef().doc(id).set(note);
         result = id;
       } catch (e) {
         setError(e);
@@ -60,10 +60,10 @@ export const useCreateNote = () => {
 
 export const updateNote = (update: Note) => {
   const { id, ...note } = noteToWriteModel(update);
-  return noteCollectionRef.doc(id).set(note, { merge: true });
+  return noteCollectionRef().doc(id).set(note, { merge: true });
 };
 
-export const deleteNote = (id: string) => noteCollectionRef.doc(id).delete();
+export const deleteNote = (id: string) => noteCollectionRef().doc(id).delete();
 
 interface NoteReadModel {
   readonly id: string;

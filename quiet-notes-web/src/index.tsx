@@ -1,12 +1,10 @@
 import { FocusStyleManager } from "@blueprintjs/core";
-import "firebase/auth";
-import "firebase/firestore";
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import { App } from "./app/app";
 import { LoginPage, PrivateRoute } from "./app/app-auth";
-import "./firebase/firebase-initialize";
-// import { AppErrorBoundary } from "./app/app-error-boundary";
+import { AppErrorBoundary } from "./app/app-error-boundary";
 import "./index.scss";
 import { Notebook } from "./notebook/notebook-container";
 import reportWebVitals from "./reportWebVitals";
@@ -16,19 +14,21 @@ FocusStyleManager.onlyShowFocusOnTabs();
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <AppErrorBoundary> */}
-    <BrowserRouter>
-      <Theme>
-        <Switch>
-          <Route exact path="/login" component={LoginPage} />
-          <PrivateRoute path="/notebook">
-            <Notebook />
-          </PrivateRoute>
-          <Redirect to="/notebook" />
-        </Switch>
-      </Theme>
-    </BrowserRouter>
-    {/* </AppErrorBoundary> */}
+    <AppErrorBoundary>
+      <App>
+        <Theme>
+          <BrowserRouter>
+            <Switch>
+              <Route exact path="/login" component={LoginPage} />
+              <PrivateRoute path="/notebook">
+                <Notebook />
+              </PrivateRoute>
+              <Redirect to="/notebook" />
+            </Switch>
+          </BrowserRouter>
+        </Theme>
+      </App>
+    </AppErrorBoundary>
   </React.StrictMode>,
   document.getElementById("root")
 );

@@ -1,6 +1,6 @@
 import { Alert, H4 } from "@blueprintjs/core";
 import React from "react";
-import { useNotebookState } from "../notebook/notebook-local-state";
+import { useAppState } from "./app-state";
 
 export class AppErrorBoundary extends React.Component<{}, { hasError: boolean }> {
   constructor(props: {}) {
@@ -10,6 +10,10 @@ export class AppErrorBoundary extends React.Component<{}, { hasError: boolean }>
 
   static getDerivedStateFromError() {
     return { hasError: true };
+  }
+
+  componentDidCatch(error: any, info: any) {
+    console.error({ error, info });
   }
 
   render() {
@@ -32,8 +36,8 @@ const UnknownErrorHandler = () => {
 };
 
 const AppErrorHandler = () => {
-  const [nextError] = useNotebookState((s) => s.errors);
-  const dismissError = useNotebookState((s) => s.dismissError);
+  const [nextError] = useAppState((s) => s.errors);
+  const dismissError = useAppState((s) => s.dismissError);
 
   return (
     <Alert intent="danger" icon="error" onClose={dismissError} isOpen={!!nextError}>

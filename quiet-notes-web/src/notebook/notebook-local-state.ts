@@ -1,8 +1,7 @@
 import { trim } from "lodash";
 import { useCallback, useEffect } from "react";
 import create, { State } from "zustand";
-import { AppError } from "../app/app-error";
-import { useUser } from "../app/app-state";
+import { useAppState, useUser } from "../app/app-state";
 import { assertNever } from "../utils/assert-never";
 import { Note } from "./notebook-model";
 import {
@@ -14,7 +13,7 @@ import {
 export const useCreateNote = () => {
   const author = useUser();
   const selectNote = useNotebookState((s) => s.selectNote);
-  const handleError = useNotebookState((s) => s.handleError);
+  const handleError = useAppState((s) => s.handleError);
 
   const [createNote, , error] = useFirebaseCreateNote();
 
@@ -126,10 +125,6 @@ const closeNote = async (editor: Editor): Promise<void> => {
 };
 
 export interface NotebookState extends State {
-  errors: AppError[];
-  handleError: (error: AppError) => void;
-  dismissError: () => void;
-
   selectedNoteId?: string;
   selectNote: (id: string) => void;
   closeNote: () => void;
@@ -141,13 +136,8 @@ export interface NotebookState extends State {
 }
 
 export const useNotebookState = create<NotebookState>((set, get) => ({
-  errors: [],
   editor: editorIdle,
   isSaving: false,
-
-  handleError: (error) => set(({ errors }) => ({ errors: [...errors, error] })),
-
-  dismissError: () => set(({ errors }) => ({ errors: errors.slice(1) })),
 
   selectNote: async (selectedNoteId) => {
     const editor = get().editor;

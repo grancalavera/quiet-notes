@@ -64,6 +64,7 @@ const AuthState = ({ authenticated, notAuthenticated }: AuthStateProps) => {
   const setUser = useAppState((s) => s.setUser);
   const reset = useAppState((s) => s.reset);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const [user, isLoading] = firebaseHooks.useAuthState(firebase.auth());
 
   useEffect(() => {
