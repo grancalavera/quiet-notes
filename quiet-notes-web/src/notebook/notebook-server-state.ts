@@ -92,11 +92,25 @@ const fromReadModel = (documentData: NoteReadModel): Note => {
   };
 };
 
-const authorToWriteModel = (author: firebase.UserInfo): NoteWriteModel => ({
+const authorToWriteModel = ({
+  displayName,
+  email,
+  phoneNumber,
+  photoURL,
+  providerId,
+  uid,
+}: firebase.UserInfo): NoteWriteModel => ({
   id: nanoid(),
   title: "",
   content: "",
-  author,
+  author: {
+    displayName,
+    email,
+    phoneNumber,
+    photoURL,
+    providerId,
+    uid,
+  },
   _updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
   _createdAt: firebase.firestore.FieldValue.serverTimestamp(),
 });

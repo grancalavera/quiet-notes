@@ -4,9 +4,11 @@ import "firebase/firestore";
 import { useEffect, useState } from "react";
 
 const initializeFirebase = async (onInitialized: () => void) => {
-  const response = await fetch("/__/firebase/init.json");
-  const config = await response.json();
-  firebase.initializeApp(config);
+  if (firebase.apps.length === 0) {
+    const response = await fetch("/__/firebase/init.json");
+    const config = await response.json();
+    firebase.initializeApp(config);
+  }
 
   if (
     process.env.NODE_ENV === "development" &&

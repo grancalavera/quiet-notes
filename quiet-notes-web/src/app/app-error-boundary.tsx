@@ -45,6 +45,7 @@ const AppErrorHandler = () => {
         <div>
           <H4>{nextError.name}</H4>
           <p>{nextError.code}</p>
+          {process.env.NODE_ENV === "development" && <p>{nextError.message}</p>}
         </div>
       )}
     </Alert>
