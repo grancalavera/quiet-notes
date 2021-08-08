@@ -2,23 +2,30 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { UserRecord } from "firebase-functions/lib/providers/auth";
 
+type QNRole = "admin" | "author" | "user";
+
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
 });
 
-export const setDefaultAdmin = functions.auth.user().onCreate(async (user) => {
+export const onboardUser = functions.auth.user().onCreate(async (user) => {
+  const roles: QNRole[] = ["user"];
   if (user.email === functions.config().quiet_notes.default_admin) {
-    return grantAdminRole(user);
+    roles.push("admin");
   }
+
+  addRoles(user, roles);
 });
 
-const grantAdminRole = async (user: UserRecord): Promise<void> => {
-  const roles = user.customClaims?.roles ?? [];
+const addRoles = async (user: UserRecord, roles: QNRole[]): Promise<void> => {
+  const existingRoles = user.customClaims?.roles ?? [];
+  const updatedRoles = [...new Set([...existingRoles, ...roles])];
 
-  if (!roles.includes("admin")) {
-    console.log("grant admin role to", { user });
-    return admin.auth().setCustomUserClaims(user.uid, { roles: [...roles, "admin"] });
-  } else {
-    console.log("already an admin, ignore", { user });
-  }
+  console.log("addRoles", {
+    uid: user.uid,
+    existingRoles,
+    updatedRoles,
+  });
+
+  return admin.auth().setCustomUserClaims(user.uid, { roles: updatedRoles });
 };
