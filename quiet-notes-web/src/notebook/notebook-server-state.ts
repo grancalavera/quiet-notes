@@ -26,19 +26,13 @@ export const useNoteOnce = (id: string) =>
     transform: fromReadModel,
   });
 
-export const createNote = async (author: firebase.UserInfo): Promise<string> => {
-  const { id, ...note } = authorToWriteModel(author);
-  await noteCollectionRef().doc(id).set(note);
-  return id;
-};
-
 export const useCreateNote = () => {
   const [error, setError] = useState<firebase.FirebaseError | undefined>();
   const [loading, setLoading] = useState(false);
 
   const createNote = useCallback(
     async (author: firebase.UserInfo): Promise<string | undefined> => {
-      const { id, ...note } = authorToWriteModel(author);
+      const { id, ...note } = authorToWriteModel(author.uid);
       let result: string | undefined;
       setLoading(true);
 
@@ -71,7 +65,7 @@ interface NoteReadModel {
   readonly content: string;
   readonly _updatedAt?: firebase.firestore.Timestamp;
   readonly _createdAt?: firebase.firestore.Timestamp;
-  readonly author: firebase.UserInfo;
+  readonly author: string;
 }
 
 interface NoteWriteModel {
@@ -80,7 +74,7 @@ interface NoteWriteModel {
   content: string;
   _updatedAt: firebase.firestore.FieldValue;
   _createdAt?: firebase.firestore.FieldValue;
-  author: firebase.UserInfo;
+  author: string;
 }
 
 const fromReadModel = (documentData: NoteReadModel): Note => {
@@ -92,25 +86,11 @@ const fromReadModel = (documentData: NoteReadModel): Note => {
   };
 };
 
-const authorToWriteModel = ({
-  displayName,
-  email,
-  phoneNumber,
-  photoURL,
-  providerId,
-  uid,
-}: firebase.UserInfo): NoteWriteModel => ({
+const authorToWriteModel = (author: string): NoteWriteModel => ({
   id: nanoid(),
   title: "",
   content: "",
-  author: {
-    displayName,
-    email,
-    phoneNumber,
-    photoURL,
-    providerId,
-    uid,
-  },
+  author,
   _updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
   _createdAt: firebase.firestore.FieldValue.serverTimestamp(),
 });

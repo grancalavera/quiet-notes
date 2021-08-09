@@ -27,4 +27,8 @@ export const useAppState = create<AppState>((set) => ({
   dismissError: () => set(({ errors }) => ({ errors: errors.slice(1) })),
 }));
 
-export const useUser = () => useAppState((s) => s.getUser());
+export const useUser = (): User => useAppState(selectUser);
+export const useErrorHandler = () => useAppState(selectHandleError);
+
+const selectUser = (s: AppState) => s.getUser();
+const selectHandleError = (s: AppState) => s.handleError;
