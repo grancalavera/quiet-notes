@@ -13,7 +13,7 @@ const notesCollection = () => firebase.firestore().collection("notes");
 
 export const useNotesCollection = (author: string) => {
   const query = notesCollection()
-    .where("author.uid", "==", author)
+    .where("author", "==", author)
     .orderBy("_updatedAt", "desc");
 
   return useCollectionData<Note, "id", "notes">(query, {
@@ -31,9 +31,14 @@ export const useNote = (id: string) => {
   });
 };
 
-export const useCreateNote = () => useFirebaseMutation(createNote, useErrorHandler());
-export const useDeleteNote = () => useFirebaseMutation(deleteNote, useErrorHandler());
-export const useUpdateNote = () => useFirebaseMutation(updateNote, useErrorHandler());
+export const useCreateNote = () =>
+  useFirebaseMutation(createNote, { onError: useErrorHandler() });
+
+export const useDeleteNote = () =>
+  useFirebaseMutation(deleteNote, { onError: useErrorHandler() });
+
+export const useUpdateNote = () =>
+  useFirebaseMutation(updateNote, { onError: useErrorHandler() });
 
 const createNote = async (author: string): Promise<string> => {
   const { id, ...data } = authorToWriteModel(author);

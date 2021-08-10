@@ -1,16 +1,23 @@
 import { Callout, Classes } from "@blueprintjs/core";
 import { truncate } from "lodash";
+import { useEffect } from "react";
+import { useUser } from "../app/app-state";
 import { block } from "../app/bem";
 import { formatDate } from "../date/format";
+import { useNotesCollection } from "../notebook-service/notebook-service";
 import { useNotebookState } from "./notebook-local-state";
 import { Note } from "./notebook-model";
 import "./notebook-notes-list.scss";
-import { useNotesCollection } from "./notebook-server-state";
 
 const b = block("notes-list");
 
 export const NotesList = () => {
-  const [notes] = useNotesCollection();
+  const user = useUser();
+  const [notes] = useNotesCollection(user.uid);
+
+  useEffect(() => {
+    console.log({ notes });
+  }, [notes]);
 
   return notes ? (
     <div className={b()}>

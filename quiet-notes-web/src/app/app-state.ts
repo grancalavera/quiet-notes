@@ -1,7 +1,8 @@
 import create, { State } from "zustand";
 import { AppError } from "./app-error";
+import firebase from "firebase";
 
-type User = any;
+type User = firebase.User;
 
 interface AppState extends State {
   errors: AppError[];
@@ -27,7 +28,7 @@ export const useAppState = create<AppState>((set) => ({
   dismissError: () => set(({ errors }) => ({ errors: errors.slice(1) })),
 }));
 
-export const useUser = (): User => useAppState(selectUser);
+export const useUser = () => useAppState(selectUser);
 export const useErrorHandler = () => useAppState(selectHandleError);
 
 const selectUser = (s: AppState) => s.getUser();

@@ -8,12 +8,17 @@ interface FirebaseMutation<TVariables = unknown, TData = unknown> {
   reset: () => void;
 }
 
-export const useFirebaseMutation = <TVariables, TData>(
+interface FirebaseMutationOptions {
+  onError?: (e: firebase.FirebaseError) => void;
+}
+
+export const useFirebaseMutation = <TVariables = unknown, TData = unknown>(
   mutationFn: (x: TVariables) => Promise<TData>,
-  handleError?: (e: firebase.FirebaseError) => void
+  options: FirebaseMutationOptions = {}
 ): FirebaseMutation<TVariables, TData> => {
   const [state, setState] = useState<FirebaseMutation["state"]>("idle");
   const [data, setData] = useState<TData>();
+  const { onError } = options;
 
   const mutate = useCallback(
     async (variables: TVariables) => {
@@ -26,15 +31,15 @@ export const useFirebaseMutation = <TVariables, TData>(
         return result;
       } catch (e) {
         setState("failure");
-        if (handleError) {
-          handleError(e);
+        if (onError) {
+          onError(e);
         } else {
           throw e;
         }
       }
     },
 
-    [mutationFn, handleError]
+    [mutationFn, onError]
   );
 
   const reset = useCallback(() => {

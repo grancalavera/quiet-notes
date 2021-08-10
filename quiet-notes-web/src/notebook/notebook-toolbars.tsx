@@ -1,6 +1,9 @@
 import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
+import { useEffect } from "react";
+import { useUser } from "../app/app-state";
 import { block } from "../app/bem";
-import { useCreateNote, useNotebookState } from "./notebook-local-state";
+import { useCreateNote } from "../notebook-service/notebook-service";
+import { useNotebookState } from "./notebook-local-state";
 import { deleteNote } from "./notebook-server-state";
 import "./notebook-toolbars.scss";
 
@@ -59,11 +62,18 @@ const CloseNoteButton = () => {
 };
 
 export const SidebarToolbar = () => {
-  const createNote = useCreateNote();
+  const user = useUser();
+  const { mutate: createNote, data } = useCreateNote();
+  const selectNote = useNotebookState((s) => s.selectNote);
+
+  useEffect(() => {
+    data && selectNote(data);
+  }, [data, selectNote]);
+
   return (
     <div className={b()}>
       <Tooltip content="create note">
-        <Button icon={"new-object"} onClick={createNote} />
+        <Button icon={"new-object"} onClick={() => createNote(user.uid)} />
       </Tooltip>
     </div>
   );
