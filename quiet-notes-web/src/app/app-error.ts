@@ -18,7 +18,7 @@ export const isFirebaseError = (
   hasErrorName(candidate) && candidate.name === "FirebaseError";
 
 export const isQnError = (candidate: unknown): candidate is QNError =>
-  hasErrorName(candidate) && candidate.name === "FirebaseError";
+  hasErrorName(candidate) && candidate.name === "QNError";
 
 // https://fettblog.eu/typescript-hasownproperty/
 function hasOwnProperty<X extends {}, Y extends PropertyKey>(
