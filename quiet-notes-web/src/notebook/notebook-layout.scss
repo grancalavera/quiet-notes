@@ -1,21 +1,15 @@
 @import "~@blueprintjs/core/lib/scss/variables";
 @import "../app/bem.scss";
-@import "../app/constants.scss";
 
-@include b("app-layout") {
+@include b("notebook-layout") {
   display: grid;
-  height: 100vh;
-  grid-template-columns: minmax(150px, 300px) 1fr;
-  grid-template-rows: auto auto 1fr;
+  height: 100%;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: auto 1fr;
 
   grid-template-areas:
-    "header header"
     "sidebar-toolbar editor-toolbar"
     "sidebar editor";
-
-  &__header {
-    grid-area: header;
-  }
 
   &__sidebar-toolbar {
     grid-area: sidebar-toolbar;

@@ -1,19 +1,35 @@
 import { Button, H3, Icon, Popover } from "@blueprintjs/core";
 import firebase from "firebase/app";
-import { useUser } from "../app/app-state";
-import { useBlock } from "../app/bem";
+import { useHistory } from "react-router-dom";
 import { ToggleThemeButton } from "../theme/theme";
 import { useTheme } from "../theme/use-theme";
-import "./notebook-header.scss";
+import "./app-header.scss";
+import { useIsAdmin, useUser } from "./app-state";
+import { useBlock } from "./bem";
 
-export const Header = () => {
+export const AppHeader = () => {
   const b = useBlock("header");
+  const history = useHistory();
 
   return (
     <div className={b()}>
-      <H3>Quiet Notes</H3>
-      <Profile />
+      <H3 className={b("home-link").toString()} onClick={() => history.push("/")}>
+        Quiet Notes
+      </H3>
+
+      <span className={b("toolbar")}>
+        <AdminLink />
+        <Profile />
+      </span>
     </div>
+  );
+};
+
+const AdminLink = () => {
+  const history = useHistory();
+  const isAdmin = useIsAdmin();
+  return (
+    <>{isAdmin && <Button icon="cog" minimal onClick={() => history.push("/admin")} />}</>
   );
 };
 

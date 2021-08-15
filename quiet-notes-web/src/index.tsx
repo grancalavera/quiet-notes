@@ -2,11 +2,17 @@ import { FocusStyleManager } from "@blueprintjs/core";
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import { Admin } from "./admin/admin";
 import { App } from "./app/app";
 import { LoginPage, PrivateRoute } from "./app/app-auth";
 import { AppErrorBoundary } from "./app/app-error-boundary";
+import { AppHeader } from "./app/app-header";
+import { AppLayout } from "./app/app-layout";
 import "./index.scss";
-import { Notebook } from "./notebook/notebook-container";
+import { NotebookLayout } from "./notebook/notebook-layout";
+import { NoteEditorContainer } from "./notebook/notebook-note-editor";
+import { NotesList } from "./notebook/notebook-note-list";
+import { EditorToolbar, SidebarToolbar } from "./notebook/notebook-toolbars";
 import reportWebVitals from "./reportWebVitals";
 import { Theme } from "./theme/theme";
 
@@ -19,11 +25,39 @@ ReactDOM.render(
         <Theme>
           <BrowserRouter>
             <Switch>
+              <Route exact path="/">
+                <Redirect to="/notebook" />
+              </Route>
+
               <Route exact path="/login" component={LoginPage} />
-              <PrivateRoute path="/notebook">
-                <Notebook />
-              </PrivateRoute>
-              <Redirect to="/notebook" />
+
+              <AppLayout
+                header={
+                  <PrivateRoute>
+                    <AppHeader />
+                  </PrivateRoute>
+                }
+                body={
+                  <Switch>
+                    <PrivateRoute path="/notebook">
+                      <NotebookLayout
+                        sidebarToolbar={<SidebarToolbar />}
+                        sidebar={<NotesList />}
+                        editorToolbar={<EditorToolbar />}
+                        editor={<NoteEditorContainer />}
+                      />
+                    </PrivateRoute>
+
+                    <PrivateRoute path="/admin">
+                      <Admin />
+                    </PrivateRoute>
+
+                    <Route>
+                      <Redirect to="/" />
+                    </Route>
+                  </Switch>
+                }
+              />
             </Switch>
           </BrowserRouter>
         </Theme>

@@ -1,7 +1,7 @@
 import create, { State } from "zustand";
 import { AppError, QNError } from "./app-error";
 import firebase from "firebase";
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 type User = firebase.User;
 
@@ -31,6 +31,33 @@ export const useAppState = create<AppState>((set) => ({
 
 const selectUser = (s: AppState) => s.getUser();
 export const useUser = () => useAppState(selectUser);
+
+export const useUserRoles = () => {
+  const [roles, setRoles] = useState<string[]>();
+  const handleError = useErrorHandler();
+  const user = useUser();
+
+  useEffect(() => {
+    user
+      .getIdTokenResult()
+      .then(({ claims }) => {
+        const roles: string[] = claims.roles;
+        setRoles(roles);
+      })
+      .catch((e) => handleError(e));
+  }, [handleError, user]);
+
+  return roles;
+};
+
+export const useIsAdmin = () => {
+  const roles = useUserRoles();
+  return useMemo(
+    () => (roles ?? []).includes("admin"),
+
+    [roles]
+  );
+};
 
 const selectHandleError = (s: AppState) => s.handleError;
 export const useErrorHandler = () => useAppState(selectHandleError);

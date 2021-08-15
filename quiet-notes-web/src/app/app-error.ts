@@ -1,4 +1,5 @@
 import firebase from "firebase";
+import { hasOwnProperty } from "../utils/has-own-property";
 
 export type AppError = firebase.FirebaseError | QNError;
 
@@ -19,14 +20,6 @@ export const isFirebaseError = (
 
 export const isQnError = (candidate: unknown): candidate is QNError =>
   hasErrorName(candidate) && candidate.name === "QNError";
-
-// https://fettblog.eu/typescript-hasownproperty/
-function hasOwnProperty<X extends {}, Y extends PropertyKey>(
-  obj: X,
-  prop: Y
-): obj is X & Record<Y, unknown> {
-  return obj.hasOwnProperty(prop);
-}
 
 const hasErrorName = (candidate: unknown): candidate is { name: string } =>
   typeof candidate === "object" &&
