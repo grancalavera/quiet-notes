@@ -27,7 +27,7 @@ export const AppHeader = () => {
 
 const AdminLink = () => {
   const history = useHistory();
-  const isAdmin = useIsAdmin();
+  const [isAdmin] = useIsAdmin();
   return (
     <>{isAdmin && <Button icon="cog" minimal onClick={() => history.push("/admin")} />}</>
   );

@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { Admin } from "./admin/admin";
 import { App } from "./app/app";
-import { LoginPage, PrivateRoute } from "./app/app-auth";
+import { AdminRoute, LoginPage, PrivateRoute } from "./app/app-auth";
 import { AppErrorBoundary } from "./app/app-error-boundary";
 import { AppHeader } from "./app/app-header";
 import { AppLayout } from "./app/app-layout";
@@ -31,33 +31,31 @@ ReactDOM.render(
 
               <Route exact path="/login" component={LoginPage} />
 
-              <AppLayout
-                header={
-                  <PrivateRoute>
-                    <AppHeader />
-                  </PrivateRoute>
-                }
-                body={
-                  <Switch>
-                    <PrivateRoute path="/notebook">
-                      <NotebookLayout
-                        sidebarToolbar={<SidebarToolbar />}
-                        sidebar={<NotesList />}
-                        editorToolbar={<EditorToolbar />}
-                        editor={<NoteEditorContainer />}
-                      />
-                    </PrivateRoute>
+              <PrivateRoute>
+                <AppLayout
+                  header={<AppHeader />}
+                  body={
+                    <Switch>
+                      <Route path="/notebook">
+                        <NotebookLayout
+                          sidebarToolbar={<SidebarToolbar />}
+                          sidebar={<NotesList />}
+                          editorToolbar={<EditorToolbar />}
+                          editor={<NoteEditorContainer />}
+                        />
+                      </Route>
 
-                    <PrivateRoute path="/admin">
-                      <Admin />
-                    </PrivateRoute>
+                      <AdminRoute path="/admin">
+                        <Admin />
+                      </AdminRoute>
 
-                    <Route>
-                      <Redirect to="/" />
-                    </Route>
-                  </Switch>
-                }
-              />
+                      <Route>
+                        <Redirect to="/" />
+                      </Route>
+                    </Switch>
+                  }
+                />
+              </PrivateRoute>
             </Switch>
           </BrowserRouter>
         </Theme>

@@ -33,29 +33,34 @@ const selectUser = (s: AppState) => s.getUser();
 export const useUser = () => useAppState(selectUser);
 
 export const useUserRoles = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [roles, setRoles] = useState<string[]>();
   const handleError = useErrorHandler();
   const user = useUser();
 
   useEffect(() => {
+    setIsLoading(true);
+
     user
       .getIdTokenResult()
       .then(({ claims }) => {
         const roles: string[] = claims.roles;
         setRoles(roles);
       })
-      .catch((e) => handleError(e));
+      .catch((e) => handleError(e))
+      .finally(() => setIsLoading(false));
   }, [handleError, user]);
 
-  return roles;
+  return [roles, isLoading] as const;
 };
 
 export const useIsAdmin = () => {
-  const roles = useUserRoles();
-  return useMemo(
-    () => (roles ?? []).includes("admin"),
+  const [roles, isLoading] = useUserRoles();
 
-    [roles]
+  return useMemo(
+    () => [(roles ?? []).includes("admin"), isLoading] as const,
+
+    [isLoading, roles]
   );
 };
 

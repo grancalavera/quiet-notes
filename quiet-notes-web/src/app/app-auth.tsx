@@ -4,20 +4,13 @@ import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import * as firebaseHooks from "react-firebase-hooks/auth";
 import { Redirect, Route, RouteProps, useLocation } from "react-router-dom";
 import { CenterLayout } from "../layout/center-layout";
-import { useAppState } from "./app-state";
+import { useAppState, useIsAdmin } from "./app-state";
 
-interface LocationState {
-  from?: { pathname?: string };
-}
-
-type PrivateRouteProps = PropsWithChildren<{}>;
-
-export const PrivateRoute = ({
-  children,
-  ...rest
-}: PrivateRouteProps &
+type CustomRouteProps<T extends {} = {}> = PropsWithChildren<T> &
   RouteProps<string> &
-  Omit<PrivateRouteProps, keyof RouteProps>) => (
+  Omit<PropsWithChildren<T>, keyof Route>;
+
+export const PrivateRoute = ({ children, ...rest }: CustomRouteProps) => (
   <Route {...rest}>
     <AuthState
       authenticated={children}
@@ -32,6 +25,20 @@ export const PrivateRoute = ({
     />
   </Route>
 );
+
+export const AdminRoute = ({ children, ...rest }: CustomRouteProps) => {
+  const [isAdmin, isLoading] = useIsAdmin();
+
+  return (
+    <Route {...rest}>
+      {isLoading ? <></> : isAdmin ? <>{children}</> : <Redirect to="/" />}
+    </Route>
+  );
+};
+
+interface LocationState {
+  from?: { pathname?: string };
+}
 
 export const LoginPage = () => (
   <AuthState
