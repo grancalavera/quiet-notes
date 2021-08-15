@@ -2,9 +2,10 @@ import { NonIdealState, Spinner, TextArea } from "@blueprintjs/core";
 import { useEffect, useRef } from "react";
 import { block } from "../app/bem";
 import { CenterLayout } from "../layout/center-layout";
-import { Editor, EditorIdle, useNotebookState } from "./notebook-local-state";
+import { useNote } from "../notebook-service/notebook-service";
+import { Note } from "./notebook-model";
 import "./notebook-note-editor.scss";
-import { useNoteOnce } from "./notebook-server-state";
+import { useNotebookState } from "./notebook-state";
 const b = block("note-editor");
 
 export const NoteEditorContainer = () => {
@@ -18,46 +19,33 @@ export const NoteEditorContainer = () => {
 };
 
 const NoteEditor = (props: { noteId: string }) => {
-  const openNote = useNotebookState((s) => s.open);
-  const [note, isLoading] = useNoteOnce(props.noteId);
-
-  useEffect(() => {
-    note && openNote(note);
-  }, [note, openNote]);
+  const [note] = useNote(props.noteId);
 
   return (
     <div className={b()}>
-      {isLoading ? (
+      {note ? (
+        <NoteDraft note={note} />
+      ) : (
         <CenterLayout>
           <Spinner />{" "}
         </CenterLayout>
-      ) : (
-        <NoteDraft />
       )}
     </div>
   );
 };
 
-const isEditorIdle = (editor: Editor): editor is EditorIdle =>
-  editor.kind === "EditorIdle";
+interface NoteDraftProps {
+  note: Note;
+}
 
-const NoteDraft = () => {
+const NoteDraft = ({ note }: NoteDraftProps) => {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
-  const editorState = useNotebookState((s) => s.editor);
-  const changeDraft = useNotebookState((s) => s.change);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  return (
-    <TextArea
-      inputRef={inputRef}
-      value={isEditorIdle(editorState) ? "" : editorState.draft}
-      onChange={(e) => changeDraft(e.target.value)}
-      fill
-    />
-  );
+  return <TextArea inputRef={inputRef} value={note.content} onChange={() => {}} fill />;
 };
 
 const NonIdealNoteEditor = () => (

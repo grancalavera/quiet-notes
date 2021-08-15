@@ -1,6 +1,7 @@
 import create, { State } from "zustand";
-import { AppError } from "./app-error";
+import { AppError, QNError } from "./app-error";
 import firebase from "firebase";
+import { useCallback } from "react";
 
 type User = firebase.User;
 
@@ -28,8 +29,16 @@ export const useAppState = create<AppState>((set) => ({
   dismissError: () => set(({ errors }) => ({ errors: errors.slice(1) })),
 }));
 
+const selectUser = (s: AppState) => s.getUser();
 export const useUser = () => useAppState(selectUser);
+
+const selectHandleError = (s: AppState) => s.handleError;
 export const useErrorHandler = () => useAppState(selectHandleError);
 
-const selectUser = (s: AppState) => s.getUser();
-const selectHandleError = (s: AppState) => s.handleError;
+export const useNotImplementedError = (featureName: string) => {
+  const handleError = useErrorHandler();
+
+  return useCallback(() => {
+    handleError(new QNError(`${featureName} not implemented`));
+  }, [featureName, handleError]);
+};

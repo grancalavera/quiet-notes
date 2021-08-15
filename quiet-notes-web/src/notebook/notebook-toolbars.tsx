@@ -1,10 +1,11 @@
 import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import { useEffect } from "react";
-import { useUser } from "../app/app-state";
+import { useNotImplementedError, useUser } from "../app/app-state";
 import { block } from "../app/bem";
 import { useCreateNote } from "../notebook-service/notebook-service";
-import { useNotebookState } from "./notebook-local-state";
-import { deleteNote } from "./notebook-server-state";
+import { useNotebookState } from "./notebook-state";
+import { useDeleteNote } from "../notebook-service/notebook-service";
+
 import "./notebook-toolbars.scss";
 
 const b = block("toolbar");
@@ -25,8 +26,11 @@ export const EditorToolbar = () => {
 };
 
 const DeleteNoteButton = () => {
+  const { mutate: deleteNote } = useDeleteNote();
+
   const selectedNoteId = useNotebookState((s) => s.selectedNoteId);
-  const closeNote = useNotebookState((s) => s.closeNote);
+  const deselectNote = useNotebookState((s) => s.deselectNote);
+
   return (
     <>
       {selectedNoteId && (
@@ -34,7 +38,7 @@ const DeleteNoteButton = () => {
           icon="trash"
           onClick={() => {
             deleteNote(selectedNoteId);
-            closeNote();
+            deselectNote();
           }}
         />
       )}
@@ -43,22 +47,13 @@ const DeleteNoteButton = () => {
 };
 
 const SaveNoteButton = () => {
-  const isDisabled = useNotebookState((s) => s.editor.kind !== "NoteDraft");
-  const isSaving = useNotebookState((s) => s.isSaving);
-  const saveNote = useNotebookState((s) => s.save);
-  return (
-    <Button
-      icon="floppy-disk"
-      disabled={isDisabled}
-      onClick={saveNote}
-      loading={isSaving}
-    />
-  );
+  const notImplemented = useNotImplementedError("save note");
+  return <Button icon="floppy-disk" onClick={notImplemented} />;
 };
 
 const CloseNoteButton = () => {
-  const closeNote = useNotebookState((s) => s.closeNote);
-  return <Button icon="cross" onClick={closeNote} />;
+  const notImplemented = useNotImplementedError("close note");
+  return <Button icon="cross" onClick={notImplemented} />;
 };
 
 export const SidebarToolbar = () => {

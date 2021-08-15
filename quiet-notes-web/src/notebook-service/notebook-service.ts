@@ -25,7 +25,7 @@ export const useNotesCollection = (author: string) => {
 export const useNote = (id: string) => {
   const query = notesCollection().doc(id);
 
-  useDocumentData<Note, "id", "notes">(query, {
+  return useDocumentData<Note, "id", "notes">(query, {
     idField: "id",
     transform: noteFromReadModel,
   });
