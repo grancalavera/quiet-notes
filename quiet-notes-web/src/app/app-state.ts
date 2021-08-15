@@ -54,15 +54,17 @@ export const useUserRoles = () => {
   return [roles, isLoading] as const;
 };
 
-export const useIsAdmin = () => {
+export const useHasRole = (roleName: string) => {
   const [roles, isLoading] = useUserRoles();
 
   return useMemo(
-    () => [(roles ?? []).includes("admin"), isLoading] as const,
+    () => [(roles ?? []).includes(roleName), isLoading] as const,
 
-    [isLoading, roles]
+    [isLoading, roleName, roles]
   );
 };
+
+export const useIsAdmin = () => useHasRole("admin");
 
 const selectHandleError = (s: AppState) => s.handleError;
 export const useErrorHandler = () => useAppState(selectHandleError);

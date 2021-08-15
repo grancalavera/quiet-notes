@@ -4,7 +4,7 @@ import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import * as firebaseHooks from "react-firebase-hooks/auth";
 import { Redirect, Route, RouteProps, useLocation } from "react-router-dom";
 import { CenterLayout } from "../layout/center-layout";
-import { useAppState, useIsAdmin } from "./app-state";
+import { useAppState, useHasRole } from "./app-state";
 
 type CustomRouteProps<T extends {} = {}> = PropsWithChildren<T> &
   RouteProps<string> &
@@ -26,15 +26,21 @@ export const PrivateRoute = ({ children, ...rest }: CustomRouteProps) => (
   </Route>
 );
 
-export const AdminRoute = ({ children, ...rest }: CustomRouteProps) => {
-  const [isAdmin, isLoading] = useIsAdmin();
+const createRoleRoute =
+  (role: string, redirectTo: string) =>
+  ({ children, ...rest }: CustomRouteProps) => {
+    const [hasRole, isLoading] = useHasRole(role);
 
-  return (
-    <Route {...rest}>
-      {isLoading ? <></> : isAdmin ? <>{children}</> : <Redirect to="/" />}
-    </Route>
-  );
-};
+    return (
+      <Route {...rest}>
+        {isLoading ? <></> : hasRole ? <>{children}</> : <Redirect to={redirectTo} />}
+      </Route>
+    );
+  };
+
+export const AdminRoute = createRoleRoute("admin", "/");
+
+export const AuthorRoute = createRoleRoute("author", "/lobby");
 
 interface LocationState {
   from?: { pathname?: string };

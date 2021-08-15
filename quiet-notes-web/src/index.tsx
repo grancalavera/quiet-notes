@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { Admin } from "./admin/admin";
 import { App } from "./app/app";
-import { AdminRoute, LoginPage, PrivateRoute } from "./app/app-auth";
+import { AdminRoute, AuthorRoute, LoginPage, PrivateRoute } from "./app/app-auth";
 import { AppErrorBoundary } from "./app/app-error-boundary";
 import { AppHeader } from "./app/app-header";
 import { AppLayout } from "./app/app-layout";
@@ -36,14 +36,18 @@ ReactDOM.render(
                   header={<AppHeader />}
                   body={
                     <Switch>
-                      <Route path="/notebook">
+                      <Route exact path="/lobby">
+                        <p>Waiting area</p>
+                      </Route>
+
+                      <AuthorRoute path="/notebook">
                         <NotebookLayout
                           sidebarToolbar={<SidebarToolbar />}
                           sidebar={<NotesList />}
                           editorToolbar={<EditorToolbar />}
                           editor={<NoteEditorContainer />}
                         />
-                      </Route>
+                      </AuthorRoute>
 
                       <AdminRoute path="/admin">
                         <Admin />
