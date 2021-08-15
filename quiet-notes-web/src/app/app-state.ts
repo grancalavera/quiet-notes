@@ -65,6 +65,7 @@ export const useHasRole = (roleName: string) => {
 };
 
 export const useIsAdmin = () => useHasRole("admin");
+export const useIsAuthor = () => useHasRole("author");
 
 const selectHandleError = (s: AppState) => s.handleError;
 export const useErrorHandler = () => useAppState(selectHandleError);

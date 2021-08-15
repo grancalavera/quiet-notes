@@ -39,7 +39,6 @@ const createRoleRoute =
   };
 
 export const AdminRoute = createRoleRoute("admin", "/");
-
 export const AuthorRoute = createRoleRoute("author", "/lobby");
 
 interface LocationState {
