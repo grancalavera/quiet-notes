@@ -6,7 +6,7 @@ import { useErrorHandler } from "./app-state";
 const listUsers = () => firebase.functions().httpsCallable("listUsers")();
 
 export const useUserList = () => {
-  const [data, setData] = useState<string>();
+  const [data, setData] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
   const handleError = useErrorHandler();
 
@@ -14,8 +14,8 @@ export const useUserList = () => {
     setIsLoading(true);
     async function runListUsers() {
       try {
-        await listUsers();
-        setData("ok");
+        const result = await listUsers();
+        setData(result.data);
       } catch (error) {
         handleError(new QNError(error.message ?? "Unknown error", error));
       } finally {

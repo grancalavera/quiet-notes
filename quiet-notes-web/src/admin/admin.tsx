@@ -1,8 +1,12 @@
+import { useEffect } from "react";
 import { useUserList } from "../app/app-service";
-import { useIsAdmin } from "../app/app-state";
 
 export const Admin = () => {
-  const isAdmin = useIsAdmin();
-  useUserList();
-  return <>Admin Panel: {isAdmin ? "is admin" : "is not admin"}</>;
+  const [userList] = useUserList();
+
+  useEffect(() => {
+    console.log({ userList });
+  }, [userList]);
+
+  return <pre style={{ padding: 10 }}>{JSON.stringify(userList, null, 2)}</pre>;
 };

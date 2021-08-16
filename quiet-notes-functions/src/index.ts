@@ -20,11 +20,18 @@ export const onboardUser = functions.auth.user().onCreate(async (user) => {
 });
 
 export const listUsers = functions.https.onCall((data, context) => {
-  console.log("listUsers with", { roles: context.auth?.token.roles });
-  throw new functions.https.HttpsError(
-    "permission-denied",
-    "User not authorized to list all users"
-  );
+  if (!context.auth) {
+    throw new functions.https.HttpsError("unauthenticated", "User not authenticated");
+  }
+
+  if (!(context.auth.token.roles ?? []).includes("admin")) {
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "User not authorized to list all users"
+    );
+  }
+
+  return { users: [] };
 });
 
 const addRoles = async (user: UserRecord, roles: QNRole[]): Promise<void> => {
