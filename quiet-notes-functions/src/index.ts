@@ -9,6 +9,8 @@ admin.initializeApp({
 });
 
 export const onboardUser = functions.auth.user().onCreate(async (user) => {
+  console.log("onboard user", user.uid);
+
   const roles: QNRole[] = ["user"];
   if (user.email === functions.config().quiet_notes.default_admin) {
     roles.push("admin");
@@ -27,5 +29,12 @@ const addRoles = async (user: UserRecord, roles: QNRole[]): Promise<void> => {
     updatedRoles,
   });
 
-  return admin.auth().setCustomUserClaims(user.uid, { roles: updatedRoles });
+  try {
+    await admin.auth().setCustomUserClaims(user.uid, { roles: updatedRoles });
+  } catch (error) {
+    console.error("failed to set custom claims", { error });
+  } finally {
+    const customClaims = (await admin.auth().getUser(user.uid)).customClaims;
+    console.log("final custom claims", { uid: user.uid, customClaims });
+  }
 };

@@ -42,7 +42,7 @@ export const useUserRoles = () => {
     setIsLoading(true);
 
     user
-      .getIdTokenResult()
+      .getIdTokenResult(true)
       .then(({ claims }) => {
         const roles: string[] = claims.roles;
         setRoles(roles);
