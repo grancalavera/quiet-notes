@@ -10,7 +10,11 @@
   justify-content: space-between;
   border-bottom: 1px solid $gray5;
 
-  &__home-link {
+  h3 {
+    margin: 0;
+  }
+
+  &__app-title {
     cursor: pointer;
   }
 

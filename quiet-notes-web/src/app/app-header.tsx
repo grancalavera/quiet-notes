@@ -13,7 +13,7 @@ export const AppHeader = () => {
 
   return (
     <div className={b()}>
-      <H3 className={b("home-link").toString()} onClick={() => history.push("/")}>
+      <H3 className={b("app-title").toString()} onClick={() => history.push("/")}>
         Quiet Notes
       </H3>
 
