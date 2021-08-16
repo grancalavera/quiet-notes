@@ -1,6 +1,8 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/functions";
+
 import { useEffect, useState } from "react";
 
 const initializeFirebase = async (onInitialized: () => void) => {
@@ -15,11 +17,19 @@ const initializeFirebase = async (onInitialized: () => void) => {
     process.env.REACT_APP_FIREBASE_USE_EMULATORS === "true"
   ) {
     firebase.auth().useEmulator(process.env.REACT_APP_FIREBASE_EMULATOR_AUTH!);
+
     firebase
       .firestore()
       .useEmulator(
         "localhost",
         parseInt(process.env.REACT_APP_FIREBASE_EMULATOR_FIRESTORE_PORT!)
+      );
+
+    firebase
+      .functions()
+      .useEmulator(
+        "localhost",
+        parseInt(process.env.REACT_APP_FIREBASE_EMULATOR_FUNCTIONS_PORT!)
       );
   }
 
