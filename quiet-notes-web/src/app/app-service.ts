@@ -21,14 +21,13 @@ interface QNUserRecord {
 const listUsers = () => firebase.functions().httpsCallable("listUsers")();
 
 export const useUserList = () => {
-  const [anchor, setAnchor] = useState(Date.now());
   const [data, setData] = useState<ListUsersResponse>();
   const [isLoading, setIsLoading] = useState(false);
   const handleError = useErrorHandler();
 
-  useEffect(() => {
+  const runListUsers = useCallback(() => {
     setIsLoading(true);
-    async function runListUsers() {
+    async function run() {
       try {
         const result = await listUsers();
         setData(result.data);
@@ -38,12 +37,12 @@ export const useUserList = () => {
         setIsLoading(false);
       }
     }
+    run();
+  }, [handleError]);
+
+  useEffect(() => {
     runListUsers();
-  }, [handleError, anchor]);
+  }, [handleError, runListUsers]);
 
-  const refetch = useCallback(() => {
-    setAnchor(Date.now());
-  }, []);
-
-  return { data, isLoading, refetch };
+  return { data, isLoading, refetch: runListUsers };
 };
