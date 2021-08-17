@@ -19,7 +19,7 @@ export const onboardUser = functions.auth.user().onCreate(async (user) => {
   addRoles(user, roles);
 });
 
-export const listUsers = functions.https.onCall((data, context) => {
+export const listUsers = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError("unauthenticated", "User not authenticated");
   }
@@ -31,7 +31,13 @@ export const listUsers = functions.https.onCall((data, context) => {
     );
   }
 
-  return { users: [] };
+  try {
+    const result = await admin.auth().listUsers();
+    return { users: result.users };
+  } catch (error) {
+    console.error("list users failed", { error });
+    throw new functions.https.HttpsError("permission-denied", "opaque");
+  }
 });
 
 const addRoles = async (user: UserRecord, roles: QNRole[]): Promise<void> => {
