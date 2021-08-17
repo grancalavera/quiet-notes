@@ -4,6 +4,19 @@ import { UserRecord } from "firebase-functions/lib/providers/auth";
 
 type QNRole = "admin" | "author" | "user";
 
+interface ListUsersResponse {
+  users: QNUserRecord[];
+}
+
+interface QNUserRecord {
+  uid: string;
+  email?: string;
+  displayName?: string;
+  photoURL?: string;
+  disabled: boolean;
+  roles: QNRole[];
+}
+
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
 });
@@ -17,6 +30,22 @@ export const onboardUser = functions.auth.user().onCreate(async (user) => {
   }
 
   addRoles(user, roles);
+});
+
+const toUserRecord = ({
+  uid,
+  email,
+  displayName,
+  photoURL,
+  disabled,
+  customClaims,
+}: admin.auth.UserRecord): QNUserRecord => ({
+  uid,
+  email,
+  displayName,
+  photoURL,
+  disabled,
+  roles: customClaims?.roles ?? [],
 });
 
 export const listUsers = functions.https.onCall(async (data, context) => {
@@ -33,10 +62,11 @@ export const listUsers = functions.https.onCall(async (data, context) => {
 
   try {
     const result = await admin.auth().listUsers();
-    return { users: result.users };
+    const response: ListUsersResponse = { users: result.users.map(toUserRecord) };
+    return response;
   } catch (error) {
     console.error("list users failed", { error });
-    throw new functions.https.HttpsError("permission-denied", "opaque");
+    throw new functions.https.HttpsError("permission-denied", "permission-denied");
   }
 });
 

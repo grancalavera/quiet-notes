@@ -16,5 +16,7 @@
 
   &__body {
     grid-area: body;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 }

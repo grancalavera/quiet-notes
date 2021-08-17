@@ -1,12 +1,28 @@
 import firebase from "firebase";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { QNError } from "./app-error";
 import { useErrorHandler } from "./app-state";
+
+type QNRole = "admin" | "author" | "user";
+
+interface ListUsersResponse {
+  users: QNUserRecord[];
+}
+
+interface QNUserRecord {
+  uid: string;
+  email?: string;
+  displayName?: string;
+  photoURL?: string;
+  disabled: boolean;
+  roles: QNRole[];
+}
 
 const listUsers = () => firebase.functions().httpsCallable("listUsers")();
 
 export const useUserList = () => {
-  const [data, setData] = useState<any>();
+  const [anchor, setAnchor] = useState(Date.now());
+  const [data, setData] = useState<ListUsersResponse>();
   const [isLoading, setIsLoading] = useState(false);
   const handleError = useErrorHandler();
 
@@ -23,7 +39,11 @@ export const useUserList = () => {
       }
     }
     runListUsers();
-  }, [handleError]);
+  }, [handleError, anchor]);
 
-  return [data, isLoading] as const;
+  const refetch = useCallback(() => {
+    setAnchor(Date.now());
+  }, []);
+
+  return { data, isLoading, refetch };
 };
