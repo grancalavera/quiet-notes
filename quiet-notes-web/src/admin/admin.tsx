@@ -1,5 +1,5 @@
 import { Button } from "@blueprintjs/core";
-import { useUserList } from "../app/app-service";
+import { useUserList } from "../user-service/user-service";
 
 export const Admin = () => {
   const { data: userList, refetch, isLoading } = useUserList();

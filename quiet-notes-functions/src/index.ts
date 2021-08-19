@@ -11,9 +11,18 @@ interface ListUsersResponse {
 interface QNUserRecord {
   uid: string;
   email?: string;
-  displayName?: string;
   photoURL?: string;
-  disabled: boolean;
+  customClaims: QNCustomClaims;
+  metadata: QNUserMetadata;
+}
+
+interface QNUserMetadata {
+  lastSignInTime: string;
+  creationTime: string;
+  lastRefreshTime?: string | null;
+}
+
+interface QNCustomClaims {
   roles: QNRole[];
 }
 
@@ -35,17 +44,17 @@ export const onboardUser = functions.auth.user().onCreate(async (user) => {
 const toUserRecord = ({
   uid,
   email,
-  displayName,
   photoURL,
-  disabled,
   customClaims,
+  metadata: { lastSignInTime, lastRefreshTime, creationTime },
 }: admin.auth.UserRecord): QNUserRecord => ({
   uid,
   email,
-  displayName,
   photoURL,
-  disabled,
-  roles: customClaims?.roles ?? [],
+  customClaims: {
+    roles: customClaims?.roles ?? [],
+  },
+  metadata: { lastSignInTime, lastRefreshTime, creationTime },
 });
 
 export const listUsers = functions.https.onCall(async (data, context) => {

@@ -1,21 +1,11 @@
 import firebase from "firebase";
 import { useCallback, useEffect, useState } from "react";
-import { QNError } from "./app-error";
-import { useErrorHandler } from "./app-state";
-
-type QNRole = "admin" | "author" | "user";
+import { QNError } from "../app/app-error";
+import { useErrorHandler } from "../app/app-state";
+import { QNUserRecord } from "./user-service-model";
 
 interface ListUsersResponse {
   users: QNUserRecord[];
-}
-
-interface QNUserRecord {
-  uid: string;
-  email?: string;
-  displayName?: string;
-  photoURL?: string;
-  disabled: boolean;
-  roles: QNRole[];
 }
 
 const listUsers = () => firebase.functions().httpsCallable("listUsers")();
