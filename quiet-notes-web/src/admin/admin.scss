@@ -1,0 +1,27 @@
+@import "../app/bem.scss";
+@import "../app/constants.scss";
+
+@include b("admin") {
+  overflow: hidden;
+  height: 100%;
+  padding: $qn-padding;
+
+  &__toolbar {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+
+  &__user-list {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  &__user-list td {
+    padding: $qn-padding;
+    border-bottom: 1px solid black;
+  }
+
+  &__user-list td {
+  }
+}
