@@ -17,3 +17,15 @@ export interface QNUserMetadata {
 export interface QNCustomClaims {
   roles: QNRole[];
 }
+
+export interface QNToggleRole {
+  role: QNRole;
+  enabled: boolean;
+  email: string;
+}
+
+export interface QNListUsersResponse {
+  users: QNUserRecord[];
+}
+
+export type QNToggleRoleResponse = true;

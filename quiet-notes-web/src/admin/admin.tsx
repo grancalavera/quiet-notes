@@ -2,8 +2,8 @@ import { Button, Checkbox } from "@blueprintjs/core";
 import { useState } from "react";
 import { Column, useTable } from "react-table";
 import { block } from "../app/bem";
-import { useUserList } from "../user-service/user-service";
-import { QNRole, QNUserRecord } from "../user-service/user-service-model";
+import { useToggleRole, useUserList } from "../user-service/user-service";
+import { QNToggleRole, QNUserRecord } from "../user-service/user-service-model";
 import "./admin.scss";
 
 const b = block("admin");
@@ -55,17 +55,21 @@ export const Admin = () => {
   );
 };
 
-interface ToggleRole {
-  role: QNRole;
-  enabled: boolean;
-  uid: string;
-}
-
-const CheckboxCell = ({ value }: { value: ToggleRole }) => {
+const CheckboxCell = ({ value }: { value: QNToggleRole }) => {
   const [checked, setChecked] = useState(value.enabled);
+  const { mutate: toggleRole } = useToggleRole();
 
   return (
-    <Checkbox checked={checked} onChange={() => setChecked((current) => !current)} />
+    <Checkbox
+      checked={checked}
+      onChange={() => {
+        setChecked((current) => {
+          const enabled = !current;
+          toggleRole({ ...value, enabled });
+          return enabled;
+        });
+      }}
+    />
   );
 };
 
@@ -76,8 +80,8 @@ const columns: Column<QNUserRecord>[] = [
   { Header: "User UID", accessor: (x) => x.uid },
   {
     Header: "Author",
-    accessor: (x): ToggleRole => ({
-      uid: x.uid,
+    accessor: (x): QNToggleRole => ({
+      email: x.email ?? "",
       role: "author",
       enabled: x.customClaims.roles.includes("author"),
     }),
@@ -85,8 +89,8 @@ const columns: Column<QNUserRecord>[] = [
   },
   {
     Header: "Admin",
-    accessor: (x): ToggleRole => ({
-      uid: x.uid,
+    accessor: (x): QNToggleRole => ({
+      email: x.email ?? "",
       role: "admin",
       enabled: x.customClaims.roles.includes("admin"),
     }),

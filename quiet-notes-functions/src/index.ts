@@ -4,7 +4,7 @@ import { UserRecord } from "firebase-functions/lib/providers/auth";
 
 type QNRole = "admin" | "author" | "user";
 
-interface ListUsersResponse {
+interface QNListUsersResponse {
   users: QNUserRecord[];
 }
 
@@ -24,6 +24,12 @@ interface QNUserMetadata {
 
 interface QNCustomClaims {
   roles: QNRole[];
+}
+
+interface QNToggleRole {
+  role: QNRole;
+  enabled: boolean;
+  email: string;
 }
 
 admin.initializeApp({
@@ -58,6 +64,70 @@ const toUserRecord = ({
 });
 
 export const listUsers = functions.https.onCall(async (data, context) => {
+  assertIsAdmin(context);
+
+  try {
+    const result = await admin.auth().listUsers();
+    const response: QNListUsersResponse = { users: result.users.map(toUserRecord) };
+    return response;
+  } catch (error) {
+    throw opaqueFailure("list users failed", error);
+  }
+});
+
+export const toggleRole = functions.https.onCall(async (data: QNToggleRole, context) => {
+  assertIsAdmin(context);
+  try {
+    const user = await admin.auth().getUserByEmail(data.email);
+    if (data.enabled) {
+      await addRoles(user, [data.role]);
+    } else {
+      await revokeRole(user, data.role);
+    }
+    return true;
+  } catch (error) {
+    throw opaqueFailure("failed to get user by email", error);
+  }
+});
+
+const addRoles = async (user: UserRecord, roles: QNRole[]): Promise<void> => {
+  const existingRoles: QNRole[] = user.customClaims?.roles ?? [];
+  const updatedRoles = [...new Set([...existingRoles, ...roles])];
+
+  console.log("addRoles", {
+    uid: user.uid,
+    existingRoles,
+    updatedRoles,
+  });
+
+  setRoles(user, updatedRoles);
+};
+
+const revokeRole = async (user: UserRecord, role: QNRole): Promise<void> => {
+  const existingRoles: QNRole[] = user.customClaims?.roles ?? [];
+  const updatedRoles = existingRoles.filter((candidate) => candidate !== role);
+
+  console.log("revokeRole", {
+    uid: user.uid,
+    existingRoles,
+    updatedRoles,
+  });
+
+  setRoles(user, updatedRoles);
+};
+
+const setRoles = async (user: UserRecord, roles: QNRole[]) => {
+  try {
+    await admin.auth().setCustomUserClaims(user.uid, { roles });
+  } catch (error) {
+    console.error("failed to set custom claims", { error });
+  } finally {
+    const customClaims = (await admin.auth().getUser(user.uid)).customClaims;
+    console.log("final custom claims", { uid: user.uid, customClaims });
+  }
+};
+
+const assertIsAdmin = (context: functions.https.CallableContext): void => {
   if (!context.auth) {
     throw new functions.https.HttpsError("unauthenticated", "User not authenticated");
   }
@@ -68,33 +138,9 @@ export const listUsers = functions.https.onCall(async (data, context) => {
       "User not authorized to list all users"
     );
   }
+};
 
-  try {
-    const result = await admin.auth().listUsers();
-    const response: ListUsersResponse = { users: result.users.map(toUserRecord) };
-    return response;
-  } catch (error) {
-    console.error("list users failed", { error });
-    throw new functions.https.HttpsError("permission-denied", "permission-denied");
-  }
-});
-
-const addRoles = async (user: UserRecord, roles: QNRole[]): Promise<void> => {
-  const existingRoles = user.customClaims?.roles ?? [];
-  const updatedRoles = [...new Set([...existingRoles, ...roles])];
-
-  console.log("addRoles", {
-    uid: user.uid,
-    existingRoles,
-    updatedRoles,
-  });
-
-  try {
-    await admin.auth().setCustomUserClaims(user.uid, { roles: updatedRoles });
-  } catch (error) {
-    console.error("failed to set custom claims", { error });
-  } finally {
-    const customClaims = (await admin.auth().getUser(user.uid)).customClaims;
-    console.log("final custom claims", { uid: user.uid, customClaims });
-  }
+const opaqueFailure = (hint: string, error: unknown): functions.https.HttpsError => {
+  console.error(hint, { error });
+  return new functions.https.HttpsError("permission-denied", "permission-denied");
 };
