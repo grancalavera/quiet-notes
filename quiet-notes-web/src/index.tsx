@@ -1,4 +1,4 @@
-import { FocusStyleManager, H4 } from "@blueprintjs/core";
+import { FocusStyleManager } from "@blueprintjs/core";
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
@@ -9,7 +9,7 @@ import { AppErrorBoundary } from "./app/app-error-boundary";
 import { AppHeader } from "./app/app-header";
 import { AppLayout } from "./app/app-layout";
 import "./index.scss";
-import { CenterLayout } from "./layout/center-layout";
+import { Lobby } from "./lobby/lobby";
 import { NotebookLayout } from "./notebook/notebook-layout";
 import { NoteEditorContainer } from "./notebook/notebook-note-editor";
 import { NotesList } from "./notebook/notebook-note-list";
@@ -38,12 +38,7 @@ ReactDOM.render(
                   body={
                     <Switch>
                       <Route exact path="/lobby">
-                        <CenterLayout>
-                          <div>
-                            <H4>Your application is being reviewed!</H4>
-                            <p>Come back soon to check if it has been approved.</p>
-                          </div>
-                        </CenterLayout>
+                        <Lobby />
                       </Route>
 
                       <AuthorRoute path="/notebook">

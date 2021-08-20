@@ -4,6 +4,7 @@ import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import * as firebaseHooks from "react-firebase-hooks/auth";
 import { Redirect, Route, RouteProps, useLocation } from "react-router-dom";
 import { CenterLayout } from "../layout/center-layout";
+import { QNRole } from "../user-service/user-service-model";
 import { useAppState, useHasRole } from "./app-state";
 
 type CustomRouteProps<T extends {} = {}> = PropsWithChildren<T> &
@@ -27,7 +28,7 @@ export const PrivateRoute = ({ children, ...rest }: CustomRouteProps) => (
 );
 
 const createRoleRoute =
-  (role: string, redirectTo: string) =>
+  (role: QNRole, redirectTo: string) =>
   ({ children, ...rest }: CustomRouteProps) => {
     const [hasRole, isLoading] = useHasRole(role);
 

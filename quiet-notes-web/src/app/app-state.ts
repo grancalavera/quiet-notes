@@ -2,6 +2,7 @@ import create, { State } from "zustand";
 import { AppError, QNError } from "./app-error";
 import firebase from "firebase";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { QNRole } from "../user-service/user-service-model";
 
 type User = firebase.User;
 
@@ -54,7 +55,7 @@ export const useUserRoles = () => {
   return [roles, isLoading] as const;
 };
 
-export const useHasRole = (roleName: string) => {
+export const useHasRole = (roleName: QNRole) => {
   const [roles, isLoading] = useUserRoles();
 
   return useMemo(
