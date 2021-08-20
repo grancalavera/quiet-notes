@@ -1,9 +1,9 @@
 import { Button, Checkbox } from "@blueprintjs/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Column, useTable } from "react-table";
 import { block } from "../app/bem";
 import { useToggleRole, useUserList } from "../user-service/user-service";
-import { QNToggleRole, QNUserRecord } from "../user-service/user-service-model";
+import { QNRole, QNToggleRole, QNUserRecord } from "../user-service/user-service-model";
 import "./admin.scss";
 
 const b = block("admin");
@@ -59,6 +59,10 @@ const CheckboxCell = ({ value }: { value: QNToggleRole }) => {
   const [checked, setChecked] = useState(value.enabled);
   const { mutate: toggleRole } = useToggleRole();
 
+  useEffect(() => {
+    setChecked(value.enabled);
+  }, [value.enabled]);
+
   return (
     <Checkbox
       checked={checked}
@@ -73,6 +77,14 @@ const CheckboxCell = ({ value }: { value: QNToggleRole }) => {
   );
 };
 
+const toggleRoleAccessor =
+  (role: QNRole) =>
+  (user: QNUserRecord): QNToggleRole => ({
+    email: user.email ?? "",
+    role,
+    enabled: user.customClaims.roles.includes(role),
+  });
+
 const columns: Column<QNUserRecord>[] = [
   { Header: "Email", accessor: (x) => x.email },
   { Header: "Created", accessor: (x) => x.metadata.creationTime },
@@ -80,20 +92,12 @@ const columns: Column<QNUserRecord>[] = [
   { Header: "User UID", accessor: (x) => x.uid },
   {
     Header: "Author",
-    accessor: (x): QNToggleRole => ({
-      email: x.email ?? "",
-      role: "author",
-      enabled: x.customClaims.roles.includes("author"),
-    }),
+    accessor: toggleRoleAccessor("author"),
     Cell: CheckboxCell,
   },
   {
     Header: "Admin",
-    accessor: (x): QNToggleRole => ({
-      email: x.email ?? "",
-      role: "admin",
-      enabled: x.customClaims.roles.includes("admin"),
-    }),
+    accessor: toggleRoleAccessor("admin"),
     Cell: CheckboxCell,
   },
 ];
