@@ -13,6 +13,7 @@ export const Admin = () => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data: data?.users ?? [],
+    getRowId: (x) => x.uid,
   });
 
   return (
@@ -40,6 +41,7 @@ export const Admin = () => {
           <tbody {...getTableBodyProps()}>
             {rows.map((row) => {
               prepareRow(row);
+              console.log({ row: row.getRowProps() });
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
