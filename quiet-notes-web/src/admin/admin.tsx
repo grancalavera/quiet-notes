@@ -67,6 +67,7 @@ const CheckboxCell = ({ value }: { value: QNToggleRole }) => {
 
   return (
     <Checkbox
+      large
       checked={checked}
       onChange={() => {
         setChecked((current) => {
