@@ -6,9 +6,8 @@ import { Note } from "./notebook-model";
 import "./notebook-notes-list-item.scss";
 
 const prefix = "notes-list-item";
-const b = block(prefix);
+export const b = block(prefix);
 export const testId = prefix;
-
 export const defaultNoteTitle = "Untitled Note";
 export const maxTitleLength = 25;
 export const createdAt = (date: Date) => `Created ${formatDate(date)}`;

@@ -1,5 +1,6 @@
 import { fireEvent, render } from "@testing-library/react";
 import {
+  b,
   createdAt,
   defaultNoteTitle,
   maxTitleLength,
@@ -163,10 +164,13 @@ describe.each(scenarios)("<NotesListItem />", (scenario) => {
 
     it(`${shouldOrNot(isSelected)} be selected by quiet notes`, () => {
       const { getByTestId } = render(<NotesListItem {...props} />);
-      const actual = getByTestId(testId).classList.contains(
-        "quiet-notes-notes-list-item--isSelected"
+      const expectedClasses = b({ isSelected }).toString().split(" ");
+      const actualClasses: string[] = [];
+      getByTestId(testId).classList.forEach((c) => actualClasses.push(c));
+      const actual = expectedClasses.every((className) =>
+        actualClasses.includes(className)
       );
-      expect(actual).toEqual(isSelected);
+      expect(actual).toBeTruthy();
     });
   });
 });
