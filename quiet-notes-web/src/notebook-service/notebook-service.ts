@@ -1,6 +1,7 @@
 import firebase from "firebase";
 import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
 import { useErrorHandler } from "../app/app-state";
+import { useFirebaseErrorHandler } from "../firebase/firebase-error-handler";
 import { useFirebaseMutation } from "../firebase/firebase-mutation";
 import { Note } from "../notebook/notebook-model";
 import {
@@ -16,19 +17,23 @@ export const useNotesCollection = (author: string) => {
     .where("author", "==", author)
     .orderBy("_updatedAt", "desc");
 
-  return useCollectionData<Note, "id", "notes">(query, {
+  const result = useCollectionData<Note, "id", "notes">(query, {
     idField: "id",
     transform: noteFromReadModel,
   });
+
+  return useFirebaseErrorHandler(result);
 };
 
 export const useNote = (id: string) => {
   const query = notesCollection().doc(id);
 
-  return useDocumentData<Note, "id", "notes">(query, {
+  const result = useDocumentData<Note, "id", "notes">(query, {
     idField: "id",
     transform: noteFromReadModel,
   });
+
+  return useFirebaseErrorHandler(result);
 };
 
 export const useCreateNote = () =>

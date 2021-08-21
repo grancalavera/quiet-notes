@@ -41,7 +41,6 @@ export const Admin = () => {
           <tbody {...getTableBodyProps()}>
             {rows.map((row) => {
               prepareRow(row);
-              console.log({ row: row.getRowProps() });
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {

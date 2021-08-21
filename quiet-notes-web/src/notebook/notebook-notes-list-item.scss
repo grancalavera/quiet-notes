@@ -1,0 +1,16 @@
+@import "~@blueprintjs/core/lib/scss/variables";
+@import "../app/bem.scss";
+@import "../app/constants.scss";
+
+@include b("notes-list-item") {
+  user-select: none;
+  margin-block-end: $qn-margin;
+
+  &:hover {
+    background-color: rgba($pt-intent-primary, 0.15);
+  }
+
+  .bp3-dark &:hover {
+    background-color: rgba($pt-intent-primary, 0.25);
+  }
+}
