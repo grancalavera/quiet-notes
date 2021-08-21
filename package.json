@@ -6,6 +6,6 @@
     "quiet-notes-*"
   ],
   "scripts": {
-    "build": "yarn workspace quiet-notes-web run build"
+    "build": "yarn install --frozen-lockfile && yarn workspace quiet-notes-web run build"
   }
 }
