@@ -1,0 +1,67 @@
+@import "~@blueprintjs/core/lib/scss/variables";
+@import "../app/bem.scss";
+@import "../app/constants.scss";
+
+@include b("header") {
+  padding: $qn-padding;
+  display: flex;
+  background-color: $light-gray3;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid $gray5;
+
+  h3 {
+    margin: 0;
+  }
+
+  &__app-title {
+    cursor: pointer;
+  }
+
+  &__toolbar {
+    display: flex;
+    align-items: center;
+  }
+
+  &__toolbar > * {
+    margin-left: $qn-margin;
+  }
+}
+
+@include b("avatar") {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  cursor: pointer;
+}
+
+@include b("profile") {
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    padding-top: 2rem;
+    padding-right: 3rem;
+    padding-left: 3rem;
+    position: relative;
+  }
+
+  &__content > * {
+    margin-bottom: 1rem;
+  }
+
+  &__theme-switch {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+}
+
+.bp3-dark {
+  @include b("header") {
+    background-color: $dark-gray2;
+    border-bottom: 1px solid $dark-gray1;
+  }
+}

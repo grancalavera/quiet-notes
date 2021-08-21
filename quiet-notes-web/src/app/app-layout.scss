@@ -1,0 +1,22 @@
+@import "../app/bem.scss";
+
+@include b("app-layout") {
+  display: grid;
+  height: 100vh;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+
+  grid-template-areas:
+    "header"
+    "body";
+
+  &__header {
+    grid-area: header;
+  }
+
+  &__body {
+    grid-area: body;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+}

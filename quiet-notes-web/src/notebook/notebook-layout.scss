@@ -1,0 +1,40 @@
+@import "~@blueprintjs/core/lib/scss/variables";
+@import "../app/bem.scss";
+
+@include b("notebook-layout") {
+  display: grid;
+  height: 100%;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: auto 1fr;
+
+  grid-template-areas:
+    "sidebar-toolbar editor-toolbar"
+    "sidebar editor";
+
+  &__sidebar-toolbar {
+    grid-area: sidebar-toolbar;
+  }
+
+  &__editor-toolbar {
+    grid-area: editor-toolbar;
+  }
+
+  &__sidebar {
+    grid-area: sidebar;
+    overflow: hidden;
+  }
+
+  &__editor {
+    grid-area: editor;
+  }
+
+  &__sidebar-toolbar,
+  &__sidebar {
+    border-right: 1px solid $gray5;
+  }
+
+  .bp3-dark &__sidebar-toolbar,
+  .bp3-dark &__sidebar {
+    border-right-color: $dark-gray1;
+  }
+}
