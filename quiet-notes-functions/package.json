@@ -2,7 +2,7 @@
   "name": "quiet-notes-functions",
   "version": "0.1.0",
   "scripts": {
-    "lint": "eslint --ext .js,.ts .",
+    "lint": "eslint src/**/*.ts",
     "build": "tsc",
     "serve": "yarn build && firebase emulators:start --only functions",
     "shell": "yarn build && firebase functions:shell",
@@ -20,5 +20,10 @@
     "firebase-functions-test": "0.3.1",
     "typescript": "4.3.4"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "4.29.2",
+    "@typescript-eslint/parser": "4.29.2",
+    "eslint": "7.32.0"
+  }
 }
