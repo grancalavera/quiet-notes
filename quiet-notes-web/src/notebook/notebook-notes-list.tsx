@@ -5,9 +5,8 @@ import { useNotesCollection } from "../notebook-service/notebook-service";
 import { NotesListItem } from "./notebook-notes-list-item";
 import "./notebook-notes-list.scss";
 
-const prefix = "notes-list";
-export const b = block(prefix);
-export const testId = prefix;
+export const b = block("notes-list");
+export const testId = b().toString();
 
 export const NotesList = () => {
   const user = useUser();
