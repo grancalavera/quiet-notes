@@ -20,6 +20,7 @@ export const useNotesCollectionInternal = <
   author: string,
   options: NotebookServiceOptions<TDocument, TData, IdField>
 ) => {
+  console.log("I have been called");
   const query = notesCollection()
     .where("author", "==", author)
     .orderBy("_updatedAt", "desc");
