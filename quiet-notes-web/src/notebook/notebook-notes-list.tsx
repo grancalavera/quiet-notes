@@ -1,20 +1,37 @@
+import { NonIdealState, Spinner } from "@blueprintjs/core";
 import { useUser } from "../app/app-state";
 import { block } from "../app/bem";
 import { useNotesCollection } from "../notebook-service/notebook-service";
 import { NotesListItem } from "./notebook-notes-list-item";
 import "./notebook-notes-list.scss";
 
-const b = block("notes-list");
+const prefix = "notes-list";
+export const b = block(prefix);
+export const testId = prefix;
 
 export const NotesList = () => {
   const user = useUser();
-  const [notes] = useNotesCollection(user.uid);
+  const [notes, isLoading] = useNotesCollection(user.uid);
 
-  return notes ? (
-    <div className={b()}>
-      {notes.map((note) => (
-        <NotesListItem note={note} key={note.id} isSelected={true} onSelect={() => {}} />
-      ))}
+  return (
+    <div className={b()} data-testid={testId}>
+      {notes &&
+        notes.length > 0 &&
+        notes.map((note) => (
+          <NotesListItem
+            note={note}
+            key={note.id}
+            isSelected={true}
+            onSelect={() => {}}
+          />
+        ))}
+      {!isLoading && !notes && <NonIdealNotesList />}
+      {!isLoading && notes?.length === 0 && <NonIdealNotesList />}
+      {isLoading && <Spinner />}
     </div>
-  ) : null;
+  );
 };
+
+const NonIdealNotesList = () => (
+  <NonIdealState icon="warning-sign" title="Create a new note" />
+);
