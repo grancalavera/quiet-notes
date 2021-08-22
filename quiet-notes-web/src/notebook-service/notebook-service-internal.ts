@@ -1,6 +1,5 @@
 import firebase from "firebase";
 import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
-import { useFirebaseErrorHandler } from "../firebase/firebase-error-handler";
 
 export const notesCollection = () => firebase.firestore().collection("notes");
 
@@ -24,8 +23,7 @@ export const useNotesCollectionInternal = <
   const query = notesCollection()
     .where("author", "==", author)
     .orderBy("_updatedAt", "desc");
-  const result = useCollectionData<TData, IdField>(query, options);
-  return useFirebaseErrorHandler(result);
+  return useCollectionData<TData, IdField>(query, options);
 };
 
 export const useNoteInternal = <
@@ -37,6 +35,5 @@ export const useNoteInternal = <
   options: NotebookServiceOptions<TDocument, TData, IdField>
 ) => {
   const query = notesCollection().doc(id);
-  const result = useDocumentData<TData, IdField>(query, options);
-  return useFirebaseErrorHandler(result);
+  return useDocumentData<TData, IdField>(query, options);
 };
