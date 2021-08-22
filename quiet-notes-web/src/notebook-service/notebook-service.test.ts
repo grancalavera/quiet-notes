@@ -30,8 +30,7 @@ describe("global error handling", () => {
   });
 
   addCleanup(() => {
-    const { result } = renderHook(() => useAppState((s) => s.dismissError));
-    result.current();
+    renderHook(() => useAppState((s) => s.dismissError)());
   });
 
   test("notes collection errors should be handled automatically", () => {
