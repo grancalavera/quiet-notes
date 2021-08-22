@@ -1,15 +1,16 @@
-import firebase from "firebase";
 import { useErrorHandler } from "../app/app-state";
 import { useFirebaseMutation } from "../firebase/firebase-mutation";
 import { Note } from "../notebook/notebook-model";
-import { useNoteInternal, useNotesCollectionInternal } from "./notebook-service-internal";
+import {
+  notesCollection,
+  useNoteInternal,
+  useNotesCollectionInternal,
+} from "./notebook-service-internal";
 import {
   authorToWriteModel,
   noteFromReadModel,
   noteToWriteModel,
 } from "./notebook-service-model";
-
-const notesCollection = () => firebase.firestore().collection("notes");
 
 export const useNotesCollection = (author: string) =>
   useNotesCollectionInternal(author, {
