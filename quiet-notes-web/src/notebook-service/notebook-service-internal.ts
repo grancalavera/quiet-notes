@@ -1,6 +1,5 @@
 import firebase from "firebase";
 import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
-import { Data } from "react-firebase-hooks/firestore/dist/firestore/types";
 
 export const notesCollection = () => firebase.firestore().collection("notes");
 
@@ -20,7 +19,7 @@ export const useNotesCollectionInternal = <
 >(
   author: string,
   options: NotebookServiceOptions<TDocument, TData, IdField>
-): [Data<TData, IdField>[] | undefined, boolean, firebase.FirebaseError | undefined] => {
+) => {
   const query = notesCollection()
     .where("author", "==", author)
     .orderBy("_updatedAt", "desc");
@@ -34,7 +33,7 @@ export const useNoteInternal = <
 >(
   id: string,
   options: NotebookServiceOptions<TDocument, TData, IdField>
-): [Data<TData, IdField> | undefined, boolean, firebase.FirebaseError | undefined] => {
+) => {
   const query = notesCollection().doc(id);
   return useDocumentData<TData, IdField>(query, options);
 };
