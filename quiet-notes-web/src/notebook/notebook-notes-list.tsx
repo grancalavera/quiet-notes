@@ -4,6 +4,7 @@ import { block } from "../app/bem";
 import { useNotesCollection } from "../notebook-service/notebook-service";
 import { NotesListItem } from "./notebook-notes-list-item";
 import "./notebook-notes-list.scss";
+import { useNotebookState } from "./notebook-state";
 
 export const b = block("notes-list");
 export const testId = b().toString();
@@ -11,6 +12,8 @@ export const testId = b().toString();
 export const NotesList = () => {
   const user = useUser();
   const [notes, isLoading] = useNotesCollection(user.uid);
+  const selectNote = useNotebookState((s) => s.selectNote);
+  const selectedNoteId = useNotebookState((s) => s.selectedNoteId);
 
   return (
     <div className={b()} data-testid={testId}>
@@ -20,8 +23,10 @@ export const NotesList = () => {
           <NotesListItem
             note={note}
             key={note.id}
-            isSelected={true}
-            onSelect={() => {}}
+            isSelected={note.id === selectedNoteId}
+            onSelect={() => {
+              selectNote(note.id);
+            }}
           />
         ))}
       {!isLoading && !notes && <NonIdealNotesList />}

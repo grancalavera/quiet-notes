@@ -59,9 +59,12 @@ export interface NoteEditorState extends State {
   updateDraft: (draft: string) => void;
 }
 
-export const useNotebookState = create<NotebookState>((set) => ({
+export const useNotebookState = create<NotebookState>((set, get) => ({
   selectNote: (selectedNoteId) => set({ selectedNoteId }),
-  deselectNote: () => set(({ selectedNoteId, ...s }) => s, true),
+  deselectNote: () => {
+    set(({ selectedNoteId, ...s }) => s, true);
+    return undefined;
+  },
 }));
 
 export const useNoteEditorState = create<NoteEditorState>((set) => ({
