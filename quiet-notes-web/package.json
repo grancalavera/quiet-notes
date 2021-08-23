@@ -6,6 +6,7 @@
     "@blueprintjs/core": "3.46.0",
     "@testing-library/jest-dom": "5.11.4",
     "@testing-library/react": "11.1.0",
+    "@testing-library/react-hooks": "7.0.1",
     "@testing-library/user-event": "12.1.10",
     "@types/jest": "26.0.15",
     "@types/lodash": "4.14.170",
@@ -57,5 +58,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "https://quiet-notes-e83fb--pr4-security-rules-ylz6tpjw.web.app"
 }

@@ -1,34 +1,32 @@
-import firebase from "firebase";
-import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
 import { useErrorHandler } from "../app/app-state";
+import { useFirebaseErrorHandler } from "../firebase/firebase-error-handler";
 import { useFirebaseMutation } from "../firebase/firebase-mutation";
 import { Note } from "../notebook/notebook-model";
+import {
+  notesCollection,
+  useNoteInternal,
+  useNotesCollectionInternal,
+} from "./notebook-service-internal";
 import {
   authorToWriteModel,
   noteFromReadModel,
   noteToWriteModel,
 } from "./notebook-service-model";
 
-const notesCollection = () => firebase.firestore().collection("notes");
-
 export const useNotesCollection = (author: string) => {
-  const query = notesCollection()
-    .where("author", "==", author)
-    .orderBy("_updatedAt", "desc");
-
-  return useCollectionData<Note, "id", "notes">(query, {
+  const result = useNotesCollectionInternal(author, {
     idField: "id",
     transform: noteFromReadModel,
   });
+  return useFirebaseErrorHandler(result);
 };
 
 export const useNote = (id: string) => {
-  const query = notesCollection().doc(id);
-
-  return useDocumentData<Note, "id", "notes">(query, {
+  const result = useNoteInternal(id, {
     idField: "id",
     transform: noteFromReadModel,
   });
+  return useFirebaseErrorHandler(result);
 };
 
 export const useCreateNote = () =>
