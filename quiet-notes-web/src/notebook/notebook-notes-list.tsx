@@ -1,4 +1,5 @@
 import { NonIdealState, Spinner } from "@blueprintjs/core";
+import { ReactNode } from "react";
 import { useUser } from "../app/app-state";
 import { block } from "../app/bem";
 import { useNotesCollection } from "../notebook-service/notebook-service";
@@ -15,11 +16,14 @@ export const NotesList = () => {
   const selectNote = useNotebookState((s) => s.selectNote);
   const selectedNoteId = useNotebookState((s) => s.selectedNoteId);
 
-  return (
-    <div className={b()} data-testid={testId}>
-      {notes &&
-        notes.length > 0 &&
-        notes.map((note) => (
+  let children: ReactNode;
+
+  if (isLoading) {
+    children = <Spinner />;
+  } else if (notes && notes.length > 0) {
+    children = (
+      <>
+        {notes.map((note) => (
           <NotesListItem
             note={note}
             key={note.id}
@@ -29,13 +33,15 @@ export const NotesList = () => {
             }}
           />
         ))}
-      {!isLoading && !notes && <NonIdealNotesList />}
-      {!isLoading && notes?.length === 0 && <NonIdealNotesList />}
-      {isLoading && <Spinner />}
+      </>
+    );
+  } else {
+    children = <NonIdealState icon="warning-sign" title="Create a new note" />;
+  }
+
+  return (
+    <div className={b()} data-testid={testId}>
+      {children}
     </div>
   );
 };
-
-const NonIdealNotesList = () => (
-  <NonIdealState icon="warning-sign" title="Create a new note" />
-);
