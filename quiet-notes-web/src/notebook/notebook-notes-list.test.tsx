@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { act, addCleanup, renderHook } from "@testing-library/react-hooks";
+import { act, renderHook } from "@testing-library/react-hooks";
 import { useUser } from "../app/app-state";
 import { useNotesCollectionInternal } from "../notebook-service/notebook-service-internal";
 import { Note } from "./notebook-model";
@@ -113,21 +113,18 @@ describe("<NotesList />", () => {
       useNotesCollectionInternal_mock.mockReturnValue([notes as any, false, undefined]);
 
       render(<NotesList />);
-      const [item1, item2, item3] = screen.getAllByTestId(itemTestId);
+      const items = screen.getAllByTestId(itemTestId);
 
-      const actual = () => [
-        item1.classList.contains("bp3-intent-primary"),
-        item2.classList.contains("bp3-intent-primary"),
-        item3.classList.contains("bp3-intent-primary"),
-      ];
+      const actual = () =>
+        items.map((candidate) => candidate.classList.contains("bp3-intent-primary"));
 
-      fireEvent.click(item1);
+      fireEvent.click(items[0]);
       expect(actual()).toEqual([true, false, false]);
 
-      fireEvent.click(item2);
+      fireEvent.click(items[1]);
       expect(actual()).toEqual([false, true, false]);
 
-      fireEvent.click(item3);
+      fireEvent.click(items[2]);
       expect(actual()).toEqual([false, false, true]);
     });
   });
