@@ -1,36 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { UserRecord } from "firebase-functions/lib/providers/auth";
-
-type QNRole = "admin" | "author" | "user";
-
-interface QNListUsersResponse {
-  users: QNUserRecord[];
-}
-
-interface QNUserRecord {
-  uid: string;
-  email?: string;
-  photoURL?: string;
-  customClaims: QNCustomClaims;
-  metadata: QNUserMetadata;
-}
-
-interface QNUserMetadata {
-  lastSignInTime: string;
-  creationTime: string;
-  lastRefreshTime?: string | null;
-}
-
-interface QNCustomClaims {
-  roles: QNRole[];
-}
-
-interface QNToggleRole {
-  role: QNRole;
-  enabled: boolean;
-  email: string;
-}
+import { QNListUsersResponse, QNRole, QNToggleRole, QNUserRecord } from "quiet-notes-lib";
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),

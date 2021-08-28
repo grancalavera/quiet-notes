@@ -1,9 +1,9 @@
 import { Button, Checkbox } from "@blueprintjs/core";
+import { QNRole, QNToggleRole, QNUserRecord } from "quiet-notes-lib";
 import { useEffect, useState } from "react";
 import { Column, useTable } from "react-table";
 import { block } from "../app/bem";
 import { useToggleRole, useUserList } from "../user-service/user-service";
-import { QNRole, QNToggleRole, QNUserRecord } from "../user-service/user-service-model";
 import "./admin.scss";
 
 const b = block("admin");
