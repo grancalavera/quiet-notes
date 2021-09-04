@@ -28,7 +28,8 @@ const hasErrorName = (candidate: unknown): candidate is { name: string } =>
 
 // https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/#use-unknown-catch-variables
 export const errorFromUnknown = (error: unknown): QNError => {
-  const defaultMessage = "Unknown error";
-  const message = error instanceof Error ? error.message : defaultMessage;
-  return new QNError(message ?? defaultMessage, error);
+  const message =
+    error instanceof Error && error.message ? error.message : "Unknown error";
+
+  return new QNError(message, error);
 };
