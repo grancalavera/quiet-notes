@@ -6,6 +6,7 @@ import { useNote } from "../notebook-service/notebook-service";
 import { Note } from "./notebook-model";
 import "./notebook-note-editor.scss";
 import { useNotebookState } from "./notebook-state";
+
 const b = block("note-editor");
 
 export const NoteEditorContainer = () => {
