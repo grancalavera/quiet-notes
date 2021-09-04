@@ -2,19 +2,18 @@ import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import { useEffect } from "react";
 import { useNotImplementedError, useUser } from "../app/app-state";
 import { block } from "../app/bem";
-import { useCreateNote } from "../notebook-service/notebook-service";
-import { useNotebookState } from "./notebook-state";
-import { useDeleteNote } from "../notebook-service/notebook-service";
-
+import { useCreateNote, useDeleteNote } from "../notebook-service/notebook-service";
+import { useDeselectNote, useSelectedNoteId, useSelectNote } from "./notebook-state";
 import "./notebook-toolbars.scss";
 
 const b = block("toolbar");
 
 export const EditorToolbar = () => {
-  const hasSelectedNote = useNotebookState((s) => !!s.selectedNoteId);
+  const selectedNoteId = useSelectedNoteId();
+
   return (
     <div className={b()}>
-      {!!hasSelectedNote && (
+      {!!selectedNoteId && (
         <ButtonGroup>
           <DeleteNoteButton />
           <SaveNoteButton />
@@ -27,9 +26,8 @@ export const EditorToolbar = () => {
 
 const DeleteNoteButton = () => {
   const { mutate: deleteNote } = useDeleteNote();
-
-  const selectedNoteId = useNotebookState((s) => s.selectedNoteId);
-  const deselectNote = useNotebookState((s) => s.deselectNote);
+  const selectedNoteId = useSelectedNoteId();
+  const deselectNote = useDeselectNote();
 
   return (
     <>
@@ -59,7 +57,7 @@ const CloseNoteButton = () => {
 export const SidebarToolbar = () => {
   const user = useUser();
   const { mutate: createNote, data } = useCreateNote();
-  const selectNote = useNotebookState((s) => s.selectNote);
+  const selectNote = useSelectNote();
 
   useEffect(() => {
     data && selectNote(data);

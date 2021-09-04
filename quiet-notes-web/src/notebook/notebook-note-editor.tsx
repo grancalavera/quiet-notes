@@ -5,12 +5,12 @@ import { CenterLayout } from "../layout/center-layout";
 import { useNote } from "../notebook-service/notebook-service";
 import { Note } from "./notebook-model";
 import "./notebook-note-editor.scss";
-import { useNotebookState } from "./notebook-state";
+import { useSelectedNoteId } from "./notebook-state";
 
 const b = block("note-editor");
 
 export const NoteEditorContainer = () => {
-  const selectedNoteId = useNotebookState((s) => s.selectedNoteId);
+  const selectedNoteId = useSelectedNoteId();
 
   return selectedNoteId ? (
     <NoteEditor noteId={selectedNoteId} key={selectedNoteId} />
