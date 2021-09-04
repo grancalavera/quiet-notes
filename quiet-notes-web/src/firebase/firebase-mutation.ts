@@ -1,5 +1,6 @@
 import firebase from "firebase";
 import { useCallback, useState } from "react";
+import { isFirebaseError } from "../app/app-error";
 
 interface FirebaseMutation<TVariables = unknown, TData = unknown> {
   data: TData | undefined;
@@ -29,12 +30,12 @@ export const useFirebaseMutation = <TVariables = unknown, TData = unknown>(
         setData(result);
         setState("success");
         return result;
-      } catch (e) {
+      } catch (error) {
         setState("failure");
-        if (onError) {
-          onError(e);
+        if (onError && isFirebaseError(error)) {
+          onError(error);
         } else {
-          throw e;
+          throw error;
         }
       }
     },

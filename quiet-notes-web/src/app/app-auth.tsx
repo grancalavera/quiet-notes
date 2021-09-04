@@ -1,10 +1,10 @@
 import { Button, Spinner } from "@blueprintjs/core";
 import firebase from "firebase/app";
+import { QNRole } from "quiet-notes-lib";
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import * as firebaseHooks from "react-firebase-hooks/auth";
 import { Redirect, Route, RouteProps, useLocation } from "react-router-dom";
 import { CenterLayout } from "../layout/center-layout";
-import { QNRole } from "../user-service/user-service-model";
 import { useAppState, useHasRole } from "./app-state";
 
 type CustomRouteProps<T extends {} = {}> = PropsWithChildren<T> &

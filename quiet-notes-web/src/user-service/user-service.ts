@@ -1,19 +1,14 @@
 import firebase from "firebase";
+import { QNListUsersResponse, QNToggleRole, QNToggleRoleResponse } from "quiet-notes-lib";
 import { useCallback, useEffect, useState } from "react";
-import { QNError } from "../app/app-error";
-import { useErrorHandler } from "../app/app-state";
-import {
-  QNListUsersResponse,
-  QNToggleRole,
-  QNToggleRoleResponse,
-} from "./user-service-model";
+import { useUnknownErrorHandler } from "../app/app-state";
 
 const listUsers = () => firebase.functions().httpsCallable("listUsers")();
 
 export const useUserList = () => {
   const [data, setData] = useState<QNListUsersResponse>();
   const [isLoading, setIsLoading] = useState(false);
-  const handleError = useErrorHandler();
+  const handleUnknownError = useUnknownErrorHandler();
 
   const run = useCallback(() => {
     setIsLoading(true);
@@ -22,17 +17,17 @@ export const useUserList = () => {
         const result = await listUsers();
         setData(result.data);
       } catch (error) {
-        handleError(new QNError(error.message ?? "Unknown error", error));
+        handleUnknownError(error);
       } finally {
         setIsLoading(false);
       }
     }
     run();
-  }, [handleError]);
+  }, [handleUnknownError]);
 
   useEffect(() => {
     run();
-  }, [handleError, run]);
+  }, [handleUnknownError, run]);
 
   return { data, isLoading, refetch: run };
 };
@@ -43,7 +38,7 @@ const toggleRole = (toggle: QNToggleRole) =>
 export const useToggleRole = () => {
   const [data, setData] = useState<QNToggleRoleResponse>();
   const [isLoading, setIsLoading] = useState(false);
-  const handleError = useErrorHandler();
+  const handleUnknownError = useUnknownErrorHandler();
 
   const run = useCallback(
     (toggle: QNToggleRole) => {
@@ -53,14 +48,14 @@ export const useToggleRole = () => {
           const result = await toggleRole(toggle);
           setData(result.data);
         } catch (error) {
-          handleError(new QNError(error.message ?? "Unknown error", error));
+          handleUnknownError(error);
         } finally {
           setIsLoading(false);
         }
       }
       run();
     },
-    [handleError]
+    [handleUnknownError]
   );
 
   return { data, isLoading, mutate: run };

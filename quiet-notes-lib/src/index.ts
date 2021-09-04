@@ -1,5 +1,9 @@
 export type QNRole = "admin" | "author" | "user";
 
+export interface QNListUsersResponse {
+  users: QNUserRecord[];
+}
+
 export interface QNUserRecord {
   uid: string;
   email?: string;

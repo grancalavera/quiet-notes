@@ -4,10 +4,10 @@ import { hasOwnProperty } from "../utils/has-own-property";
 export type AppError = firebase.FirebaseError | QNError;
 
 export class QNError extends Error {
-  public readonly data: any;
+  public readonly data: unknown;
   public readonly name: "QNError" = "QNError";
 
-  constructor(message: string, data?: any) {
+  constructor(message: string, data?: unknown) {
     super(message);
     this.data = data;
   }
@@ -25,3 +25,11 @@ const hasErrorName = (candidate: unknown): candidate is { name: string } =>
   typeof candidate === "object" &&
   candidate !== null &&
   hasOwnProperty(candidate, "name");
+
+// https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/#use-unknown-catch-variables
+export const errorFromUnknown = (error: unknown): QNError => {
+  const message =
+    error instanceof Error && error.message ? error.message : "Unknown error";
+
+  return new QNError(message, error);
+};

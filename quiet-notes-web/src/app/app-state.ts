@@ -1,8 +1,8 @@
 import create, { State } from "zustand";
-import { AppError, QNError } from "./app-error";
+import { AppError, errorFromUnknown, QNError } from "./app-error";
 import firebase from "firebase";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { QNRole } from "../user-service/user-service-model";
+import { QNRole } from "quiet-notes-lib";
 
 type User = firebase.User;
 
@@ -69,7 +69,18 @@ export const useIsAdmin = () => useHasRole("admin");
 export const useIsAuthor = () => useHasRole("author");
 
 const selectHandleError = (s: AppState) => s.handleError;
+
 export const useErrorHandler = () => useAppState(selectHandleError);
+
+export const useUnknownErrorHandler = () => {
+  const handleError = useErrorHandler();
+  return useCallback(
+    (error: unknown) => {
+      handleError(errorFromUnknown(error));
+    },
+    [handleError]
+  );
+};
 
 export const useNotImplementedError = (featureName: string) => {
   const handleError = useErrorHandler();
