@@ -38,3 +38,13 @@ export const resolveNoteUpdate = (local: Note, incoming: Note): UpdateNoteResult
     return { kind: "UpdatedNote", note: incoming };
   }
 };
+
+export const chooseLocal = (choice: UpdatedNoteChoice): Note => ({
+  ...choice.local,
+  _version: choice.version,
+});
+
+export const chooseIncoming = (choice: UpdatedNoteChoice): Note => ({
+  ...choice.incoming,
+  _version: choice.version,
+});
