@@ -1,6 +1,6 @@
 import firebase from "firebase";
-import { Note } from "../notebook/notebook-model";
 import { nanoid } from "nanoid";
+import { Note } from "../notebook/notebook-model";
 
 export interface NoteReadModel {
   readonly id: string;
@@ -8,6 +8,7 @@ export interface NoteReadModel {
   readonly content: string;
   readonly _updatedAt?: firebase.firestore.Timestamp;
   readonly _createdAt?: firebase.firestore.Timestamp;
+  readonly _version: number;
   readonly author: string;
 }
 
@@ -15,9 +16,10 @@ export interface NoteWriteModel {
   id: string;
   title: string;
   content: string;
+  author: string;
+  _version: firebase.firestore.FieldValue;
   _updatedAt: firebase.firestore.FieldValue;
   _createdAt?: firebase.firestore.FieldValue;
-  author: string;
 }
 
 export const authorToWriteModel = (author: string): NoteWriteModel => ({
@@ -25,6 +27,7 @@ export const authorToWriteModel = (author: string): NoteWriteModel => ({
   title: "",
   content: "",
   author,
+  _version: firebase.firestore.FieldValue.increment(1),
   _updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
   _createdAt: firebase.firestore.FieldValue.serverTimestamp(),
 });
@@ -44,5 +47,6 @@ export const noteToWriteModel = ({
   ...note
 }: Note): NoteWriteModel => ({
   ...note,
+  _version: firebase.firestore.FieldValue.increment(1),
   _updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
 });

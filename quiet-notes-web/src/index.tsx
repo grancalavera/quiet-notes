@@ -11,6 +11,7 @@ import { AppLayout } from "./app/app-layout";
 import "./index.scss";
 import { Lobby } from "./lobby/lobby";
 import { NotebookLayout } from "./notebook/notebook-layout";
+import { NoteEditorContainer } from "./notebook/notebook-note-editor";
 import { NotesList } from "./notebook/notebook-notes-list";
 import { EditorToolbar, SidebarToolbar } from "./notebook/notebook-toolbars";
 import reportWebVitals from "./reportWebVitals";
@@ -45,7 +46,7 @@ ReactDOM.render(
                           sidebarToolbar={<SidebarToolbar />}
                           sidebar={<NotesList />}
                           editorToolbar={<EditorToolbar />}
-                          editor={<p>Not implemented</p>}
+                          editor={<NoteEditorContainer />}
                         />
                       </AuthorRoute>
 
