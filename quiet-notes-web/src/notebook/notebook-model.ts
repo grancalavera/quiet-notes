@@ -23,19 +23,18 @@ interface UpdatedNoteChoice {
 }
 
 export const resolveNoteUpdate = (local: Note, incoming: Note): UpdateNoteResult => {
-  const hasEdits = local.content !== incoming.content;
-  const validSequence = local._version === incoming._version - 1;
-
-  if (hasEdits && validSequence) {
+  if (local.content === incoming.content) {
     return {
       kind: "UpdatedNote",
-      note: { ...incoming, content: local.content, title: local.title },
+      note: local._version <= incoming._version ? incoming : local,
     };
-  } else if (hasEdits && !validSequence) {
-    const version = Math.max(local._version, incoming._version);
-    return { kind: "UpdatedNoteChoice", version, local, incoming };
   } else {
-    return { kind: "UpdatedNote", note: incoming };
+    return {
+      kind: "UpdatedNoteChoice",
+      version: Math.max(local._version, incoming._version),
+      local,
+      incoming,
+    };
   }
 };
 

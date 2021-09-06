@@ -13,11 +13,13 @@ const note = (content: string, _version: number): Note => ({
   title: content,
   content,
   _version,
+  _createdAt: new Date(0),
+  _updatedAt: new Date(_version),
 });
 
 const scenarios: Scenario[] = [
   {
-    name: "incoming immediately after creation",
+    name: "sequential incoming note with identical content",
     local: note("x", 0),
     incoming: note("x", 1),
     expected: {
@@ -26,47 +28,47 @@ const scenarios: Scenario[] = [
     },
   },
   {
-    name: "local edits, incoming version strictly next",
-    local: note("y", 0),
-    incoming: note("x", 1),
-    expected: {
-      kind: "UpdatedNote",
-      note: note("y", 1),
-    },
-  },
-  {
-    name: "local edits, newer out of order incoming version",
-    local: note("y", 0),
+    name: "non sequential ordered incoming note with identical content",
+    local: note("x", 0),
     incoming: note("x", 2),
     expected: {
-      kind: "UpdatedNoteChoice",
-      version: 2,
-      local: note("y", 0),
-      incoming: note("x", 2),
+      kind: "UpdatedNote",
+      note: note("x", 2),
     },
   },
   {
-    name: "local edits, older incoming version (should never happen)",
-    local: note("y", 2),
-    incoming: note("x", 1),
+    name: "sequential incoming note, different content",
+    local: note("x", 0),
+    incoming: note("y", 1),
     expected: {
       kind: "UpdatedNoteChoice",
-      version: 2,
-      local: note("y", 2),
-      incoming: note("x", 1),
+      version: 1,
+      local: note("x", 0),
+      incoming: note("y", 1),
     },
   },
   {
-    name: "idempotent update: identical local and incoming",
+    name: "out of order incoming note, identical content",
     local: note("x", 1),
-    incoming: note("x", 1),
+    incoming: note("x", 0),
     expected: {
       kind: "UpdatedNote",
       note: note("x", 1),
     },
   },
   {
-    name: "concurrency error: same version created more than once, different content",
+    name: "out of order incoming note, different content",
+    local: note("x", 1),
+    incoming: note("y", 0),
+    expected: {
+      kind: "UpdatedNoteChoice",
+      version: 1,
+      local: note("x", 1),
+      incoming: note("y", 0),
+    },
+  },
+  {
+    name: "incoming note with same version, different content",
     local: note("x", 1),
     incoming: note("y", 1),
     expected: {
