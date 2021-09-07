@@ -1,5 +1,5 @@
 import create, { State } from "zustand";
-import { MergeNoteConflict, Note } from "./notebook-model";
+import { isMergeSuccess, mergeNote, MergeNoteConflict, Note } from "./notebook-model";
 
 interface NotebookEditorState {
   note: Note | undefined;
@@ -12,7 +12,20 @@ interface NotebookEditorState {
 const useNotebookEditorState = create<NotebookEditorState & State>((set, get) => ({
   note: undefined,
   mergeConflict: undefined,
-  loadNote: (note) => set({ note }),
+  loadNote: (incoming) => {
+    const local = get().note;
+
+    if (!local) {
+      set({ note: incoming });
+    } else {
+      const result = mergeNote(local, incoming);
+      if (isMergeSuccess(result)) {
+        set({ note: result.note });
+      } else {
+        set({ mergeConflict: result });
+      }
+    }
+  },
   updateContent: (content) => {
     const note = get().note;
     if (note) {
@@ -33,3 +46,6 @@ export const useReset = () => useNotebookEditorState(selectReset);
 
 const selectUpdateContent = (s: NotebookEditorState) => s.updateContent;
 export const useUpdateContent = () => useNotebookEditorState(selectUpdateContent);
+
+const selectMergeConflict = (s: NotebookEditorState) => s.mergeConflict;
+export const useMergeConflict = () => useNotebookEditorState(selectMergeConflict);

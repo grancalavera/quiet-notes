@@ -22,6 +22,9 @@ export interface MergeNoteConflict {
   incoming: Note;
 }
 
+export const isMergeSuccess = (candidate: MergeNote): candidate is MergeNoteSuccess =>
+  candidate.kind === "MergeNoteSuccess";
+
 export const mergeNoteSuccess = (value: Omit<MergeNoteSuccess, "kind">): MergeNote => ({
   kind: "MergeNoteSuccess",
   ...value,
