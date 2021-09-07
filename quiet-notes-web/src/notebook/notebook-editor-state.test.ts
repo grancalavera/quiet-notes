@@ -17,69 +17,69 @@ const emptyNote: Note = {
 
 describe("note editor state", () => {
   afterEach(() => {
-    const renderedReset = renderHook(() => useReset());
+    const reset = renderHook(() => useReset());
 
     act(() => {
-      renderedReset.result.current();
+      reset.result.current();
     });
   });
 
   it("note should be undefined by default", () => {
-    const renderedNote = renderHook(() => useNoteState());
-    expect(renderedNote.result.current).toBeUndefined();
+    const note = renderHook(() => useNoteState());
+    expect(note.result.current).toBeUndefined();
   });
 
   it("loading the first note populates the note without conflicts", () => {
-    const renderedNote = renderHook(() => useNoteState());
-    const renderedLoadNote = renderHook(() => useLoadNote());
+    const note = renderHook(() => useNoteState());
+    const loadNote = renderHook(() => useLoadNote());
 
     act(() => {
-      renderedLoadNote.result.current(emptyNote);
+      loadNote.result.current(emptyNote);
     });
 
-    expect(renderedNote.result.current).toEqual(emptyNote);
+    expect(note.result.current).toEqual(emptyNote);
   });
 
   it("resets should clear the current note", () => {
-    const renderedNote = renderHook(() => useNoteState());
-    const renderedLoadNote = renderHook(() => useLoadNote());
-    const renderedReset = renderHook(() => useReset());
+    const note = renderHook(() => useNoteState());
+    const loadNote = renderHook(() => useLoadNote());
+    const reset = renderHook(() => useReset());
 
     act(() => {
-      renderedLoadNote.result.current(emptyNote);
+      loadNote.result.current(emptyNote);
     });
 
     act(() => {
-      renderedReset.result.current();
+      reset.result.current();
     });
 
-    expect(renderedNote.result.current).toBeUndefined();
+    expect(note.result.current).toBeUndefined();
   });
 
   it("update content for undefined notes is a noop", () => {
-    const renderedNote = renderHook(() => useNoteState());
-    const renderedUpdateContent = renderHook(() => useUpdateContent());
+    const note = renderHook(() => useNoteState());
+    const updateContent = renderHook(() => useUpdateContent());
 
     act(() => {
-      renderedUpdateContent.result.current("hello world");
+      updateContent.result.current("hello world");
     });
 
-    expect(renderedNote.result.current).toBeUndefined();
+    expect(note.result.current).toBeUndefined();
   });
 
   it("should update the note's content", () => {
-    const renderedNote = renderHook(() => useNoteState());
-    const renderedLoadNote = renderHook(() => useLoadNote());
-    const renderedUpdateContent = renderHook(() => useUpdateContent());
+    const note = renderHook(() => useNoteState());
+    const loadNote = renderHook(() => useLoadNote());
+    const updateContent = renderHook(() => useUpdateContent());
 
     act(() => {
-      renderedLoadNote.result.current(emptyNote);
+      loadNote.result.current(emptyNote);
     });
 
     act(() => {
-      renderedUpdateContent.result.current("hello world");
+      updateContent.result.current("hello world");
     });
 
-    expect(renderedNote.result.current?.content).toEqual("hello world");
+    expect(note.result.current?.content).toEqual("hello world");
   });
 });
