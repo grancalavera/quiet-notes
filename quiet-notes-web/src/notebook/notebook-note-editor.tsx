@@ -1,9 +1,7 @@
-import { NonIdealState, Spinner, TextArea } from "@blueprintjs/core";
-import { useEffect, useRef } from "react";
+import { NonIdealState, TextArea } from "@blueprintjs/core";
+import { useEffect, useRef, useState } from "react";
 import { block } from "../app/bem";
-import { CenterLayout } from "../layout/center-layout";
 import { useNote } from "../notebook-service/notebook-service";
-import { Note } from "./notebook-model";
 import "./notebook-note-editor.scss";
 import { useSelectedNoteId } from "./notebook-state";
 
@@ -15,43 +13,33 @@ export const NoteEditorContainer = () => {
   return selectedNoteId ? (
     <NoteEditor noteId={selectedNoteId} key={selectedNoteId} />
   ) : (
-    <NonIdealNoteEditor />
+    <NonIdealState
+      icon="warning-sign"
+      title="Select an existing note or create a new one"
+    />
   );
 };
 
 const NoteEditor = (props: { noteId: string }) => {
   const [note] = useNote(props.noteId);
+  const [draft, setDraft] = useState(note?.content ?? "");
 
-  return (
-    <div className={b()}>
-      {note ? (
-        <NoteDraft note={note} />
-      ) : (
-        <CenterLayout>
-          <Spinner />{" "}
-        </CenterLayout>
-      )}
-    </div>
-  );
-};
-
-interface NoteDraftProps {
-  note: Note;
-}
-
-const NoteDraft = ({ note }: NoteDraftProps) => {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     inputRef.current?.focus();
-  }, []);
+  }, [note]);
 
-  return <TextArea inputRef={inputRef} value={note.content} onChange={() => {}} fill />;
+  return (
+    <div className={b()}>
+      {note && (
+        <TextArea
+          inputRef={inputRef}
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          fill
+        />
+      )}
+    </div>
+  );
 };
-
-const NonIdealNoteEditor = () => (
-  <NonIdealState
-    icon="warning-sign"
-    title="Select an existing note or create a new note"
-  />
-);

@@ -8,42 +8,47 @@ export interface Note {
   _updatedAt?: Date;
 }
 
-export type UpdateNoteResult = UpdatedNoteChoice | UpdatedNote;
+export type MergeNote = MergeNoteConflict | MergeNoteSuccess;
 
-interface UpdatedNote {
-  kind: "UpdatedNote";
+interface MergeNoteSuccess {
+  kind: "MergeNoteSuccess";
   note: Note;
 }
 
-interface UpdatedNoteChoice {
-  kind: "UpdatedNoteChoice";
+export interface MergeNoteConflict {
+  kind: "MergeNoteConflict";
   version: number;
   local: Note;
   incoming: Note;
 }
 
-export const resolveNoteUpdate = (local: Note, incoming: Note): UpdateNoteResult => {
-  if (local.content === incoming.content) {
-    return {
-      kind: "UpdatedNote",
-      note: local._version <= incoming._version ? incoming : local,
-    };
-  } else {
-    return {
-      kind: "UpdatedNoteChoice",
-      version: Math.max(local._version, incoming._version),
-      local,
-      incoming,
-    };
-  }
-};
-
-export const chooseLocal = (choice: UpdatedNoteChoice): Note => ({
-  ...choice.local,
-  _version: choice.version,
+export const mergeNoteSuccess = (value: Omit<MergeNoteSuccess, "kind">): MergeNote => ({
+  kind: "MergeNoteSuccess",
+  ...value,
 });
 
-export const chooseIncoming = (choice: UpdatedNoteChoice): Note => ({
-  ...choice.incoming,
-  _version: choice.version,
+export const mergeNoteConflict = (value: Omit<MergeNoteConflict, "kind">): MergeNote => ({
+  kind: "MergeNoteConflict",
+  ...value,
+});
+
+export const mergeNote = (local: Note, incoming: Note): MergeNote =>
+  local.content === incoming.content
+    ? mergeNoteSuccess({
+        note: local._version <= incoming._version ? incoming : local,
+      })
+    : mergeNoteConflict({
+        version: Math.max(local._version, incoming._version),
+        local,
+        incoming,
+      });
+
+export const chooseLocal = (value: MergeNoteConflict): Note => ({
+  ...value.local,
+  _version: value.version,
+});
+
+export const chooseIncoming = (value: MergeNoteConflict): Note => ({
+  ...value.incoming,
+  _version: value.version,
 });

@@ -1,10 +1,16 @@
-import { Note, resolveNoteUpdate, UpdateNoteResult } from "./notebook-model";
+import {
+  Note,
+  mergeNote,
+  MergeNote,
+  mergeNoteSuccess,
+  mergeNoteConflict,
+} from "./notebook-model";
 
 interface Scenario {
   name: string;
   local: Note;
   incoming: Note;
-  expected: UpdateNoteResult;
+  expected: MergeNote;
 }
 
 const note = (content: string, _version: number): Note => ({
@@ -22,61 +28,55 @@ const scenarios: Scenario[] = [
     name: "sequential incoming note with identical content",
     local: note("x", 0),
     incoming: note("x", 1),
-    expected: {
-      kind: "UpdatedNote",
+    expected: mergeNoteSuccess({
       note: note("x", 1),
-    },
+    }),
   },
   {
     name: "non sequential ordered incoming note with identical content",
     local: note("x", 0),
     incoming: note("x", 2),
-    expected: {
-      kind: "UpdatedNote",
+    expected: mergeNoteSuccess({
       note: note("x", 2),
-    },
+    }),
   },
   {
     name: "sequential incoming note, different content",
     local: note("x", 0),
     incoming: note("y", 1),
-    expected: {
-      kind: "UpdatedNoteChoice",
+    expected: mergeNoteConflict({
       version: 1,
       local: note("x", 0),
       incoming: note("y", 1),
-    },
+    }),
   },
   {
     name: "out of order incoming note, identical content",
     local: note("x", 1),
     incoming: note("x", 0),
-    expected: {
-      kind: "UpdatedNote",
+    expected: mergeNoteSuccess({
       note: note("x", 1),
-    },
+    }),
   },
   {
     name: "out of order incoming note, different content",
     local: note("x", 1),
     incoming: note("y", 0),
-    expected: {
-      kind: "UpdatedNoteChoice",
+    expected: mergeNoteConflict({
       version: 1,
       local: note("x", 1),
       incoming: note("y", 0),
-    },
+    }),
   },
   {
     name: "incoming note with same version, different content",
     local: note("x", 1),
     incoming: note("y", 1),
-    expected: {
-      kind: "UpdatedNoteChoice",
+    expected: mergeNoteConflict({
       version: 1,
       local: note("x", 1),
       incoming: note("y", 1),
-    },
+    }),
   },
 ];
 
@@ -85,7 +85,7 @@ describe.each(scenarios)("merging note updates", (scenario) => {
 
   // eslint-disable-next-line jest/valid-title
   it(name, () => {
-    const actual = resolveNoteUpdate(local, incoming);
+    const actual = mergeNote(local, incoming);
     expect(actual).toEqual(expected);
   });
 });
