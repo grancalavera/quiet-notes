@@ -46,12 +46,10 @@ export const mergeNote = (local: Note, incoming: Note): MergeNote =>
         incoming,
       });
 
-export const chooseLocal = (value: MergeNoteConflict): Note => ({
-  ...value.local,
-  _version: value.version,
-});
-
-export const chooseIncoming = (value: MergeNoteConflict): Note => ({
-  ...value.incoming,
-  _version: value.version,
+export const resolveMergeConflict = (
+  choice: "local" | "incoming",
+  mergeConflict: MergeNoteConflict
+): Note => ({
+  ...(choice === "local" ? mergeConflict.local : mergeConflict.incoming),
+  _version: mergeConflict.version,
 });
