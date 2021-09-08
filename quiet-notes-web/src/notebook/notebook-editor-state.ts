@@ -23,7 +23,7 @@ const useNotebookEditorState = create<NotebookEditorState & State>((set, get) =>
   loadNote: (incoming) => {
     const local = get().note;
 
-    if (!local) {
+    if (!local || local.id !== incoming.id) {
       set({ note: incoming });
     } else {
       const result = mergeNote(local, incoming);
@@ -54,20 +54,20 @@ const useNotebookEditorState = create<NotebookEditorState & State>((set, get) =>
   reset: () => set(({ note, mergeConflict, ...s }) => s, true),
 }));
 
-const selectNote = (s: NotebookEditorState) => s.note;
-export const useNoteState = () => useNotebookEditorState(selectNote);
+const noteSelector = (s: NotebookEditorState) => s.note;
+export const useNoteState = () => useNotebookEditorState(noteSelector);
 
-const selectLoadNote = (s: NotebookEditorState) => s.loadNote;
-export const useLoadNote = () => useNotebookEditorState(selectLoadNote);
+const loadNoteSelector = (s: NotebookEditorState) => s.loadNote;
+export const useLoadNote = () => useNotebookEditorState(loadNoteSelector);
 
-const selectReset = (s: NotebookEditorState) => s.reset;
-export const useReset = () => useNotebookEditorState(selectReset);
+const resetSelector = (s: NotebookEditorState) => s.reset;
+export const useReset = () => useNotebookEditorState(resetSelector);
 
-const selectUpdateContent = (s: NotebookEditorState) => s.updateContent;
-export const useUpdateContent = () => useNotebookEditorState(selectUpdateContent);
+const updateContentSelector = (s: NotebookEditorState) => s.updateContent;
+export const useUpdateContent = () => useNotebookEditorState(updateContentSelector);
 
-const selectMergeConflict = (s: NotebookEditorState) => s.mergeConflict;
-export const useMergeConflict = () => useNotebookEditorState(selectMergeConflict);
+const mergeConflictSelector = (s: NotebookEditorState) => s.mergeConflict;
+export const useMergeConflict = () => useNotebookEditorState(mergeConflictSelector);
 
-const selectResolveConflict = (s: NotebookEditorState) => s.resolveConflict;
-export const useResolveConflict = () => useNotebookEditorState(selectResolveConflict);
+const resolveConflictSelector = (s: NotebookEditorState) => s.resolveConflict;
+export const useResolveConflict = () => useNotebookEditorState(resolveConflictSelector);

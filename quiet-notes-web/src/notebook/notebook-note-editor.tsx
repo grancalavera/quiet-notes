@@ -1,7 +1,9 @@
 import { NonIdealState, TextArea } from "@blueprintjs/core";
-import { useEffect, useRef, useState } from "react";
+import { useDebounceCallback } from "@react-hook/debounce";
+import { useEffect, useRef } from "react";
 import { block } from "../app/bem";
-import { useNote } from "../notebook-service/notebook-service";
+import { useNote, useUpdateNote } from "../notebook-service/notebook-service";
+import { useLoadNote, useNoteState, useUpdateContent } from "./notebook-editor-state";
 import "./notebook-note-editor.scss";
 import { useSelectedNoteId } from "./notebook-state";
 
@@ -11,7 +13,7 @@ export const NoteEditorContainer = () => {
   const selectedNoteId = useSelectedNoteId();
 
   return selectedNoteId ? (
-    <NoteEditor noteId={selectedNoteId} key={selectedNoteId} />
+    <NoteEditor noteId={selectedNoteId} />
   ) : (
     <NonIdealState
       icon="warning-sign"
@@ -20,26 +22,39 @@ export const NoteEditorContainer = () => {
   );
 };
 
-const NoteEditor = (props: { noteId: string }) => {
-  const [note] = useNote(props.noteId);
-  const [draft, setDraft] = useState(note?.content ?? "");
-
+const NoteEditor = ({ noteId }: { noteId: string }) => {
+  const [remoteNote] = useNote(noteId);
+  const loadNote = useLoadNote();
+  const localNote = useNoteState();
+  const updateContent = useUpdateContent();
+  const { mutate } = useUpdateNote();
+  const updateNote = useDebounceCallback(mutate, 1000);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
+    const shouldUpdate = !!localNote && localNote.content !== remoteNote?.content;
+
+    if (shouldUpdate) {
+      updateNote(localNote);
+    }
+  }, [remoteNote?.content, localNote, updateNote]);
+
+  useEffect(() => {
     inputRef.current?.focus();
-  }, [note]);
+  }, []);
+
+  useEffect(() => {
+    remoteNote && loadNote(remoteNote);
+  }, [remoteNote, loadNote]);
 
   return (
     <div className={b()}>
-      {note && (
-        <TextArea
-          inputRef={inputRef}
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          fill
-        />
-      )}
+      <TextArea
+        inputRef={inputRef}
+        value={localNote?.content ?? ""}
+        onChange={(e) => updateContent(e.target.value)}
+        fill
+      />
     </div>
   );
 };
