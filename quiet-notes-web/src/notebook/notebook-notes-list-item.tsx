@@ -2,6 +2,7 @@ import { Callout, Classes } from "@blueprintjs/core";
 import { truncate } from "lodash";
 import { block } from "../app/bem";
 import { formatDate } from "../date/format";
+import { usePrevious } from "../utils/use-previous";
 import { deriveTitle, Note } from "./notebook-model";
 import "./notebook-notes-list-item.scss";
 
@@ -23,6 +24,11 @@ export interface NotesListItemProps {
 }
 
 export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps) {
+  const previous = usePrevious({
+    _createdAt: note._createdAt,
+    _updatedAt: note._updatedAt,
+  });
+
   return (
     <Callout
       data-testid={testId}
@@ -33,9 +39,9 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
       title={truncate(deriveTitle(note), { length: maxTitleLength }) || defaultNoteTitle}
     >
       <p className={b("list-item-detail").mix(Classes.TEXT_SMALL, Classes.TEXT_MUTED)}>
-        <span>{createdAt(note._createdAt)}</span>
+        <span>{createdAt(note._createdAt ?? previous?._createdAt)}</span>
         <br />
-        <span>{updatedAt(note._updatedAt)}</span>
+        <span>{updatedAt(note._updatedAt ?? previous?._updatedAt)}</span>
       </p>
     </Callout>
   );

@@ -13,7 +13,7 @@ import { Lobby } from "./lobby/lobby";
 import { NotebookLayout } from "./notebook/notebook-layout";
 import { NoteEditorContainer } from "./notebook/notebook-note-editor";
 import { NotesList } from "./notebook/notebook-notes-list";
-import { EditorToolbar, SidebarToolbar } from "./notebook/notebook-toolbars";
+import { NoteEditorToolbar, SidebarToolbar } from "./notebook/notebook-toolbars";
 import reportWebVitals from "./reportWebVitals";
 import { Theme } from "./theme/theme";
 
@@ -45,7 +45,7 @@ ReactDOM.render(
                         <NotebookLayout
                           sidebarToolbar={<SidebarToolbar />}
                           sidebar={<NotesList />}
-                          editorToolbar={<EditorToolbar />}
+                          editorToolbar={<NoteEditorToolbar />}
                           editor={<NoteEditorContainer />}
                         />
                       </AuthorRoute>

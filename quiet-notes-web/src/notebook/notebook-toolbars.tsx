@@ -1,25 +1,19 @@
-import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
+import { Button, Tooltip } from "@blueprintjs/core";
 import { useEffect } from "react";
-import { useNotImplementedError, useUser } from "../app/app-state";
+import { useUser } from "../app/app-state";
 import { block } from "../app/bem";
 import { useCreateNote, useDeleteNote } from "../notebook-service/notebook-service";
 import { useDeselectNote, useSelectedNoteId, useSelectNote } from "./notebook-state";
 import "./notebook-toolbars.scss";
 
-const b = block("toolbar");
+const b = block("note-editor-toolbar");
 
-export const EditorToolbar = () => {
+export const NoteEditorToolbar = () => {
   const selectedNoteId = useSelectedNoteId();
 
   return (
     <div className={b()}>
-      {!!selectedNoteId && (
-        <ButtonGroup>
-          <DeleteNoteButton selectedNoteId={selectedNoteId} />
-          <SaveNoteButton />
-          <CloseNoteButton />
-        </ButtonGroup>
-      )}
+      {!!selectedNoteId && <DeleteNoteButton selectedNoteId={selectedNoteId} />}
     </div>
   );
 };
@@ -29,24 +23,16 @@ const DeleteNoteButton = (props: { selectedNoteId: string }) => {
   const deselectNote = useDeselectNote();
 
   return (
-    <Button
-      icon="trash"
-      onClick={() => {
-        deleteNote(props.selectedNoteId);
-        deselectNote();
-      }}
-    />
+    <Tooltip content="delete note">
+      <Button
+        icon="trash"
+        onClick={() => {
+          deleteNote(props.selectedNoteId);
+          deselectNote();
+        }}
+      />
+    </Tooltip>
   );
-};
-
-const SaveNoteButton = () => {
-  const notImplemented = useNotImplementedError("save note");
-  return <Button icon="floppy-disk" onClick={notImplemented} />;
-};
-
-const CloseNoteButton = () => {
-  const notImplemented = useNotImplementedError("close note");
-  return <Button icon="cross" onClick={notImplemented} />;
 };
 
 export const SidebarToolbar = () => {
