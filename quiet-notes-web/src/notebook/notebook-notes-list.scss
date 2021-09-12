@@ -1,4 +1,3 @@
-@import "~@blueprintjs/core/lib/scss/variables";
 @import "../app/bem.scss";
 @import "../app/constants.scss";
 
@@ -7,17 +6,4 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: $qn-padding;
-
-  &__list-item {
-    user-select: none;
-    margin-block-end: $qn-margin;
-  }
-
-  &__list-item:hover {
-    background-color: rgba($pt-intent-primary, 0.15);
-  }
-
-  .bp3-dark &__list-item:hover {
-    background-color: rgba($pt-intent-primary, 0.25);
-  }
 }

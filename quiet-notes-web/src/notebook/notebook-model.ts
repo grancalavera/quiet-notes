@@ -56,13 +56,3 @@ export const resolveMergeConflict = (
 export const deriveTitle = (note: Note): string => {
   return note.content.trimStart().split("\n")[0] ?? "";
 };
-
-export const sortBySelectedId = (selectedNoteId: string) => (left: Note, right: Note) => {
-  if (left.id === selectedNoteId) {
-    return -1;
-  } else if (right.id === selectedNoteId) {
-    return 1;
-  } else {
-    return 0;
-  }
-};

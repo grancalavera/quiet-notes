@@ -20,9 +20,7 @@ export const useNotesCollectionInternal = <
   author: string,
   options: NotebookServiceOptions<TDocument, TData, IdField>
 ) => {
-  const query = notesCollection()
-    .where("author", "==", author)
-    .orderBy("_updatedAt", "desc");
+  const query = notesCollection().where("author", "==", author);
   return useCollectionData<TData, IdField>(query, options);
 };
 
