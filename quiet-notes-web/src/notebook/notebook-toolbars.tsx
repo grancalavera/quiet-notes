@@ -15,7 +15,7 @@ export const EditorToolbar = () => {
     <div className={b()}>
       {!!selectedNoteId && (
         <ButtonGroup>
-          <DeleteNoteButton />
+          <DeleteNoteButton selectedNoteId={selectedNoteId} />
           <SaveNoteButton />
           <CloseNoteButton />
         </ButtonGroup>
@@ -24,23 +24,18 @@ export const EditorToolbar = () => {
   );
 };
 
-const DeleteNoteButton = () => {
+const DeleteNoteButton = (props: { selectedNoteId: string }) => {
   const { mutate: deleteNote } = useDeleteNote();
-  const selectedNoteId = useSelectedNoteId();
   const deselectNote = useDeselectNote();
 
   return (
-    <>
-      {selectedNoteId && (
-        <Button
-          icon="trash"
-          onClick={() => {
-            deleteNote(selectedNoteId);
-            deselectNote();
-          }}
-        />
-      )}
-    </>
+    <Button
+      icon="trash"
+      onClick={() => {
+        deleteNote(props.selectedNoteId);
+        deselectNote();
+      }}
+    />
   );
 };
 
