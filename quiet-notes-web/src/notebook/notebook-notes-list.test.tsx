@@ -5,7 +5,7 @@ import { useNotesCollectionInternal } from "../notebook-service/notebook-service
 import { Note } from "./notebook-model";
 import { NotesList, testId } from "./notebook-notes-list";
 import { testId as itemTestId } from "./notebook-notes-list-item";
-import { useNotebookState } from "./notebook-state";
+import { useDeselectNote, useSelectNote } from "./notebook-state";
 
 jest.mock("../notebook-service/notebook-service-internal", () => ({
   useNotesCollectionInternal: jest.fn(),
@@ -59,16 +59,17 @@ describe("<NotesList />", () => {
   });
 
   describe("working with items in lists", () => {
-    const notebookState = renderHook(() => useNotebookState());
+    const deselectNote = renderHook(() => useDeselectNote());
+    const selectNote = renderHook(() => useSelectNote());
 
     const notes: Note[] = [
-      { author: "", id: "1", content: "", title: "" },
-      { author: "", id: "2", content: "", title: "" },
-      { author: "", id: "3", content: "", title: "" },
+      { author: "", id: "1", content: "", title: "", _version: 1 },
+      { author: "", id: "2", content: "", title: "", _version: 1 },
+      { author: "", id: "3", content: "", title: "", _version: 1 },
     ];
 
     afterEach(() => {
-      act(() => notebookState.result.current.deselectNote());
+      act(() => deselectNote.result.current());
     });
 
     it("should show a list of notes", () => {
@@ -98,7 +99,7 @@ describe("<NotesList />", () => {
       useNotesCollectionInternal_mock.mockReturnValue([notes as any, false, undefined]);
 
       act(() => {
-        notebookState.result.current.selectNote("1");
+        selectNote.result.current("1");
       });
 
       render(<NotesList />);

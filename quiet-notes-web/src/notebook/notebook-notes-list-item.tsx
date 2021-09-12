@@ -2,15 +2,20 @@ import { Callout, Classes } from "@blueprintjs/core";
 import { truncate } from "lodash";
 import { block } from "../app/bem";
 import { formatDate } from "../date/format";
-import { Note } from "./notebook-model";
+import { usePrevious } from "../utils/use-previous";
+import { deriveTitle, Note } from "./notebook-model";
 import "./notebook-notes-list-item.scss";
 
 export const b = block("notes-list-item");
 export const testId = b().toString();
 export const defaultNoteTitle = "Untitled Note";
 export const maxTitleLength = 25;
-export const createdAt = (date: Date) => `Created ${formatDate(date)}`;
-export const updatedAt = (date: Date) => `Updated ${formatDate(date)}`;
+
+export const createdAt = (date?: Date) =>
+  date ? `Created ${formatDate(date)}` : "\u00A0";
+
+export const updatedAt = (date?: Date) =>
+  date ? `Updated ${formatDate(date)}` : "\u00A0";
 
 export interface NotesListItemProps {
   note: Note;
@@ -19,6 +24,11 @@ export interface NotesListItemProps {
 }
 
 export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps) {
+  const previous = usePrevious({
+    _createdAt: note._createdAt,
+    _updatedAt: note._updatedAt,
+  });
+
   return (
     <Callout
       data-testid={testId}
@@ -26,12 +36,12 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
       intent={isSelected ? "primary" : "none"}
       icon="document"
       onClick={() => onSelect(note.id)}
-      title={truncate(note.title, { length: maxTitleLength }) || defaultNoteTitle}
+      title={truncate(deriveTitle(note), { length: maxTitleLength }) || defaultNoteTitle}
     >
       <p className={b("list-item-detail").mix(Classes.TEXT_SMALL, Classes.TEXT_MUTED)}>
-        {note._createdAt && <span>{createdAt(note._createdAt)}</span>}
+        <span>{createdAt(note._createdAt ?? previous?._createdAt)}</span>
         <br />
-        {note._updatedAt && <span>{updatedAt(note._updatedAt)}</span>}
+        <span>{updatedAt(note._updatedAt ?? previous?._updatedAt)}</span>
       </p>
     </Callout>
   );

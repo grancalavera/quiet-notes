@@ -5,7 +5,7 @@ import { block } from "../app/bem";
 import { useNotesCollection } from "../notebook-service/notebook-service";
 import { NotesListItem } from "./notebook-notes-list-item";
 import "./notebook-notes-list.scss";
-import { useNotebookState } from "./notebook-state";
+import { useSelectedNoteId, useSelectNote } from "./notebook-state";
 
 export const b = block("notes-list");
 export const testId = b().toString();
@@ -13,8 +13,8 @@ export const testId = b().toString();
 export const NotesList = () => {
   const user = useUser();
   const [notes, isLoading] = useNotesCollection(user.uid);
-  const selectNote = useNotebookState((s) => s.selectNote);
-  const selectedNoteId = useNotebookState((s) => s.selectedNoteId);
+  const selectNote = useSelectNote();
+  const selectedNoteId = useSelectedNoteId();
 
   let children: ReactNode;
 
