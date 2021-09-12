@@ -29,21 +29,21 @@ export const NoteEditorContainer = () => {
 
 const NoteEditor = ({ noteId }: { noteId: string }) => {
   const [remoteNote] = useNote(noteId);
-  const loadNote = useLoadNote();
   const localNote = useNoteState();
+  const loadNote = useLoadNote();
   const updateContent = useUpdateContent();
-  const { mutate } = useUpdateNote();
-  const updateNote = useDebounceCallback(mutate, 1000);
-  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const { mutate: updateNote } = useUpdateNote();
   const reset = useReset();
+  const updateNoteDebounced = useDebounceCallback(updateNote, 1000);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     const shouldUpdate = !!localNote && localNote.content !== remoteNote?.content;
 
     if (shouldUpdate) {
-      updateNote(localNote);
+      updateNoteDebounced(localNote);
     }
-  }, [remoteNote?.content, localNote, updateNote]);
+  }, [remoteNote?.content, localNote, updateNoteDebounced]);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -53,7 +53,7 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
     remoteNote && loadNote(remoteNote);
   }, [remoteNote, loadNote]);
 
-  useEffect(() => reset, [reset]);
+  useEffect(() => () => reset(), [reset]);
 
   return (
     <div className={b()}>

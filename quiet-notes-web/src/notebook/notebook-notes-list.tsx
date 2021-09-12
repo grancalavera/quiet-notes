@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { useUser } from "../app/app-state";
 import { block } from "../app/bem";
 import { useNotesCollection } from "../notebook-service/notebook-service";
+import { sortBySelectedId } from "./notebook-model";
 import { NotesListItem } from "./notebook-notes-list-item";
 import "./notebook-notes-list.scss";
 import { useSelectedNoteId, useSelectNote } from "./notebook-state";
@@ -23,7 +24,7 @@ export const NotesList = () => {
   } else if (notes && notes.length > 0) {
     children = (
       <>
-        {notes.map((note) => (
+        {notes.sort(sortBySelectedId(selectedNoteId ?? "")).map((note) => (
           <NotesListItem
             note={note}
             key={note.id}

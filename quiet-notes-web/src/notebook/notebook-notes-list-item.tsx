@@ -9,8 +9,12 @@ export const b = block("notes-list-item");
 export const testId = b().toString();
 export const defaultNoteTitle = "Untitled Note";
 export const maxTitleLength = 25;
-export const createdAt = (date: Date) => `Created ${formatDate(date)}`;
-export const updatedAt = (date: Date) => `Updated ${formatDate(date)}`;
+
+export const createdAt = (date?: Date) =>
+  date ? `Created ${formatDate(date)}` : "\u00A0";
+
+export const updatedAt = (date?: Date) =>
+  date ? `Updated ${formatDate(date)}` : "\u00A0";
 
 export interface NotesListItemProps {
   note: Note;
@@ -29,9 +33,9 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
       title={truncate(deriveTitle(note), { length: maxTitleLength }) || defaultNoteTitle}
     >
       <p className={b("list-item-detail").mix(Classes.TEXT_SMALL, Classes.TEXT_MUTED)}>
-        {note._createdAt && <span>{createdAt(note._createdAt)}</span>}
+        <span>{createdAt(note._createdAt)}</span>
         <br />
-        {note._updatedAt && <span>{updatedAt(note._updatedAt)}</span>}
+        <span>{updatedAt(note._updatedAt)}</span>
       </p>
     </Callout>
   );
