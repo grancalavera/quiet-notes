@@ -24,6 +24,7 @@ const useNotebookEditorState = create<NotebookEditorState & State>((set, get) =>
     const local = get().note;
 
     if (!local || local.id !== incoming.id) {
+      get().reset();
       set({ note: incoming });
     } else {
       const result = mergeNote(local, incoming);

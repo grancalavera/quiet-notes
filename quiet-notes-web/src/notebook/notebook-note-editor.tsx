@@ -3,7 +3,12 @@ import { useDebounceCallback } from "@react-hook/debounce";
 import { useEffect, useRef } from "react";
 import { block } from "../app/bem";
 import { useNote, useUpdateNote } from "../notebook-service/notebook-service";
-import { useLoadNote, useNoteState, useUpdateContent } from "./notebook-editor-state";
+import {
+  useLoadNote,
+  useNoteState,
+  useReset,
+  useUpdateContent,
+} from "./notebook-editor-state";
 import "./notebook-note-editor.scss";
 import { useSelectedNoteId } from "./notebook-state";
 
@@ -30,6 +35,7 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
   const { mutate } = useUpdateNote();
   const updateNote = useDebounceCallback(mutate, 1000);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const reset = useReset();
 
   useEffect(() => {
     const shouldUpdate = !!localNote && localNote.content !== remoteNote?.content;
@@ -46,6 +52,8 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
   useEffect(() => {
     remoteNote && loadNote(remoteNote);
   }, [remoteNote, loadNote]);
+
+  useEffect(() => reset, [reset]);
 
   return (
     <div className={b()}>
