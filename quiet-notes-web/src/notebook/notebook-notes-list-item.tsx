@@ -2,7 +2,7 @@ import { Callout, Classes } from "@blueprintjs/core";
 import { truncate } from "lodash";
 import { block } from "../app/bem";
 import { formatDate } from "../date/format";
-import { Note } from "./notebook-model";
+import { deriveTitle, Note } from "./notebook-model";
 import "./notebook-notes-list-item.scss";
 
 export const b = block("notes-list-item");
@@ -26,7 +26,7 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
       intent={isSelected ? "primary" : "none"}
       icon="document"
       onClick={() => onSelect(note.id)}
-      title={truncate(note.title, { length: maxTitleLength }) || defaultNoteTitle}
+      title={truncate(deriveTitle(note), { length: maxTitleLength }) || defaultNoteTitle}
     >
       <p className={b("list-item-detail").mix(Classes.TEXT_SMALL, Classes.TEXT_MUTED)}>
         {note._createdAt && <span>{createdAt(note._createdAt)}</span>}

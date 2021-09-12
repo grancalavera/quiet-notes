@@ -4,7 +4,6 @@ import { Note } from "../notebook/notebook-model";
 
 export interface NoteReadModel {
   readonly id: string;
-  readonly title: string;
   readonly content: string;
   readonly _updatedAt?: firebase.firestore.Timestamp;
   readonly _createdAt?: firebase.firestore.Timestamp;
@@ -14,7 +13,6 @@ export interface NoteReadModel {
 
 export interface NoteWriteModel {
   id: string;
-  title: string;
   content: string;
   author: string;
   _version: firebase.firestore.FieldValue;
@@ -24,7 +22,6 @@ export interface NoteWriteModel {
 
 export const authorToWriteModel = (author: string): NoteWriteModel => ({
   id: nanoid(),
-  title: "",
   content: "",
   author,
   _version: firebase.firestore.FieldValue.increment(1),

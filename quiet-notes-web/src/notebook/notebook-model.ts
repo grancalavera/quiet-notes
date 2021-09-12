@@ -1,6 +1,5 @@
 export interface Note {
   id: string;
-  title: string;
   content: string;
   author: string;
   _version: number;
@@ -53,3 +52,5 @@ export const resolveMergeConflict = (
   ...(choice === "local" ? mergeConflict.local : mergeConflict.incoming),
   _version: mergeConflict.version,
 });
+
+export const deriveTitle = (note: Note): string => note.content.split("\n")[0] ?? "";
