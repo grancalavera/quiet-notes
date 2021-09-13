@@ -1,5 +1,8 @@
 import { useErrorHandler } from "../app/app-state";
-import { useFirebaseErrorHandler } from "../firebase/firebase-error-handler";
+import {
+  FirebaseErrorHandlerOptions,
+  useFirebaseErrorHandler,
+} from "../firebase/firebase-error-handler";
 import { useFirebaseMutation } from "../firebase/firebase-mutation";
 import { Note } from "../notebook/notebook-model";
 import {
@@ -13,20 +16,23 @@ import {
   noteToWriteModel,
 } from "./notebook-service-model";
 
-export const useNotesCollection = (author: string) => {
+export const useNotesCollection = (
+  author: string,
+  options: FirebaseErrorHandlerOptions = {}
+) => {
   const result = useNotesCollectionInternal(author, {
     idField: "id",
     transform: noteFromReadModel,
   });
-  return useFirebaseErrorHandler(result);
+  return useFirebaseErrorHandler(result, options);
 };
 
-export const useNote = (id: string) => {
+export const useNote = (id: string, options: FirebaseErrorHandlerOptions = {}) => {
   const result = useNoteInternal(id, {
     idField: "id",
     transform: noteFromReadModel,
   });
-  return useFirebaseErrorHandler(result);
+  return useFirebaseErrorHandler(result, options);
 };
 
 export const useCreateNote = () =>
