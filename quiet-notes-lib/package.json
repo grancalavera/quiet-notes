@@ -9,6 +9,7 @@
     "/lib"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "build:ci": "tsc"
   }
 }
