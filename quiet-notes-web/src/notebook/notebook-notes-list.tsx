@@ -1,11 +1,11 @@
 import { NonIdealState, Spinner } from "@blueprintjs/core";
 import { ReactNode } from "react";
+import { useHistory, useParams } from "react-router";
 import { useUser } from "../app/app-state";
 import { block } from "../app/bem";
 import { useNotesCollection } from "../notebook-service/notebook-service";
 import { NotesListItem } from "./notebook-notes-list-item";
 import "./notebook-notes-list.scss";
-import { useSelectedNoteId, useSelectNote } from "./notebook-state";
 
 export const b = block("notes-list");
 export const testId = b().toString();
@@ -13,8 +13,8 @@ export const testId = b().toString();
 export const NotesList = () => {
   const user = useUser();
   const [notes, isLoading] = useNotesCollection(user.uid);
-  const selectNote = useSelectNote();
-  const selectedNoteId = useSelectedNoteId();
+  const { noteId: selectedNoteId } = useParams<{ noteId?: string }>();
+  const history = useHistory();
 
   let children: ReactNode;
 
@@ -29,7 +29,7 @@ export const NotesList = () => {
             key={note.id}
             isSelected={note.id === selectedNoteId}
             onSelect={() => {
-              selectNote(note.id);
+              history.push(`/notebook/${note.id}`);
             }}
           />
         ))}
