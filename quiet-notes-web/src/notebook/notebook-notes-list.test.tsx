@@ -6,8 +6,10 @@ import { Note } from "./notebook-model";
 import { NotesList, testId } from "./notebook-notes-list";
 import { testId as itemTestId } from "./notebook-notes-list-item";
 import { useDeselectNote, useSelectNote } from "./notebook-state";
-import { Route, Router } from "react-router-dom";
+import { Route, Router, useHistory } from "react-router-dom";
 import { createMemoryHistory } from "history";
+
+const history = createMemoryHistory();
 
 jest.mock("../notebook-service/notebook-service-internal", () => ({
   useNotesCollectionInternal: jest.fn(),
@@ -19,13 +21,20 @@ jest.mock("../app/app-state", () => {
   return { ...appState, useUser: jest.fn() };
 });
 
+jest.mock("react-router-dom", () => {
+  const actual = jest.requireActual("react-router-dom");
+  return { ...actual, useHistory: jest.fn() };
+});
+
 const useNotesCollectionInternal_mock = useNotesCollectionInternal as jest.MockedFunction<
   typeof useNotesCollectionInternal
 >;
 
 const useUser_mock = useUser as jest.MockedFunction<typeof useUser>;
 
-const history = createMemoryHistory();
+const useHistory_mock = useHistory as jest.MockedFunction<typeof useHistory>;
+
+beforeEach(() => useHistory_mock.mockReturnValue(history));
 
 describe("<NotesList />", () => {
   describe("defaults and basic loading", () => {
@@ -101,18 +110,25 @@ describe("<NotesList />", () => {
       expect(actual).toBeTruthy();
     });
 
-    it("should select the first item in the list when state changes", () => {
+    it("should select and deselect items on the list imperatively", () => {
       useUser_mock.mockReturnValue({ uid: "" } as any);
       useNotesCollectionInternal_mock.mockReturnValue([notes as any, false, undefined]);
 
       renderNotesList();
+      const selectNote = renderHook(() => useSelectNote());
+      const deselectNote = renderHook(() => useDeselectNote());
 
-      act(() => history.push("/notebook/1"));
-
+      act(() => selectNote.result.current("1"));
       const [item] = screen.getAllByTestId(itemTestId);
-      const actual = item.classList.contains("bp3-intent-primary");
+      const actualSelected = item.classList.contains("bp3-intent-primary");
+      expect(actualSelected).toBeTruthy();
 
-      expect(actual).toBeTruthy();
+      act(() => deselectNote.result.current());
+      const items = screen.getAllByTestId(itemTestId);
+      const actualDeselected = items.every(
+        (item) => !item.classList.contains("bp3-intent-primary")
+      );
+      expect(actualDeselected).toBe(true);
     });
 
     it("should change the selected note on click", () => {
