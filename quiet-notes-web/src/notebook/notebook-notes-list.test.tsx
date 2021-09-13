@@ -6,6 +6,10 @@ import { Note } from "./notebook-model";
 import { NotesList, testId } from "./notebook-notes-list";
 import { testId as itemTestId } from "./notebook-notes-list-item";
 import { useDeselectNote, useSelectNote } from "./notebook-state";
+import { Route, Router, useHistory } from "react-router-dom";
+import { createMemoryHistory } from "history";
+
+const history = createMemoryHistory();
 
 jest.mock("../notebook-service/notebook-service-internal", () => ({
   useNotesCollectionInternal: jest.fn(),
@@ -17,18 +21,29 @@ jest.mock("../app/app-state", () => {
   return { ...appState, useUser: jest.fn() };
 });
 
+jest.mock("react-router-dom", () => {
+  const actual = jest.requireActual("react-router-dom");
+  return { ...actual, useHistory: jest.fn() };
+});
+
 const useNotesCollectionInternal_mock = useNotesCollectionInternal as jest.MockedFunction<
   typeof useNotesCollectionInternal
 >;
 
 const useUser_mock = useUser as jest.MockedFunction<typeof useUser>;
 
+const useHistory_mock = useHistory as jest.MockedFunction<typeof useHistory>;
+
+beforeEach(() => useHistory_mock.mockReturnValue(history));
+
 describe("<NotesList />", () => {
   describe("defaults and basic loading", () => {
     test("should render", () => {
       useUser_mock.mockReturnValue({ uid: "" } as any);
       useNotesCollectionInternal_mock.mockReturnValue([undefined, true, undefined]);
-      render(<NotesList />);
+
+      renderNotesList();
+
       const actual = screen.getByTestId(testId);
       expect(actual).toBeTruthy();
     });
@@ -36,7 +51,9 @@ describe("<NotesList />", () => {
     test("should show spinner when loading", () => {
       useUser_mock.mockReturnValue({ uid: "" } as any);
       useNotesCollectionInternal_mock.mockReturnValue([undefined, true, undefined]);
-      render(<NotesList />);
+
+      renderNotesList();
+
       const actual = screen.getByTestId(testId).querySelector(".bp3-spinner");
       expect(actual).toBeTruthy();
     });
@@ -44,7 +61,9 @@ describe("<NotesList />", () => {
     test("should show non ideal state when not loading and undefined notes", () => {
       useUser_mock.mockReturnValue({ uid: "" } as any);
       useNotesCollectionInternal_mock.mockReturnValue([undefined, false, undefined]);
-      render(<NotesList />);
+
+      renderNotesList();
+
       const actual = screen.getByTestId(testId).querySelector(".bp3-non-ideal-state");
       expect(actual).toBeTruthy();
     });
@@ -52,31 +71,27 @@ describe("<NotesList />", () => {
     test("should show non ideal state when not loading and empty notes array", () => {
       useUser_mock.mockReturnValue({ uid: "" } as any);
       useNotesCollectionInternal_mock.mockReturnValue([[], false, undefined]);
-      render(<NotesList />);
+
+      renderNotesList();
+
       const actual = screen.getByTestId(testId).querySelector(".bp3-non-ideal-state");
       expect(actual).toBeTruthy();
     });
   });
 
   describe("working with items in lists", () => {
-    const deselectNote = renderHook(() => useDeselectNote());
-    const selectNote = renderHook(() => useSelectNote());
-
     const notes: Note[] = [
-      { author: "", id: "1", content: "", title: "", _version: 1 },
-      { author: "", id: "2", content: "", title: "", _version: 1 },
-      { author: "", id: "3", content: "", title: "", _version: 1 },
+      { author: "", id: "1", content: "", _version: 1 },
+      { author: "", id: "2", content: "", _version: 1 },
+      { author: "", id: "3", content: "", _version: 1 },
     ];
-
-    afterEach(() => {
-      act(() => deselectNote.result.current());
-    });
 
     it("should show a list of notes", () => {
       useUser_mock.mockReturnValue({ uid: "" } as any);
       useNotesCollectionInternal_mock.mockReturnValue([notes as any, false, undefined]);
 
-      render(<NotesList />);
+      renderNotesList();
+
       const actual = screen.getAllByTestId(itemTestId).length;
 
       expect(actual).toEqual(notes.length);
@@ -86,7 +101,8 @@ describe("<NotesList />", () => {
       useUser_mock.mockReturnValue({ uid: "" } as any);
       useNotesCollectionInternal_mock.mockReturnValue([notes as any, false, undefined]);
 
-      render(<NotesList />);
+      renderNotesList();
+
       const [item] = screen.getAllByTestId(itemTestId);
       fireEvent.click(item);
       const actual = item.classList.contains("bp3-intent-primary");
@@ -94,26 +110,32 @@ describe("<NotesList />", () => {
       expect(actual).toBeTruthy();
     });
 
-    it("should select the first item in the list when state changes", () => {
+    it("should select and deselect items on the list imperatively", () => {
       useUser_mock.mockReturnValue({ uid: "" } as any);
       useNotesCollectionInternal_mock.mockReturnValue([notes as any, false, undefined]);
 
-      act(() => {
-        selectNote.result.current("1");
-      });
+      renderNotesList();
+      const selectNote = renderHook(() => useSelectNote());
+      const deselectNote = renderHook(() => useDeselectNote());
 
-      render(<NotesList />);
+      act(() => selectNote.result.current("1"));
       const [item] = screen.getAllByTestId(itemTestId);
-      const actual = item.classList.contains("bp3-intent-primary");
+      const actualSelected = item.classList.contains("bp3-intent-primary");
+      expect(actualSelected).toBeTruthy();
 
-      expect(actual).toBeTruthy();
+      act(() => deselectNote.result.current());
+      const items = screen.getAllByTestId(itemTestId);
+      const actualDeselected = items.every(
+        (item) => !item.classList.contains("bp3-intent-primary")
+      );
+      expect(actualDeselected).toBe(true);
     });
 
     it("should change the selected note on click", () => {
       useUser_mock.mockReturnValue({ uid: "" } as any);
       useNotesCollectionInternal_mock.mockReturnValue([notes as any, false, undefined]);
+      renderNotesList();
 
-      render(<NotesList />);
       const items = screen.getAllByTestId(itemTestId);
 
       const actual = () =>
@@ -130,3 +152,15 @@ describe("<NotesList />", () => {
     });
   });
 });
+
+const renderNotesList = () => {
+  act(() => history.replace("/notebook"));
+
+  return render(
+    <Router history={history}>
+      <Route path="/notebook/:noteId?">
+        <NotesList />
+      </Route>
+    </Router>
+  );
+};

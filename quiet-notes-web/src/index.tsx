@@ -41,7 +41,7 @@ ReactDOM.render(
                         <Lobby />
                       </Route>
 
-                      <AuthorRoute path="/notebook">
+                      <AuthorRoute path="/notebook/:noteId?">
                         <NotebookLayout
                           sidebarToolbar={<SidebarToolbar />}
                           sidebar={<NotesList />}

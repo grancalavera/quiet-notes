@@ -1,21 +1,27 @@
-import create, { State } from "zustand";
+import { useCallback } from "react";
+import { useHistory, useParams } from "react-router-dom";
 
-export interface NotebookState {
-  selectedNoteId?: string;
-  selectNote: (id: string) => void;
-  deselectNote: () => void;
+interface NotebookState {
+  noteId?: string;
 }
 
-const useNotebookState = create<NotebookState & State>((set) => ({
-  selectNote: (selectedNoteId) => set({ selectedNoteId }),
-  deselectNote: () => set(({ selectedNoteId, ...s }) => s, true),
-}));
+export const useSelectedNoteId = () => useParams<NotebookState>().noteId;
 
-const _selectedNoteId = (s: NotebookState) => s.selectedNoteId;
-export const useSelectedNoteId = () => useNotebookState(_selectedNoteId);
+export const useSelectNote = () => {
+  const history = useHistory();
 
-const _selectNote = (s: NotebookState) => s.selectNote;
-export const useSelectNote = () => useNotebookState(_selectNote);
+  return useCallback(
+    (noteId: string) => {
+      history.push(`/notebook/${noteId}`);
+    },
+    [history]
+  );
+};
 
-const _deselectNote = (s: NotebookState) => s.deselectNote;
-export const useDeselectNote = () => useNotebookState(_deselectNote);
+export const useDeselectNote = () => {
+  const history = useHistory();
+
+  return useCallback(() => {
+    history.push("/notebook");
+  }, [history]);
+};

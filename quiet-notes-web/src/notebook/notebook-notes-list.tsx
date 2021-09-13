@@ -13,8 +13,8 @@ export const testId = b().toString();
 export const NotesList = () => {
   const user = useUser();
   const [notes, isLoading] = useNotesCollection(user.uid);
-  const selectNote = useSelectNote();
   const selectedNoteId = useSelectedNoteId();
+  const selectNote = useSelectNote();
 
   let children: ReactNode;
 
@@ -28,9 +28,7 @@ export const NotesList = () => {
             note={note}
             key={note.id}
             isSelected={note.id === selectedNoteId}
-            onSelect={() => {
-              selectNote(note.id);
-            }}
+            onSelect={() => selectNote(note.id)}
           />
         ))}
       </>

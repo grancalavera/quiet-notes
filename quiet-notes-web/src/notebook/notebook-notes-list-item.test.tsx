@@ -13,9 +13,6 @@ import {
 interface Scenario {
   name: string;
   props: NotesListItemProps;
-  expected: {
-    title: string;
-  };
 }
 
 const spyOnSelect = jest.fn();
@@ -25,10 +22,6 @@ const _updatedAt = new Date(1);
 const createdAtWithFormat = createdAt(_createdAt);
 const updatedAtWithFormat = updatedAt(_updatedAt);
 
-const mockTitle = (length: number) => [...Array(length)].map(() => "a").join("");
-const shortTitle = "a";
-const longTitle = mockTitle(maxTitleLength * 2);
-const truncatedTitle = mockTitle(maxTitleLength - 3) + "...";
 const zeroOrOne = (x: boolean) => (x ? 1 : 0);
 const shouldOrNot = (x: boolean) => (x ? "should" : "should not");
 
@@ -36,81 +29,33 @@ const scenarios: Scenario[] = [
   {
     name: "local newly created note, not selected, no title",
     props: {
-      note: { author: "mock", content: "", id: "1", title: "" },
+      note: { author: "mock", content: "", id: "1", _version: 0 },
       onSelect: spyOnSelect,
       isSelected: false,
-    },
-    expected: {
-      title: defaultNoteTitle,
     },
   },
   {
     name: "newly created note, not selected",
     props: {
-      note: { author: "mock", content: "", id: "1", title: "", _createdAt },
+      note: { author: "mock", content: "", id: "1", _version: 0, _createdAt },
       onSelect: spyOnSelect,
       isSelected: false,
-    },
-    expected: {
-      title: defaultNoteTitle,
     },
   },
   {
     name: "newly created note, selected",
     props: {
-      note: { author: "mock", content: "", id: "1", title: "", _createdAt },
+      note: { author: "mock", content: "", id: "1", _version: 0, _createdAt },
       onSelect: spyOnSelect,
       isSelected: true,
-    },
-    expected: {
-      title: defaultNoteTitle,
     },
   },
   {
     name: "updated note",
     props: {
-      note: { author: "mock", content: "", id: "1", title: "", _createdAt, _updatedAt },
+      note: { author: "mock", content: "", id: "1", _version: 0, _createdAt, _updatedAt },
       onSelect: spyOnSelect,
       isSelected: true,
-    },
-    expected: {
-      title: defaultNoteTitle,
-    },
-  },
-  {
-    name: "short title",
-    props: {
-      note: {
-        author: "mock",
-        content: "",
-        id: "1",
-        title: shortTitle,
-        _createdAt,
-        _updatedAt,
-      },
-      onSelect: spyOnSelect,
-      isSelected: true,
-    },
-    expected: {
-      title: shortTitle,
-    },
-  },
-  {
-    name: "long title",
-    props: {
-      note: {
-        author: "mock",
-        content: "",
-        id: "1",
-        title: longTitle,
-        _createdAt,
-        _updatedAt,
-      },
-      onSelect: spyOnSelect,
-      isSelected: true,
-    },
-    expected: {
-      title: truncatedTitle,
     },
   },
 ];
@@ -118,7 +63,6 @@ const scenarios: Scenario[] = [
 describe.each(scenarios)("<NotesListItem />", (scenario) => {
   const { name, props } = scenario;
 
-  const expectedTitle = scenario.expected.title;
   const showCreatedDate = !!props.note._createdAt;
   const showUpdatedDate = !!props.note._updatedAt;
   const isSelected = props.isSelected;
@@ -148,12 +92,6 @@ describe.each(scenarios)("<NotesListItem />", (scenario) => {
       const actual = queryAllByText(updatedAtWithFormat).length;
       const expected = zeroOrOne(showUpdatedDate);
       expect(actual).toEqual(expected);
-    });
-
-    it(`should match title:"${expectedTitle}"`, () => {
-      const { getByTestId } = render(<NotesListItem {...props} />);
-      const actual = getByTestId(testId)?.querySelector(".bp3-heading")?.textContent;
-      expect(actual).toEqual(expectedTitle);
     });
 
     it(`${shouldOrNot(isSelected)} be selected by blueprint`, () => {
