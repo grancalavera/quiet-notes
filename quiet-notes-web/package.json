@@ -39,7 +39,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:ci": "yarn install --frozen-lockfile && yarn test --watchAll=false --passWithNoTests && yarn build",
+    "build:ci": "yarn install --frozen-lockfile && yarn test --watchAll=false --verbose && yarn build",
     "test": "react-scripts test",
     "unimported": "unimported"
   },
