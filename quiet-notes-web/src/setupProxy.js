@@ -15,15 +15,16 @@
 // "proxy": "https://quiet-notes-e83fb.web.app"
 
 const { createProxyMiddleware } = require("http-proxy-middleware");
+const fs = require("fs");
+const emulated = process.env.REACT_APP_FIREBASE_USE_EMULATORS === "true";
 
-const target =
-  process.env.REACT_APP_FIREBASE_USE_EMULATORS === "true"
-    ? "localhost:5000"
-    : "https://quiet-notes-e83fb.web.app";
+const target = emulated ? "http://localhost:5000" : "https://quiet-notes-e83fb.web.app";
+
+fs.writeFileSync("proxy-setup.json", JSON.stringify({ emulated, target }, null, 2));
 
 module.exports = function (app) {
   app.use(
-    "*",
+    "/__/firebase",
     createProxyMiddleware({
       target,
       changeOrigin: true,

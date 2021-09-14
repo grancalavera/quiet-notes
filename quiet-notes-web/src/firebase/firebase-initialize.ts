@@ -1,7 +1,4 @@
 import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/firestore";
-import "firebase/functions";
 
 import { useEffect, useState } from "react";
 
@@ -12,10 +9,10 @@ const initializeFirebase = async (onInitialized: () => void) => {
     firebase.initializeApp(config);
   }
 
-  if (
-    process.env.NODE_ENV === "development" &&
-    process.env.REACT_APP_FIREBASE_USE_EMULATORS === "true"
-  ) {
+  const isDev = process.env.NODE_ENV === "development";
+  const emulate = process.env.REACT_APP_FIREBASE_USE_EMULATORS === "true";
+
+  if (isDev && emulate) {
     firebase.auth().useEmulator(process.env.REACT_APP_FIREBASE_EMULATOR_AUTH!);
 
     firebase
