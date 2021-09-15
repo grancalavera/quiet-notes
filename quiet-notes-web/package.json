@@ -21,6 +21,7 @@
     "date-fns": "2.22.1",
     "firebase": "8.9.0",
     "history": "4.10.1",
+    "http-proxy-middleware": "2.0.1",
     "lodash": "4.17.21",
     "nanoid": "3.1.23",
     "normalize.css": "8.0.1",
@@ -39,6 +40,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:emulated": "REACT_APP_FIREBASE_USE_EMULATORS=true react-scripts start",
     "build": "react-scripts build",
     "build:ci": "yarn install --frozen-lockfile && yarn test --watchAll=false --verbose && yarn build",
     "test": "react-scripts test",
@@ -61,6 +63,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": "https://quiet-notes-e83fb.web.app"
+  }
 }
