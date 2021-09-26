@@ -62,3 +62,7 @@ yarn install
 yarn env-local
 yarn start:emulated
 ```
+
+## Indexes
+
+https://firebase.google.com/docs/reference/firestore/indexes
