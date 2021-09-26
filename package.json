@@ -6,8 +6,17 @@
     "quiet-notes-*"
   ],
   "scripts": {
+    "start": "yarn workspace quiet-notes-web start",
+    "start:emulated": "yarn build:lib && yarn build:functions && run-p emulate:*",
     "build": "yarn install --frozen-lockfile && yarn build:lib && yarn build:web",
+    "env-local": "yarn workspace quiet-notes-tools env-local",
     "build:web": "yarn workspace quiet-notes-web build:ci",
-    "build:lib": "yarn workspace quiet-notes-lib build:ci"
+    "build:lib": "yarn workspace quiet-notes-lib build:ci",
+    "build:functions": "yarn workspace quiet-notes-functions build",
+    "emulate:firebase": "firebase emulators:start --only auth,firestore,hosting,functions",
+    "emulate:web": "yarn workspace quiet-notes-web start:emulated"
+  },
+  "dependencies": {
+    "npm-run-all": "4.1.5"
   }
 }
