@@ -2,16 +2,18 @@
 @import "../app/bem.scss";
 @import "../app/constants.scss";
 
-@include b("header") {
-  padding: $qn-padding;
-  display: flex;
-  background-color: $light-gray3;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid $gray5;
+@include b("app-header") {
+  &__header {
+    padding: $qn-padding;
+    display: flex;
+    background-color: $light-gray3;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid $gray5;
 
-  h3 {
-    margin: 0;
+    h3 {
+      margin: 0;
+    }
   }
 
   &__app-title {
@@ -26,18 +28,16 @@
   &__toolbar > * {
     margin-left: $qn-margin;
   }
-}
 
-@include b("avatar") {
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-  cursor: pointer;
-}
+  &__avatar {
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    cursor: pointer;
+  }
 
-@include b("profile") {
-  &__content {
+  &__profile {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -48,7 +48,7 @@
     position: relative;
   }
 
-  &__content > * {
+  &__profile > * {
     margin-bottom: 1rem;
   }
 
@@ -60,8 +60,10 @@
 }
 
 .bp3-dark {
-  @include b("header") {
-    background-color: $dark-gray2;
-    border-bottom: 1px solid $dark-gray1;
+  @include b("app-header") {
+    &__header {
+      background-color: $dark-gray2;
+      border-bottom: 1px solid $dark-gray1;
+    }
   }
 }

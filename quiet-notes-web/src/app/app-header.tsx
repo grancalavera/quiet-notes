@@ -5,14 +5,15 @@ import { ToggleThemeButton } from "../theme/theme";
 import { useTheme } from "../theme/use-theme";
 import "./app-header.scss";
 import { useIsAdmin, useUser } from "./app-state";
-import { useBlock } from "./bem";
+import { block } from "./bem";
+
+const b = block("app-header");
 
 export const AppHeader = () => {
-  const b = useBlock("header");
   const history = useHistory();
 
   return (
-    <div className={b()}>
+    <div className={b("header")}>
       <H3 className={b("app-title").toString()} onClick={() => history.push("/")}>
         Quiet Notes
       </H3>
@@ -35,13 +36,12 @@ const AdminLink = () => {
 };
 
 const Avatar = (props: { size?: number }) => {
-  const b = useBlock("avatar");
   const size = props.size ?? 30;
   const user = useUser();
 
   return user?.photoURL ? (
     <span
-      className={b()}
+      className={b("avatar")}
       style={{
         backgroundImage: `url(${user.photoURL})`,
         width: size,
@@ -55,11 +55,10 @@ const Avatar = (props: { size?: number }) => {
 };
 
 const Profile = () => {
-  const b = useBlock("profile");
   const user = useUser();
 
   const content = (
-    <div className={b("content")}>
+    <div className={b("profile")}>
       <ToggleThemeButton className={b("theme-switch")} />
       <Avatar size={80} />
       <p>
