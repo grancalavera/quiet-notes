@@ -1,5 +1,5 @@
 {
-  "name": "quiet-notes-lib",
+  "name": "quiet-notes-tools",
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
@@ -9,10 +9,12 @@
     "/lib"
   ],
   "scripts": {
-    "build": "tsc",
-    "build:ci": "tsc"
+    "setup": "ts-node src/setup.ts"
   },
   "dependencies": {
+    "@swc/core": "1.2.91",
+    "@swc/helpers": "0.2.13",
+    "ts-node": "10.2.1",
     "typescript": "4.4.2"
   }
 }
