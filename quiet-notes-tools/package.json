@@ -9,7 +9,7 @@
     "/lib"
   ],
   "scripts": {
-    "setup": "ts-node src/setup.ts"
+    "env-local": "ts-node src/env-local.ts"
   },
   "dependencies": {
     "@swc/core": "1.2.91",

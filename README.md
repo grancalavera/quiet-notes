@@ -57,6 +57,8 @@ Answer `y` to this prompt to override the existing configuration:
 
 ```
 yarn install
-yarn setup <default admin email>
+./set-default-admin.sh <default admin email>
+./set-functions-runtime-config.sh
+yarn build:env-local
 yarn start:emulated
 ```

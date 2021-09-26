@@ -9,9 +9,11 @@
     "start": "yarn workspace quiet-notes-web start",
     "start:emulated": "run-p emulate:*",
     "build": "yarn install --frozen-lockfile && yarn build:lib && yarn build:web",
+    "env-local": "yarn workspace quiet-notes-tools env-local",
     "build:web": "yarn workspace quiet-notes-web build:ci",
     "build:lib": "yarn workspace quiet-notes-lib build:ci",
-    "emulate:firebase": "firebase emulators:start --only auth,firestore,hosting,functions",
+    "build:functions": "yarn workspace quiet-notes-functions build",
+    "emulate:firebase": "yarn build:functions && firebase emulators:start --only auth,firestore,hosting,functions",
     "emulate:web": "yarn workspace quiet-notes-web start:emulated"
   },
   "dependencies": {
