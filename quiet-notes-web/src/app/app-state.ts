@@ -33,7 +33,7 @@ export const useAppState = create<AppState>((set) => ({
 const selectUser = (s: AppState) => s.getUser();
 export const useUser = () => useAppState(selectUser);
 
-export const useUserRoles = () => {
+const useUserRoles = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [roles, setRoles] = useState<string[]>();
   const handleError = useErrorHandler();
@@ -55,7 +55,7 @@ export const useUserRoles = () => {
   return [roles, isLoading] as const;
 };
 
-export const useHasRole = (roleName: QNRole) => {
+const useHasRole = (roleName: QNRole) => {
   const [roles, isLoading] = useUserRoles();
 
   return useMemo(
