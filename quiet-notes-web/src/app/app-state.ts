@@ -55,7 +55,7 @@ const useUserRoles = () => {
   return [roles, isLoading] as const;
 };
 
-const useHasRole = (roleName: QNRole) => {
+export const useHasRole = (roleName: QNRole) => {
   const [roles, isLoading] = useUserRoles();
 
   return useMemo(
