@@ -1,7 +1,6 @@
 import { Button, H3, Icon, Popover } from "@blueprintjs/core";
 import firebase from "firebase/app";
 import { useHistory } from "react-router-dom";
-import { ToggleThemeButton } from "../theme/theme";
 import { useTheme } from "../theme/use-theme";
 import "./app-header.scss";
 import { useIsAdmin, useUser } from "./app-state";
@@ -20,6 +19,7 @@ export const AppHeader = () => {
 
       <span className={b("toolbar")}>
         <AdminLink />
+        <ToggleThemeButton className={b("theme-switch")} />
         <Profile />
       </span>
     </div>
@@ -59,7 +59,6 @@ const Profile = () => {
 
   const content = (
     <div className={b("profile")}>
-      <ToggleThemeButton className={b("theme-switch")} />
       <Avatar size={80} />
       <p>
         <strong>{user?.displayName}</strong>
@@ -75,18 +74,21 @@ const Profile = () => {
   );
 
   return (
-    <Popover
-      className={b()}
-      content={content}
-      position="bottom-right"
-      // Under normal circumstances Popover inherits the theme from the container, but
-      // since we're using this popover to also change the theme, it doesn't always pick
-      // up the correct theme. Closing and reopening it forces it to pick up the theme,
-      // but is unacceptable having the wrong theme for a bit. See:
-      // https://blueprintjs.com/docs/versions/4/#core/components/popover.dark-theme
-      popoverClassName={useTheme((s) => s.className)}
-    >
+    <Popover className={b()} content={content} position="bottom-right">
       <Avatar />
     </Popover>
+  );
+};
+
+const ToggleThemeButton = (props: { className?: string }) => {
+  const [theme, toggleTheme] = useTheme((s) => [s.theme, s.toggle]);
+
+  return (
+    <Button
+      icon={theme === "dark" ? "flash" : "moon"}
+      className={props.className?.toString()}
+      minimal
+      onClick={toggleTheme}
+    />
   );
 };
