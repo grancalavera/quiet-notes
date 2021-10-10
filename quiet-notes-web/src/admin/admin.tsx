@@ -22,7 +22,7 @@ export const Admin = () => {
         <Button loading={isLoading} onClick={refetch} icon="refresh" minimal />
       </div>
       <div className={b("body")}>
-        <HTMLTable {...getTableProps()} className={b("table")} striped interactive>
+        <HTMLTable {...getTableProps()} striped interactive>
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
