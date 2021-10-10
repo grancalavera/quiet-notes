@@ -13,6 +13,7 @@ import {
 } from "./notebook-editor-state";
 import "./notebook-note-editor.scss";
 import { useDeselectNote, useSelectedNoteId } from "./notebook-state";
+import { CreateNoteButton } from "./notebook-toolbars";
 
 const b = block("note-editor");
 
@@ -25,6 +26,7 @@ export const NoteEditorContainer = () => {
     <NonIdealState
       icon="warning-sign"
       title="Select an existing note or create a new one"
+      action={<CreateNoteButton showLabel />}
     />
   );
 };

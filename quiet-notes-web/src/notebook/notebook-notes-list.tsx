@@ -11,6 +11,7 @@ import {
   useSelectedNoteId,
   useSelectNote,
 } from "./notebook-state";
+import { CreateNoteButton } from "./notebook-toolbars";
 
 export const b = block("notes-list");
 export const testId = b().toString();
@@ -46,7 +47,13 @@ export const NotesList = () => {
       </>
     );
   } else {
-    children = <NonIdealState icon="warning-sign" title="Create a new note" />;
+    children = (
+      <NonIdealState
+        icon="warning-sign"
+        title="Create a new note"
+        action={<CreateNoteButton showLabel />}
+      />
+    );
   }
 
   return (

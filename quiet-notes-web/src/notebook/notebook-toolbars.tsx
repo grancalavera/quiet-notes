@@ -49,26 +49,34 @@ export const DeleteNoteButton = (props: {
   );
 };
 
-export const SidebarToolbar = () => {
+export const CreateNoteButton = (props: { showLabel?: boolean }) => {
   const user = useUser();
   const { mutate: createNote, data } = useCreateNote();
   const selectNote = useSelectNote();
+  const label = "create note";
 
   useEffect(() => {
     data && selectNote(data);
   }, [data, selectNote]);
-
   return (
-    <div className={b()}>
-      <ButtonGroup>
-        <SortMenu />
-        <Tooltip content="create note">
-          <Button icon={"new-object"} onClick={() => createNote(user.uid)} />
-        </Tooltip>
-      </ButtonGroup>
-    </div>
+    <Tooltip content={label}>
+      <Button
+        icon={"new-object"}
+        onClick={() => createNote(user.uid)}
+        text={props.showLabel ? label : undefined}
+      />
+    </Tooltip>
   );
 };
+
+export const SidebarToolbar = () => (
+  <div className={b()}>
+    <ButtonGroup>
+      <SortMenu />
+      <CreateNoteButton />
+    </ButtonGroup>
+  </div>
+);
 
 const SortMenu = () => {
   const sortType = useSortType();
