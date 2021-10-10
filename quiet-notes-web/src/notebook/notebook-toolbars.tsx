@@ -19,22 +19,30 @@ export const NoteEditorToolbar = () => {
 
   return (
     <div className={b()}>
-      {!!selectedNoteId && <DeleteNoteButton selectedNoteId={selectedNoteId} />}
+      {!!selectedNoteId && <DeleteNoteButton noteId={selectedNoteId} deselect />}
     </div>
   );
 };
 
-const DeleteNoteButton = (props: { selectedNoteId: string }) => {
+export const DeleteNoteButton = (props: {
+  noteId: string;
+  className?: string;
+  minimal?: boolean;
+  deselect: boolean;
+}) => {
   const { mutate: deleteNote } = useDeleteNote();
   const deselectNote = useDeselectNote();
 
   return (
     <Tooltip content="delete note">
       <Button
+        minimal={props.minimal}
+        className={props.className?.toString()}
         icon="trash"
-        onClick={() => {
-          deleteNote(props.selectedNoteId);
-          deselectNote();
+        onClick={(e) => {
+          e.stopPropagation();
+          deleteNote(props.noteId);
+          props.deselect && deselectNote();
         }}
       />
     </Tooltip>

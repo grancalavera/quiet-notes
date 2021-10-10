@@ -7,6 +7,12 @@
   user-select: none;
   margin-block-end: $qn-margin;
 
+  &__delete-button {
+    position: absolute;
+    top: $qn-margin;
+    right: $qn-margin;
+  }
+
   &:hover {
     background-color: rgba($pt-intent-primary, 0.15);
   }
