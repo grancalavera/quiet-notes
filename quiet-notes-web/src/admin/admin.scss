@@ -5,23 +5,28 @@
   overflow: hidden;
   height: 100%;
   padding: $qn-padding;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  row-gap: $qn-padding;
 
   &__toolbar {
+    border: 1px solid green;
     display: flex;
     flex-direction: row-reverse;
   }
 
-  &__user-list {
-    height: 100%;
+  &__body {
+    border: 1px solid goldenrod;
     overflow-y: auto;
     overflow-x: hidden;
   }
 
-  &__user-list td {
-    padding: $qn-padding;
-    border-bottom: 1px solid black;
+  &__table {
+    width: 100%;
   }
 
-  &__user-list td {
+  &__table thead tr {
+    position: sticky;
+    top: 0;
   }
 }
