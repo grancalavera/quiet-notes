@@ -55,7 +55,8 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
     }
   }, [remoteNote?.content, localNote, updateNoteDebounced]);
 
-  useEffect(() => inputRef.current?.focus(), []);
+  useEffect(() => inputRef.current?.focus(), [noteId]);
+
   useEffect(() => remoteNote && loadNote(remoteNote), [remoteNote, loadNote]);
   useEffect(() => () => reset(), [reset]);
 
