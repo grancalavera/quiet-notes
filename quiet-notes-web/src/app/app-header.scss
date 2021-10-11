@@ -53,18 +53,8 @@
     margin-bottom: 1rem;
   }
 
-  &__theme-switch {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-  }
-}
-
-.bp3-dark {
-  @include b("app-header") {
-    &__header {
-      background-color: $dark-gray2;
-      border-bottom: 1px solid $dark-gray1;
-    }
+  .bp3-dark &__header {
+    background-color: $dark-gray2;
+    border-bottom: 1px solid $dark-gray1;
   }
 }

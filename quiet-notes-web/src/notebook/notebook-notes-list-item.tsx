@@ -5,6 +5,7 @@ import { formatDate } from "../date/format";
 import { usePrevious } from "../utils/use-previous";
 import { deriveTitle, Note } from "./notebook-model";
 import "./notebook-notes-list-item.scss";
+import { DeleteNoteButton } from "./notebook-toolbars";
 
 export const b = block("notes-list-item");
 export const testId = b().toString();
@@ -38,11 +39,19 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
       onClick={() => onSelect(note.id)}
       title={truncate(deriveTitle(note), { length: maxTitleLength }) || defaultNoteTitle}
     >
-      <p className={b("list-item-detail").mix(Classes.TEXT_SMALL, Classes.TEXT_MUTED)}>
-        <span>{createdAt(note._createdAt ?? previous?._createdAt)}</span>
-        <br />
-        <span>{updatedAt(note._updatedAt ?? previous?._updatedAt)}</span>
-      </p>
+      <div>
+        <p className={b("list-item-detail").mix(Classes.TEXT_SMALL, Classes.TEXT_MUTED)}>
+          <span>{createdAt(note._createdAt ?? previous?._createdAt)}</span>
+          <br />
+          <span>{updatedAt(note._updatedAt ?? previous?._updatedAt)}</span>
+        </p>
+        <DeleteNoteButton
+          noteId={note.id}
+          deselect={isSelected}
+          className={b("delete-button")}
+          minimal
+        />
+      </div>
     </Callout>
   );
 }

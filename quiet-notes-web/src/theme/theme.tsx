@@ -1,8 +1,7 @@
-import { Button } from "@blueprintjs/core";
-import { FC, useEffect } from "react";
+import { useEffect, VFC } from "react";
 import { useTheme } from "./use-theme";
 
-export const Theme: FC = ({ children }) => {
+export const Theme: VFC = () => {
   const theme = useTheme((s) => s.theme);
 
   useEffect(() => {
@@ -13,18 +12,5 @@ export const Theme: FC = ({ children }) => {
     }
   }, [theme]);
 
-  return <>{children}</>;
-};
-
-export const ToggleThemeButton = (props: { className?: string }) => {
-  const [theme, toggleTheme] = useTheme((s) => [s.theme, s.toggle]);
-
-  return (
-    <Button
-      icon={theme === "dark" ? "flash" : "moon"}
-      className={props.className?.toString()}
-      minimal
-      onClick={toggleTheme}
-    />
-  );
+  return null;
 };

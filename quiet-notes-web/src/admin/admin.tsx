@@ -1,4 +1,4 @@
-import { Button, Checkbox } from "@blueprintjs/core";
+import { Button, Checkbox, HTMLTable } from "@blueprintjs/core";
 import { QNRole, QNToggleRole, QNUserRecord } from "quiet-notes-lib";
 import { useEffect, useState } from "react";
 import { Column, useTable } from "react-table";
@@ -19,16 +19,10 @@ export const Admin = () => {
   return (
     <div className={b()}>
       <div className={b("toolbar")}>
-        <Button
-          loading={isLoading}
-          onClick={refetch}
-          icon="refresh"
-          minimal
-          style={{ position: "sticky" }}
-        />
+        <Button loading={isLoading} onClick={refetch} icon="refresh" minimal />
       </div>
-      <div className={b("user-list")}>
-        <table {...getTableProps()}>
+      <div className={b("body")}>
+        <HTMLTable {...getTableProps()} striped interactive>
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
@@ -50,7 +44,7 @@ export const Admin = () => {
               );
             })}
           </tbody>
-        </table>
+        </HTMLTable>
       </div>
     </div>
   );

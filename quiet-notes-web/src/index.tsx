@@ -23,47 +23,46 @@ ReactDOM.render(
   <React.StrictMode>
     <AppErrorBoundary>
       <App>
-        <Theme>
-          <BrowserRouter>
-            <Switch>
-              <Route exact path="/">
-                <Redirect to="/notebook" />
-              </Route>
+        <Theme />
+        <BrowserRouter>
+          <Switch>
+            <Route exact path="/">
+              <Redirect to="/notebook" />
+            </Route>
 
-              <Route exact path="/login" component={LoginPage} />
+            <Route exact path="/login" component={LoginPage} />
 
-              <PrivateRoute>
-                <AppLayout
-                  header={<AppHeader />}
-                  body={
-                    <Switch>
-                      <Route exact path="/lobby">
-                        <Lobby />
-                      </Route>
+            <PrivateRoute>
+              <AppLayout
+                header={<AppHeader />}
+                body={
+                  <Switch>
+                    <Route exact path="/lobby">
+                      <Lobby />
+                    </Route>
 
-                      <AuthorRoute path="/notebook/:noteId?">
-                        <NotebookLayout
-                          sidebarToolbar={<SidebarToolbar />}
-                          sidebar={<NotesList />}
-                          editorToolbar={<NoteEditorToolbar />}
-                          editor={<NoteEditorContainer />}
-                        />
-                      </AuthorRoute>
+                    <AuthorRoute path="/notebook/:noteId?">
+                      <NotebookLayout
+                        sidebarToolbar={<SidebarToolbar />}
+                        sidebar={<NotesList />}
+                        editorToolbar={<NoteEditorToolbar />}
+                        editor={<NoteEditorContainer />}
+                      />
+                    </AuthorRoute>
 
-                      <AdminRoute path="/admin">
-                        <Admin />
-                      </AdminRoute>
+                    <AdminRoute path="/admin">
+                      <Admin />
+                    </AdminRoute>
 
-                      <Route>
-                        <Redirect to="/" />
-                      </Route>
-                    </Switch>
-                  }
-                />
-              </PrivateRoute>
-            </Switch>
-          </BrowserRouter>
-        </Theme>
+                    <Route>
+                      <Redirect to="/" />
+                    </Route>
+                  </Switch>
+                }
+              />
+            </PrivateRoute>
+          </Switch>
+        </BrowserRouter>
       </App>
     </AppErrorBoundary>
   </React.StrictMode>,

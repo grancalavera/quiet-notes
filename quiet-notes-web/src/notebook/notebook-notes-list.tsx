@@ -1,11 +1,17 @@
 import { NonIdealState, Spinner } from "@blueprintjs/core";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { useUser } from "../app/app-state";
 import { block } from "../app/bem";
 import { useNotesCollection } from "../notebook-service/notebook-service";
 import { NotesListItem } from "./notebook-notes-list-item";
 import "./notebook-notes-list.scss";
-import { useSelectedNoteId, useSelectNote } from "./notebook-state";
+import {
+  useLoadNotes,
+  useNotebookNotes,
+  useSelectedNoteId,
+  useSelectNote,
+} from "./notebook-state";
+import { CreateNoteButton } from "./notebook-toolbars";
 
 export const b = block("notes-list");
 export const testId = b().toString();
@@ -16,6 +22,13 @@ export const NotesList = () => {
   const selectedNoteId = useSelectedNoteId();
   const selectNote = useSelectNote();
 
+  const notebookNotes = useNotebookNotes();
+  const loadNotes = useLoadNotes();
+
+  useEffect(() => {
+    notes && loadNotes(notes);
+  }, [notes, loadNotes]);
+
   let children: ReactNode;
 
   if (isLoading) {
@@ -23,7 +36,7 @@ export const NotesList = () => {
   } else if (notes && notes.length > 0) {
     children = (
       <>
-        {notes.map((note) => (
+        {notebookNotes.map((note) => (
           <NotesListItem
             note={note}
             key={note.id}
@@ -34,7 +47,13 @@ export const NotesList = () => {
       </>
     );
   } else {
-    children = <NonIdealState icon="warning-sign" title="Create a new note" />;
+    children = (
+      <NonIdealState
+        icon="warning-sign"
+        title="Create a new note"
+        action={<CreateNoteButton showLabel />}
+      />
+    );
   }
 
   return (
