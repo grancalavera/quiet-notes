@@ -1,16 +1,10 @@
-import { Button, ButtonGroup, Menu, MenuItem, Popover, Tooltip } from "@blueprintjs/core";
-import { useEffect } from "react";
-import { useUser } from "../app/app-state";
+import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import { block } from "../app/bem";
-import { useCreateNote, useDeleteNote } from "../notebook-service/notebook-service";
-import {
-  useChangeSortType,
-  useDeselectNote,
-  useSelectedNoteId,
-  useSelectNote,
-  useSortType,
-} from "./notebook-state";
+import { useDeleteNote } from "../notebook-service/notebook-service";
+import { CreateNoteButton } from "./CreateNoteButton";
+import { useDeselectNote, useSelectedNoteId } from "./notebook-state";
 import "./notebook-toolbars.scss";
+import { SortMenu } from "./SortNotesMenu";
 
 const b = block("note-editor-toolbar");
 
@@ -49,26 +43,6 @@ export const DeleteNoteButton = (props: {
   );
 };
 
-export const CreateNoteButton = (props: { showLabel?: boolean }) => {
-  const user = useUser();
-  const { mutate: createNote, data } = useCreateNote();
-  const selectNote = useSelectNote();
-  const label = "create note";
-
-  useEffect(() => {
-    data && selectNote(data);
-  }, [data, selectNote]);
-  return (
-    <Tooltip content={label}>
-      <Button
-        icon={"new-object"}
-        onClick={() => createNote(user.uid)}
-        text={props.showLabel ? label : undefined}
-      />
-    </Tooltip>
-  );
-};
-
 export const SidebarToolbar = () => (
   <div className={b()}>
     <ButtonGroup>
@@ -77,45 +51,3 @@ export const SidebarToolbar = () => (
     </ButtonGroup>
   </div>
 );
-
-const SortMenu = () => {
-  const sortType = useSortType();
-  const changeSortType = useChangeSortType();
-
-  return (
-    <Popover
-      content={
-        <Menu>
-          <MenuItem
-            active={sortType === "ByDateDesc"}
-            text="by created date (new first)"
-            icon="sort-desc"
-            onClick={() => changeSortType("ByDateDesc")}
-          />
-          <MenuItem
-            active={sortType === "ByDateAsc"}
-            text="by created date (old first)"
-            icon="sort-asc"
-            onClick={() => changeSortType("ByDateAsc")}
-          />
-          <MenuItem
-            active={sortType === "ByTitleAsc"}
-            text="by title (asc)"
-            icon="sort-alphabetical"
-            onClick={() => changeSortType("ByTitleAsc")}
-          />
-          <MenuItem
-            active={sortType === "ByTitleDesc"}
-            text="by title (desc)"
-            icon="sort-alphabetical-desc"
-            onClick={() => changeSortType("ByTitleDesc")}
-          />
-        </Menu>
-      }
-    >
-      <Tooltip content="sort">
-        <Button icon={"sort"} />
-      </Tooltip>
-    </Popover>
-  );
-};

@@ -4,6 +4,10 @@
   "private": true,
   "dependencies": {
     "@blueprintjs/core": "3.46.0",
+    "@emotion/react": "11.4.1",
+    "@emotion/styled": "11.3.0",
+    "@mui/icons-material": "5.0.3",
+    "@mui/material": "5.0.3",
     "@react-hook/debounce": "4.0.0",
     "@testing-library/dom": "8.5.0",
     "@testing-library/jest-dom": "5.11.4",

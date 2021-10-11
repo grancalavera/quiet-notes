@@ -10,7 +10,7 @@ import { DeleteNoteButton } from "./notebook-toolbars";
 export const b = block("notes-list-item");
 export const testId = b().toString();
 export const defaultNoteTitle = "Untitled Note";
-export const maxTitleLength = 25;
+export const maxTitleLength = 24;
 
 export const createdAt = (date?: Date) =>
   date ? `Created ${formatDate(date)}` : "\u00A0";

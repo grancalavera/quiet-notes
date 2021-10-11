@@ -13,7 +13,7 @@ import {
 } from "./notebook-editor-state";
 import "./notebook-note-editor.scss";
 import { useDeselectNote, useSelectedNoteId } from "./notebook-state";
-import { CreateNoteButton } from "./notebook-toolbars";
+import { CreateNoteButton } from "./CreateNoteButton";
 
 const b = block("note-editor");
 
