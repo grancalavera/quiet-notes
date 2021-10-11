@@ -52,13 +52,9 @@
   &__profile > * {
     margin-bottom: 1rem;
   }
-}
 
-.bp3-dark {
-  @include b("app-header") {
-    &__header {
-      background-color: $dark-gray2;
-      border-bottom: 1px solid $dark-gray1;
-    }
+  .bp3-dark &__header {
+    background-color: $dark-gray2;
+    border-bottom: 1px solid $dark-gray1;
   }
 }
