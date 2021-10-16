@@ -4,7 +4,7 @@ import { useUser } from "../app/app-state";
 import { useNotesCollectionInternal } from "../notebook-service/notebook-service-internal";
 import { Note } from "./notebook-model";
 import { NotesList, testId } from "./notebook-notes-list";
-import { testId as itemTestId } from "./notebook-notes-list-item";
+import { tid as itemTid } from "./notebook-notes-list-item";
 import { useDeselectNote, useSelectNote } from "./notebook-state";
 import { Route, Router, useHistory } from "react-router-dom";
 import { createMemoryHistory } from "history";
@@ -38,7 +38,7 @@ beforeEach(() => useHistory_mock.mockReturnValue(history));
 
 describe("<NotesList />", () => {
   describe("defaults and basic loading", () => {
-    test("should render", () => {
+    it("should render", () => {
       useUser_mock.mockReturnValue({ uid: "" } as any);
       useNotesCollectionInternal_mock.mockReturnValue([undefined, true, undefined]);
 
@@ -48,7 +48,7 @@ describe("<NotesList />", () => {
       expect(actual).toBeTruthy();
     });
 
-    test("should show spinner when loading", () => {
+    it("should show spinner when loading", () => {
       useUser_mock.mockReturnValue({ uid: "" } as any);
       useNotesCollectionInternal_mock.mockReturnValue([undefined, true, undefined]);
 
@@ -58,7 +58,7 @@ describe("<NotesList />", () => {
       expect(actual).toBeTruthy();
     });
 
-    test("should show non ideal state when not loading and undefined notes", () => {
+    it("should show non ideal state when not loading and undefined notes", () => {
       useUser_mock.mockReturnValue({ uid: "" } as any);
       useNotesCollectionInternal_mock.mockReturnValue([undefined, false, undefined]);
 
@@ -68,7 +68,7 @@ describe("<NotesList />", () => {
       expect(actual).toBeTruthy();
     });
 
-    test("should show non ideal state when not loading and empty notes array", () => {
+    it("should show non ideal state when not loading and empty notes array", () => {
       useUser_mock.mockReturnValue({ uid: "" } as any);
       useNotesCollectionInternal_mock.mockReturnValue([[], false, undefined]);
 
@@ -92,7 +92,7 @@ describe("<NotesList />", () => {
 
       renderNotesList();
 
-      const actual = screen.getAllByTestId(itemTestId).length;
+      const actual = screen.getAllByTestId(itemTid.component).length;
 
       expect(actual).toEqual(notes.length);
     });
@@ -103,11 +103,12 @@ describe("<NotesList />", () => {
 
       renderNotesList();
 
-      const [item] = screen.getAllByTestId(itemTestId);
-      fireEvent.click(item);
-      const actual = item.classList.contains("bp3-intent-primary");
+      const [trigger] = screen.getAllByTestId(itemTid.trigger);
+      fireEvent.click(trigger);
+      const [item] = screen.getAllByTestId(itemTid.component);
+      const actual = item.getAttribute("aria-current");
 
-      expect(actual).toBeTruthy();
+      expect(actual).toEqual("true");
     });
 
     it("should select and deselect items on the list imperatively", () => {
@@ -119,14 +120,14 @@ describe("<NotesList />", () => {
       const deselectNote = renderHook(() => useDeselectNote());
 
       act(() => selectNote.result.current("1"));
-      const [item] = screen.getAllByTestId(itemTestId);
-      const actualSelected = item.classList.contains("bp3-intent-primary");
-      expect(actualSelected).toBeTruthy();
+      const [item] = screen.getAllByTestId(itemTid.component);
+      const actualSelected = item.getAttribute("aria-current");
+      expect(actualSelected).toEqual("true");
 
       act(() => deselectNote.result.current());
-      const items = screen.getAllByTestId(itemTestId);
+      const items = screen.getAllByTestId(itemTid.component);
       const actualDeselected = items.every(
-        (item) => !item.classList.contains("bp3-intent-primary")
+        (item) => item.getAttribute("aria-current") === "false"
       );
       expect(actualDeselected).toBe(true);
     });
@@ -136,18 +137,19 @@ describe("<NotesList />", () => {
       useNotesCollectionInternal_mock.mockReturnValue([notes as any, false, undefined]);
       renderNotesList();
 
-      const items = screen.getAllByTestId(itemTestId);
+      const items = screen.getAllByTestId(itemTid.component);
+      const triggers = screen.getAllByTestId(itemTid.trigger);
 
       const actual = () =>
-        items.map((candidate) => candidate.classList.contains("bp3-intent-primary"));
+        items.map((candidate) => candidate.getAttribute("aria-current") === "true");
 
-      fireEvent.click(items[0]);
+      fireEvent.click(triggers[0]);
       expect(actual()).toEqual([true, false, false]);
 
-      fireEvent.click(items[1]);
+      fireEvent.click(triggers[1]);
       expect(actual()).toEqual([false, true, false]);
 
-      fireEvent.click(items[2]);
+      fireEvent.click(triggers[2]);
       expect(actual()).toEqual([false, false, true]);
     });
   });

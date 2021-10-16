@@ -1,13 +1,22 @@
-import { Card, CardActionArea, CardContent, CardHeader, Typography } from "@mui/material";
-import { truncate } from "lodash";
+import {
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  Typography,
+} from "@mui/material";
 import { DeleteNoteButton } from "../components/DeleteNoteButton";
 import { formatDate } from "../date/format";
 import { usePrevious } from "../utils/use-previous";
 import { deriveTitle, Note } from "./notebook-model";
 
-export const testId = "notes-list-item";
+export const tid = {
+  component: "notes-list-item",
+  trigger: "notes-list-item-trigger",
+};
+
 export const defaultNoteTitle = "Untitled Note";
-export const maxTitleLength = 40;
+export const maxTitleLength = 27;
 
 export const createdAt = (date?: Date) =>
   date ? `Created ${formatDate(date)}` : "\u00A0";
@@ -28,18 +37,18 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
   });
 
   return (
-    <Card sx={{ mb: 1 }}>
-      <CardActionArea data-testid={testId} onClick={() => onSelect(note.id)}>
-        <CardHeader
-          title={
-            truncate(deriveTitle(note), { length: maxTitleLength }) || defaultNoteTitle
-          }
-          action={<DeleteNoteButton noteId={note.id} isSelected={isSelected} />}
-          titleTypographyProps={{ sx: { fontSize: 20 } }}
-        ></CardHeader>
-
+    <Card
+      sx={{ mb: 1, bgcolor: isSelected ? "action.selected" : "" }}
+      aria-current={isSelected ? "true" : "false"}
+      data-testid={tid.component}
+    >
+      <CardActionArea onClick={() => onSelect(note.id)} data-testid={tid.trigger}>
         <CardContent>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 0.25 }}>
+          <Typography gutterBottom variant="h6" noWrap>
+            {deriveTitle(note) || defaultNoteTitle}
+          </Typography>
+
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
             {createdAt(note._createdAt ?? previous?._createdAt)}
           </Typography>
 
@@ -48,6 +57,10 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
           </Typography>
         </CardContent>
       </CardActionArea>
+
+      <CardActions sx={{ justifyContent: "flex-end" }}>
+        <DeleteNoteButton noteId={note.id} isSelected={isSelected} />
+      </CardActions>
     </Card>
   );
 }
