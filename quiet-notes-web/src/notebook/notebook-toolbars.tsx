@@ -12,7 +12,7 @@ export const NoteEditorToolbar = () => {
 
   return (
     <div className={b()}>
-      {!!selectedNoteId && <DeleteNoteButton noteId={selectedNoteId} />}
+      {!!selectedNoteId && <DeleteNoteButton noteId={selectedNoteId} isSelected />}
     </div>
   );
 };

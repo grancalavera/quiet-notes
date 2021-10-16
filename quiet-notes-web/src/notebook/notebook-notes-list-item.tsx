@@ -46,7 +46,7 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
           <span>{updatedAt(note._updatedAt ?? previous?._updatedAt)}</span>
         </p>
         <div className={b("delete-button")}>
-          <DeleteNoteButton noteId={note.id} />
+          <DeleteNoteButton noteId={note.id} isSelected={isSelected} />
         </div>
       </div>
     </Callout>

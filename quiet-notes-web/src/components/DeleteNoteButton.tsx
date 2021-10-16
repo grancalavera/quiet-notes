@@ -1,24 +1,29 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton, Tooltip } from "@mui/material";
+import { VFC } from "react";
 import { useDeleteNote } from "../notebook-service/notebook-service";
-import { useDeselectNote, useSelectedNoteId } from "../notebook/notebook-state";
+import { useDeselectNote } from "../notebook/notebook-state";
 
-export function DeleteNoteButton(props: { noteId: string }) {
+interface DeleteNoteButtonProps {
+  noteId: string;
+  isSelected: boolean;
+}
+
+export const DeleteNoteButton: VFC<DeleteNoteButtonProps> = (props) => {
   const { mutate: deleteNote } = useDeleteNote();
   const deselectNote = useDeselectNote();
-  const selectedNoteId = useSelectedNoteId();
 
   return (
     <Tooltip title="delete note">
       <IconButton
         onClick={(e) => {
           e.stopPropagation();
+          props.isSelected && deselectNote();
           deleteNote(props.noteId);
-          props.noteId === selectedNoteId && deselectNote();
         }}
       >
         <DeleteIcon color="primary" />
       </IconButton>
     </Tooltip>
   );
-}
+};
