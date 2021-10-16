@@ -1,8 +1,7 @@
-import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import { block } from "../app/bem";
-import { useDeleteNote } from "../notebook-service/notebook-service";
-import { CreateNoteButton } from "./CreateNoteButton";
-import { useDeselectNote, useSelectedNoteId } from "./notebook-state";
+import { CreateNoteButton } from "../components/CreateNoteButton";
+import { DeleteNoteButton } from "../components/DeleteNoteButton";
+import { useSelectedNoteId } from "./notebook-state";
 import "./notebook-toolbars.scss";
 import { SortMenu } from "./SortNotesMenu";
 
@@ -13,41 +12,14 @@ export const NoteEditorToolbar = () => {
 
   return (
     <div className={b()}>
-      {!!selectedNoteId && <DeleteNoteButton noteId={selectedNoteId} deselect />}
+      {!!selectedNoteId && <DeleteNoteButton noteId={selectedNoteId} />}
     </div>
-  );
-};
-
-export const DeleteNoteButton = (props: {
-  noteId: string;
-  className?: string;
-  minimal?: boolean;
-  deselect: boolean;
-}) => {
-  const { mutate: deleteNote } = useDeleteNote();
-  const deselectNote = useDeselectNote();
-
-  return (
-    <Tooltip content="delete note">
-      <Button
-        minimal={props.minimal}
-        className={props.className?.toString()}
-        icon="trash"
-        onClick={(e) => {
-          e.stopPropagation();
-          deleteNote(props.noteId);
-          props.deselect && deselectNote();
-        }}
-      />
-    </Tooltip>
   );
 };
 
 export const SidebarToolbar = () => (
   <div className={b()}>
-    <ButtonGroup>
-      <SortMenu />
-      <CreateNoteButton />
-    </ButtonGroup>
+    <SortMenu />
+    <CreateNoteButton />
   </div>
 );

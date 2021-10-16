@@ -11,7 +11,7 @@ import {
   useSelectedNoteId,
   useSelectNote,
 } from "./notebook-state";
-import { CreateNoteButton } from "./CreateNoteButton";
+import { CreateNoteButton } from "../components/CreateNoteButton";
 
 export const b = block("notes-list");
 export const testId = b().toString();

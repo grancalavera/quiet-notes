@@ -5,7 +5,7 @@ import { formatDate } from "../date/format";
 import { usePrevious } from "../utils/use-previous";
 import { deriveTitle, Note } from "./notebook-model";
 import "./notebook-notes-list-item.scss";
-import { DeleteNoteButton } from "./notebook-toolbars";
+import { DeleteNoteButton } from "../components/DeleteNoteButton";
 
 export const b = block("notes-list-item");
 export const testId = b().toString();
@@ -45,12 +45,9 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
           <br />
           <span>{updatedAt(note._updatedAt ?? previous?._updatedAt)}</span>
         </p>
-        <DeleteNoteButton
-          noteId={note.id}
-          deselect={isSelected}
-          className={b("delete-button")}
-          minimal
-        />
+        <div className={b("delete-button")}>
+          <DeleteNoteButton noteId={note.id} />
+        </div>
       </div>
     </Callout>
   );

@@ -5,7 +5,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { useEffect, VFC } from "react";
 import { useUser } from "../app/app-state";
 import { useCreateNote } from "../notebook-service/notebook-service";
-import { useSelectNote } from "./notebook-state";
+import { useSelectNote } from "../notebook/notebook-state";
 
 export const CreateNoteButton: VFC<{ showLabel?: boolean }> = (props) => {
   const user = useUser();
