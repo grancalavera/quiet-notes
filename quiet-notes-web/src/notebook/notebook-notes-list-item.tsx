@@ -1,16 +1,13 @@
-import { Callout, Classes } from "@blueprintjs/core";
+import { Card, CardActionArea, CardContent, CardHeader, Typography } from "@mui/material";
 import { truncate } from "lodash";
-import { block } from "../app/bem";
+import { DeleteNoteButton } from "../components/DeleteNoteButton";
 import { formatDate } from "../date/format";
 import { usePrevious } from "../utils/use-previous";
 import { deriveTitle, Note } from "./notebook-model";
-import "./notebook-notes-list-item.scss";
-import { DeleteNoteButton } from "../components/DeleteNoteButton";
 
-export const b = block("notes-list-item");
-export const testId = b().toString();
+export const testId = "notes-list-item";
 export const defaultNoteTitle = "Untitled Note";
-export const maxTitleLength = 24;
+export const maxTitleLength = 40;
 
 export const createdAt = (date?: Date) =>
   date ? `Created ${formatDate(date)}` : "\u00A0";
@@ -31,24 +28,26 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
   });
 
   return (
-    <Callout
-      data-testid={testId}
-      className={b({ isSelected }).toString()}
-      intent={isSelected ? "primary" : "none"}
-      icon="document"
-      onClick={() => onSelect(note.id)}
-      title={truncate(deriveTitle(note), { length: maxTitleLength }) || defaultNoteTitle}
-    >
-      <div>
-        <p className={b("list-item-detail").mix(Classes.TEXT_SMALL, Classes.TEXT_MUTED)}>
-          <span>{createdAt(note._createdAt ?? previous?._createdAt)}</span>
-          <br />
-          <span>{updatedAt(note._updatedAt ?? previous?._updatedAt)}</span>
-        </p>
-        <div className={b("delete-button")}>
-          <DeleteNoteButton noteId={note.id} isSelected={isSelected} />
-        </div>
-      </div>
-    </Callout>
+    <Card sx={{ mb: 1 }}>
+      <CardActionArea data-testid={testId} onClick={() => onSelect(note.id)}>
+        <CardHeader
+          title={
+            truncate(deriveTitle(note), { length: maxTitleLength }) || defaultNoteTitle
+          }
+          action={<DeleteNoteButton noteId={note.id} isSelected={isSelected} />}
+          titleTypographyProps={{ sx: { fontSize: 20 } }}
+        ></CardHeader>
+
+        <CardContent>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 0.25 }}>
+            {createdAt(note._createdAt ?? previous?._createdAt)}
+          </Typography>
+
+          <Typography variant="body2" color="text.secondary">
+            {updatedAt(note._updatedAt ?? previous?._updatedAt)}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+    </Card>
   );
 }
