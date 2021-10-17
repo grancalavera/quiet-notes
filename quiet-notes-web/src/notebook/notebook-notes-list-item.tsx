@@ -1,11 +1,4 @@
-import {
-  Card,
-  CardActionArea,
-  CardActions,
-  CardContent,
-  Typography,
-} from "@mui/material";
-import { DeleteNoteButton } from "../components/DeleteNoteButton";
+import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
 import { formatDate } from "../date/format";
 import { usePrevious } from "../utils/use-previous";
 import { deriveTitle, Note } from "./notebook-model";
@@ -58,9 +51,10 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
         </CardContent>
       </CardActionArea>
 
-      <CardActions sx={{ justifyContent: "flex-end" }}>
+      {/* change to https://mui.com/components/menus/#context-menu */}
+      {/* <CardActions sx={{ justifyContent: "flex-end" }}>
         <DeleteNoteButton noteId={note.id} isSelected={isSelected} />
-      </CardActions>
+      </CardActions> */}
     </Card>
   );
 }
