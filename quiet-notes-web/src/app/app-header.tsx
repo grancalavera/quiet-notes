@@ -2,6 +2,7 @@ import { Button, H3, Popover } from "@blueprintjs/core";
 import { Avatar } from "@mui/material";
 import firebase from "firebase/app";
 import { useHistory } from "react-router-dom";
+import { ToggleThemeSwitch } from "../components/ToggleThemeSwitch";
 import { useQNTheme, useToggleQNTheme } from "../theme/use-theme";
 import "./app-header.scss";
 import { useIsAdmin, useUser } from "./app-state";
@@ -73,12 +74,13 @@ const ToggleThemeButton = (props: { className?: string }) => {
   const theme = useQNTheme();
   const toggleTheme = useToggleQNTheme();
 
-  return (
-    <Button
-      icon={theme === "dark" ? "flash" : "moon"}
-      className={props.className?.toString()}
-      minimal
-      onClick={toggleTheme}
-    />
-  );
+  return <ToggleThemeSwitch checked={theme === "dark"} onChange={() => toggleTheme()} />;
+  // return (
+  //   <Button
+  //     icon={theme === "dark" ? "flash" : "moon"}
+  //     className={props.className?.toString()}
+  //     minimal
+  //     onClick={toggleTheme}
+  //   />
+  // );
 };
