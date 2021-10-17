@@ -1,4 +1,5 @@
-import { Button, H3, Icon, Popover } from "@blueprintjs/core";
+import { Button, H3, Popover } from "@blueprintjs/core";
+import { Avatar } from "@mui/material";
 import firebase from "firebase/app";
 import { useHistory } from "react-router-dom";
 import { useTheme } from "../theme/use-theme";
@@ -35,23 +36,11 @@ const AdminLink = () => {
   );
 };
 
-const Avatar = (props: { size?: number }) => {
-  const size = props.size ?? 30;
+const UserAvatar = ({ size = 30 }: { size?: number }) => {
   const user = useUser();
-
-  return user?.photoURL ? (
-    <span
-      className={b("avatar")}
-      style={{
-        backgroundImage: `url(${user.photoURL})`,
-        width: size,
-        height: size,
-        borderRadius: size / 2,
-      }}
-    ></span>
-  ) : (
-    <Icon icon="user" iconSize={size} />
-  );
+  const photoURL = user.photoURL ?? undefined;
+  const username = user.displayName ?? user.email ?? "";
+  return <Avatar alt={username} src={photoURL} sx={{ width: size, height: size }} />;
 };
 
 const Profile = () => {
@@ -59,7 +48,7 @@ const Profile = () => {
 
   const content = (
     <div className={b("profile")}>
-      <Avatar size={80} />
+      <UserAvatar size={80} />
       <p>
         <strong>{user?.displayName}</strong>
       </p>
@@ -75,7 +64,7 @@ const Profile = () => {
 
   return (
     <Popover className={b()} content={content} position="bottom-right">
-      <Avatar />
+      <UserAvatar />
     </Popover>
   );
 };
