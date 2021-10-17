@@ -2,7 +2,7 @@ import { Button, H3, Popover } from "@blueprintjs/core";
 import { Avatar } from "@mui/material";
 import firebase from "firebase/app";
 import { useHistory } from "react-router-dom";
-import { useTheme } from "../theme/use-theme";
+import { useQNTheme, useToggleQNTheme } from "../theme/use-theme";
 import "./app-header.scss";
 import { useIsAdmin, useUser } from "./app-state";
 import { block } from "./bem";
@@ -70,7 +70,8 @@ const Profile = () => {
 };
 
 const ToggleThemeButton = (props: { className?: string }) => {
-  const [theme, toggleTheme] = useTheme((s) => [s.theme, s.toggle]);
+  const theme = useQNTheme();
+  const toggleTheme = useToggleQNTheme();
 
   return (
     <Button
