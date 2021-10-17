@@ -30,14 +30,6 @@
     margin-left: $qn-margin;
   }
 
-  &__avatar {
-    display: inline-block;
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-    cursor: pointer;
-  }
-
   &__profile {
     display: flex;
     flex-direction: column;
@@ -47,6 +39,7 @@
     padding-right: 3rem;
     padding-left: 3rem;
     position: relative;
+    padding-bottom: 2.5rem;
   }
 
   &__profile > * {

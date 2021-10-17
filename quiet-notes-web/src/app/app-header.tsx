@@ -1,6 +1,7 @@
-import { Button, H3, Popover } from "@blueprintjs/core";
-import { Avatar } from "@mui/material";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { Avatar, Button, IconButton, Popover, Typography } from "@mui/material";
 import firebase from "firebase/app";
+import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { ToggleThemeSwitch } from "../components/ToggleThemeSwitch";
 import { useQNTheme, useToggleQNTheme } from "../theme/use-theme";
@@ -15,13 +16,13 @@ export const AppHeader = () => {
 
   return (
     <div className={b("header")}>
-      <H3 className={b("app-title").toString()} onClick={() => history.push("/")}>
+      <Typography variant="h4" onClick={() => history.push("/")}>
         Quiet Notes
-      </H3>
+      </Typography>
 
       <span className={b("toolbar")}>
         <AdminLink />
-        <ToggleThemeButton className={b("theme-switch")} />
+        <ToggleThemeButton />
         <Profile />
       </span>
     </div>
@@ -33,7 +34,13 @@ const AdminLink = () => {
   const [isAdmin] = useIsAdmin();
 
   return (
-    <>{isAdmin && <Button icon="cog" minimal onClick={() => history.push("/admin")} />}</>
+    <>
+      {isAdmin && (
+        <IconButton onClick={() => history.push("/admin")}>
+          <SettingsIcon />
+        </IconButton>
+      )}
+    </>
   );
 };
 
@@ -45,6 +52,7 @@ const UserAvatar = ({ size = 30 }: { size?: number }) => {
 };
 
 const Profile = () => {
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const user = useUser();
 
   const content = (
@@ -59,28 +67,71 @@ const Profile = () => {
       <p>
         <em>{user?.uid}</em>
       </p>
-      <Button onClick={() => firebase.auth().signOut()}>Sign Out</Button>
+
+      <Button onClick={() => firebase.auth().signOut()} variant="contained">
+        Sign Out
+      </Button>
     </div>
   );
 
+  const open = !!anchorEl;
+  const id = open ? "user-profile" : undefined;
+
   return (
-    <Popover className={b()} content={content} position="bottom-right">
-      <UserAvatar />
-    </Popover>
+    <>
+      <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} aria-describedby={id}>
+        <UserAvatar />
+      </IconButton>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        onClose={() => setAnchorEl(null)}
+      >
+        {content}
+      </Popover>
+    </>
   );
 };
 
-const ToggleThemeButton = (props: { className?: string }) => {
+const ToggleThemeButton = () => {
   const theme = useQNTheme();
   const toggleTheme = useToggleQNTheme();
-
   return <ToggleThemeSwitch checked={theme === "dark"} onChange={() => toggleTheme()} />;
-  // return (
-  //   <Button
-  //     icon={theme === "dark" ? "flash" : "moon"}
-  //     className={props.className?.toString()}
-  //     minimal
-  //     onClick={toggleTheme}
-  //   />
-  // );
 };
+
+export default function BasicPopover() {
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
+  return (
+    <div>
+      <Button aria-describedby={id} variant="contained" onClick={handleClick}>
+        Open Popover
+      </Button>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+      >
+        <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
+      </Popover>
+    </div>
+  );
+}
