@@ -49,8 +49,9 @@
     "start": "react-scripts start",
     "start:emulated": "REACT_APP_FIREBASE_USE_EMULATORS=true react-scripts start",
     "build": "react-scripts build",
-    "build:ci": "yarn install --frozen-lockfile && yarn test --watchAll=false --verbose && yarn build",
+    "build:ci": "yarn install --frozen-lockfile && yarn test:ci && yarn build",
     "test": "react-scripts test",
+    "test:ci": "react-scripts test --watchAll=false --verbose",
     "unimported": "unimported"
   },
   "eslintConfig": {
