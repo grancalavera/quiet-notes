@@ -1,9 +1,11 @@
-import { NonIdealState, TextArea } from "@blueprintjs/core";
+import { TextArea } from "@blueprintjs/core";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { useEffect, useRef } from "react";
 import { isFirebaseError } from "../app/app-error";
 import { useErrorHandler } from "../app/app-state";
 import { block } from "../app/bem";
+import { CreateNoteButton } from "../components/CreateNoteButton";
+import { CenterLayout } from "../layout/center-layout";
 import { useNote, useUpdateNote } from "../notebook-service/notebook-service";
 import {
   useLoadNote,
@@ -13,7 +15,6 @@ import {
 } from "./notebook-editor-state";
 import "./notebook-note-editor.scss";
 import { useDeselectNote, useSelectedNoteId } from "./notebook-state";
-import { CreateNoteButton } from "../components/CreateNoteButton";
 
 const b = block("note-editor");
 
@@ -23,11 +24,9 @@ export const NoteEditorContainer = () => {
   return selectedNoteId ? (
     <NoteEditor noteId={selectedNoteId} />
   ) : (
-    <NonIdealState
-      icon="warning-sign"
-      title="Select an existing note or create a new one"
-      action={<CreateNoteButton showLabel />}
-    />
+    <CenterLayout>
+      <CreateNoteButton showLabel />
+    </CenterLayout>
   );
 };
 
