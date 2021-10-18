@@ -1,4 +1,3 @@
-import { FocusStyleManager } from "@blueprintjs/core";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -20,8 +19,6 @@ import { NotesList } from "./notebook/notebook-notes-list";
 import { NoteEditorToolbar, SidebarToolbar } from "./notebook/notebook-toolbars";
 import reportWebVitals from "./reportWebVitals";
 import { Theme } from "./theme/theme";
-
-FocusStyleManager.onlyShowFocusOnTabs();
 
 ReactDOM.render(
   <React.StrictMode>
