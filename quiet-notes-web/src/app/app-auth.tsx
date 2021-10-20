@@ -1,4 +1,5 @@
-import { Button, Spinner } from "@blueprintjs/core";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import firebase from "firebase/app";
 import { QNRole } from "quiet-notes-lib";
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
@@ -56,7 +57,7 @@ export const LoginPage = () => (
     notAuthenticated={
       <CenterLayout>
         <Button
-          large
+          variant="contained"
           onClick={() => {
             firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
           }}
@@ -100,7 +101,7 @@ const AuthState = ({ authenticated, notAuthenticated }: AuthStateProps) => {
       {!isLoading && !user && notAuthenticated}
       {isLoading && (
         <CenterLayout>
-          <Spinner />
+          <CircularProgress />
         </CenterLayout>
       )}
     </>

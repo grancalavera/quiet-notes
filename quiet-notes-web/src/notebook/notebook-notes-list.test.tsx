@@ -47,16 +47,6 @@ describe("<NotesList />", () => {
       const actual = screen.getByTestId(testId);
       expect(actual).toBeTruthy();
     });
-
-    it("should show spinner when loading", () => {
-      useUser_mock.mockReturnValue({ uid: "" } as any);
-      useNotesCollectionInternal_mock.mockReturnValue([undefined, true, undefined]);
-
-      renderNotesList();
-
-      const actual = screen.getByTestId(testId).querySelector(".bp3-spinner");
-      expect(actual).toBeTruthy();
-    });
   });
 
   describe("working with items in lists", () => {

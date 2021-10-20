@@ -1,4 +1,4 @@
-import { Spinner } from "@blueprintjs/core";
+import { CircularProgress } from "@mui/material";
 import { ReactNode, useEffect } from "react";
 import { useUser } from "../app/app-state";
 import { block } from "../app/bem";
@@ -33,7 +33,11 @@ export const NotesList = () => {
   let children: ReactNode;
 
   if (isLoading) {
-    children = <Spinner />;
+    children = (
+      <CenterLayout>
+        <CircularProgress />
+      </CenterLayout>
+    );
   } else if (notes && notes.length > 0) {
     children = (
       <>
