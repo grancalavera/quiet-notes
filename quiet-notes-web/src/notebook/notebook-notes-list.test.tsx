@@ -57,26 +57,6 @@ describe("<NotesList />", () => {
       const actual = screen.getByTestId(testId).querySelector(".bp3-spinner");
       expect(actual).toBeTruthy();
     });
-
-    it("should show non ideal state when not loading and undefined notes", () => {
-      useUser_mock.mockReturnValue({ uid: "" } as any);
-      useNotesCollectionInternal_mock.mockReturnValue([undefined, false, undefined]);
-
-      renderNotesList();
-
-      const actual = screen.getByTestId(testId).querySelector(".bp3-non-ideal-state");
-      expect(actual).toBeTruthy();
-    });
-
-    it("should show non ideal state when not loading and empty notes array", () => {
-      useUser_mock.mockReturnValue({ uid: "" } as any);
-      useNotesCollectionInternal_mock.mockReturnValue([[], false, undefined]);
-
-      renderNotesList();
-
-      const actual = screen.getByTestId(testId).querySelector(".bp3-non-ideal-state");
-      expect(actual).toBeTruthy();
-    });
   });
 
   describe("working with items in lists", () => {
