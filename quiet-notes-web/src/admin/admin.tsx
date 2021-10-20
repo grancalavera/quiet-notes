@@ -1,56 +1,82 @@
-import { Button, Checkbox, HTMLTable } from "@blueprintjs/core";
-import { QNRole, QNToggleRole, QNUserRecord } from "quiet-notes-lib";
-import { useEffect, useState } from "react";
-import { Column, useTable } from "react-table";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import {
+  Checkbox,
+  CircularProgress,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import { QNToggleRole } from "quiet-notes-lib";
+import { useEffect, useState, VFC } from "react";
 import { block } from "../app/bem";
 import { useToggleRole, useUserList } from "../user-service/user-service";
 import "./admin.scss";
 
 const b = block("admin");
 
-export const Admin = () => {
+export const Admin: VFC = () => {
   const { data, refetch, isLoading } = useUserList();
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
-    columns,
-    data: data?.users ?? [],
-    getRowId: (x) => x.uid,
-  });
 
   return (
     <div className={b()}>
       <div className={b("toolbar")}>
-        <Button loading={isLoading} onClick={refetch} icon="refresh" minimal />
+        <IconButton onClick={() => refetch()} disabled={isLoading}>
+          {isLoading ? <CircularProgress size={24} /> : <RefreshIcon />}
+        </IconButton>
       </div>
-      <div className={b("body")}>
-        <HTMLTable {...getTableProps()} striped interactive>
-          <thead>
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-                ))}
-              </tr>
+      <TableContainer component={Paper}>
+        <Table aria-label="manage users">
+          <TableHead>
+            <TableRow>
+              <TableCell>Email</TableCell>
+              <TableCell>Created</TableCell>
+              <TableCell>Signed In</TableCell>
+              <TableCell>UID</TableCell>
+              <TableCell>Author</TableCell>
+              <TableCell>Admin</TableCell>
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {(data?.users ?? []).map((user) => (
+              <TableRow key={user.uid}>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.metadata.creationTime}</TableCell>
+                <TableCell>{user.metadata.lastSignInTime}</TableCell>
+                <TableCell>{user.uid}</TableCell>
+                <TableCell>
+                  <CheckboxCell
+                    value={{
+                      email: user.email ?? "",
+                      role: "author",
+                      enabled: user.customClaims.roles.includes("author"),
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <CheckboxCell
+                    value={{
+                      email: user.email ?? "",
+                      role: "admin",
+                      enabled: user.customClaims.roles.includes("admin"),
+                    }}
+                  />
+                </TableCell>
+              </TableRow>
             ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {rows.map((row) => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
-                    return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </HTMLTable>
-      </div>
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };
 
-const CheckboxCell = ({ value }: { value: QNToggleRole }) => {
+const CheckboxCell: VFC<{ value: QNToggleRole }> = ({ value }) => {
   const [checked, setChecked] = useState(value.enabled);
   const { mutate: toggleRole } = useToggleRole();
 
@@ -60,7 +86,7 @@ const CheckboxCell = ({ value }: { value: QNToggleRole }) => {
 
   return (
     <Checkbox
-      large
+      inputProps={{ "aria-label": `Toggle ${value.role} role` }}
       checked={checked}
       onChange={() => {
         setChecked((current) => {
@@ -72,28 +98,3 @@ const CheckboxCell = ({ value }: { value: QNToggleRole }) => {
     />
   );
 };
-
-const toggleRoleAccessor =
-  (role: QNRole) =>
-  (user: QNUserRecord): QNToggleRole => ({
-    email: user.email ?? "",
-    role,
-    enabled: user.customClaims.roles.includes(role),
-  });
-
-const columns: Column<QNUserRecord>[] = [
-  { Header: "Email", accessor: (x) => x.email },
-  {
-    Header: "Author",
-    accessor: toggleRoleAccessor("author"),
-    Cell: CheckboxCell,
-  },
-  {
-    Header: "Admin",
-    accessor: toggleRoleAccessor("admin"),
-    Cell: CheckboxCell,
-  },
-  { Header: "Created", accessor: (x) => x.metadata.creationTime },
-  { Header: "Signed In", accessor: (x) => x.metadata.lastSignInTime },
-  { Header: "User UID", accessor: (x) => x.uid },
-];
