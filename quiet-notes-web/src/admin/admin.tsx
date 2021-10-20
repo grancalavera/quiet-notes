@@ -29,49 +29,51 @@ export const Admin: VFC = () => {
           {isLoading ? <CircularProgress size={24} /> : <RefreshIcon />}
         </IconButton>
       </div>
-      <TableContainer component={Paper}>
-        <Table aria-label="manage users">
-          <TableHead>
-            <TableRow>
-              <TableCell>Email</TableCell>
-              <TableCell>Created</TableCell>
-              <TableCell>Signed In</TableCell>
-              <TableCell>UID</TableCell>
-              <TableCell>Author</TableCell>
-              <TableCell>Admin</TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {(data?.users ?? []).map((user) => (
-              <TableRow key={user.uid}>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.metadata.creationTime}</TableCell>
-                <TableCell>{user.metadata.lastSignInTime}</TableCell>
-                <TableCell>{user.uid}</TableCell>
-                <TableCell>
-                  <CheckboxCell
-                    value={{
-                      email: user.email ?? "",
-                      role: "author",
-                      enabled: user.customClaims.roles.includes("author"),
-                    }}
-                  />
-                </TableCell>
-                <TableCell>
-                  <CheckboxCell
-                    value={{
-                      email: user.email ?? "",
-                      role: "admin",
-                      enabled: user.customClaims.roles.includes("admin"),
-                    }}
-                  />
-                </TableCell>
+      <div className={b("body")}>
+        <TableContainer component={Paper}>
+          <Table aria-label="manage users">
+            <TableHead>
+              <TableRow>
+                <TableCell>Email</TableCell>
+                <TableCell>Created</TableCell>
+                <TableCell>Signed In</TableCell>
+                <TableCell>UID</TableCell>
+                <TableCell>Author</TableCell>
+                <TableCell>Admin</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+
+            <TableBody>
+              {(data?.users ?? []).map((user) => (
+                <TableRow key={user.uid}>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.metadata.creationTime}</TableCell>
+                  <TableCell>{user.metadata.lastSignInTime}</TableCell>
+                  <TableCell>{user.uid}</TableCell>
+                  <TableCell>
+                    <CheckboxCell
+                      value={{
+                        email: user.email ?? "",
+                        role: "author",
+                        enabled: user.customClaims.roles.includes("author"),
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <CheckboxCell
+                      value={{
+                        email: user.email ?? "",
+                        role: "admin",
+                        enabled: user.customClaims.roles.includes("admin"),
+                      }}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
     </div>
   );
 };
