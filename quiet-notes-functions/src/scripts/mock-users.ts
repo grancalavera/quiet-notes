@@ -1,16 +1,18 @@
 import * as admin from "firebase-admin";
 
+const count = 15;
+
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
 });
 
 const createMockUsers = async (): Promise<void> => {
-  Promise.all([...Array(100)].map((_, i) => createMockUser(mockEmail(i))));
+  Promise.all([...Array(count)].map((_, i) => createMockUser(mockEmail(i))));
 };
 
 const deleteMockUsers = async (): Promise<void> => {
   const uids = await Promise.all(
-    [...Array(100)].map((_, i) => getMockUserUid(mockEmail(i)))
+    [...Array(count)].map((_, i) => getMockUserUid(mockEmail(i)))
   );
   admin.auth().deleteUsers(uids);
 };
@@ -40,7 +42,7 @@ if (command === "--create") {
   deleteMockUsers();
 } else {
   console.log(`yarn mock-users:
---create: creates 100 mock users
---delete: deletes 100 mock users
+--create: creates ${count} mock users
+--delete: deletes ${count} mock users
 `);
 }

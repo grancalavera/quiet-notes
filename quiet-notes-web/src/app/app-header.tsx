@@ -16,7 +16,11 @@ export const AppHeader = () => {
 
   return (
     <div className={b("header")}>
-      <Typography variant="h4" onClick={() => history.push("/")}>
+      <Typography
+        variant="h4"
+        onClick={() => history.push("/")}
+        sx={{ userSelect: "none" }}
+      >
         Quiet Notes
       </Typography>
 
