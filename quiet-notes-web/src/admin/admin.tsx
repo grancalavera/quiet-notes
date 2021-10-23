@@ -3,7 +3,6 @@ import {
   Checkbox,
   CircularProgress,
   IconButton,
-  Paper,
   Table,
   TableBody,
   TableCell,
