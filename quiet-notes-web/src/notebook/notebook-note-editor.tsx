@@ -1,4 +1,4 @@
-import { TextArea } from "@blueprintjs/core";
+import { TextareaAutosize } from "@mui/material";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { useEffect, useRef } from "react";
 import { isFirebaseError } from "../app/app-error";
@@ -63,11 +63,12 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
 
   return (
     <div className={b()}>
-      <TextArea
-        inputRef={inputRef}
+      <TextareaAutosize
+        aria-label="a quiet note"
+        ref={inputRef}
         value={localNote?.content ?? ""}
         onChange={(e) => updateContent(e.target.value)}
-        fill
+        style={{ resize: "none", width: "100%", height: "100%", overflow: "auto" }}
       />
     </div>
   );
