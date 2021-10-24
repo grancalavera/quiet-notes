@@ -68,7 +68,13 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
         ref={inputRef}
         value={localNote?.content ?? ""}
         onChange={(e) => updateContent(e.target.value)}
-        style={{ resize: "none", width: "100%", height: "100%", overflow: "auto" }}
+        style={{
+          resize: "none",
+          width: "100%",
+          height: "100%",
+          overflow: "auto",
+          padding: "1em",
+        }}
       />
     </div>
   );
