@@ -62,15 +62,18 @@ const Profile = () => {
   const content = (
     <div className={b("profile")}>
       <UserAvatar size={80} />
-      <p>
+
+      <Typography variant="body1">
         <strong>{user?.displayName}</strong>
-      </p>
-      <p>
+      </Typography>
+
+      <Typography variant="body1">
         <em>{user?.email}</em>
-      </p>
-      <p>
+      </Typography>
+
+      <Typography variant="body1">
         <em>{user?.uid}</em>
-      </p>
+      </Typography>
 
       <Button onClick={() => firebase.auth().signOut()} variant="contained">
         Sign Out

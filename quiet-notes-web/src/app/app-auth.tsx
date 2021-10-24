@@ -47,27 +47,29 @@ interface LocationState {
   from?: { pathname?: string };
 }
 
-export const LoginPage = () => (
-  <AuthState
-    authenticated={
-      <Redirect
-        to={useLocation<LocationState | undefined>().state?.from?.pathname ?? "/"}
-      />
-    }
-    notAuthenticated={
-      <CenterLayout>
-        <Button
-          variant="contained"
-          onClick={() => {
-            firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
-          }}
-        >
-          Sign In with Google
-        </Button>
-      </CenterLayout>
-    }
-  />
-);
+export const LoginPage = () => {
+  return (
+    <AuthState
+      authenticated={
+        <Redirect
+          to={useLocation<LocationState | undefined>().state?.from?.pathname ?? "/"}
+        />
+      }
+      notAuthenticated={
+        <CenterLayout>
+          <Button
+            variant="contained"
+            onClick={() => {
+              firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+            }}
+          >
+            Sign In with Google
+          </Button>
+        </CenterLayout>
+      }
+    />
+  );
+};
 
 interface AuthStateProps {
   authenticated: ReactNode;

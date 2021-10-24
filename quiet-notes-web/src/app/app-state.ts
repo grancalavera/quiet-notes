@@ -82,10 +82,13 @@ export const useUnknownErrorHandler = () => {
   );
 };
 
-export const useNotImplementedError = (featureName: string) => {
+export const useNotImplementedError = () => {
   const handleError = useErrorHandler();
 
-  return useCallback(() => {
-    handleError(new QNError(`${featureName} not implemented`));
-  }, [featureName, handleError]);
+  return useCallback(
+    (featureName: string) => {
+      handleError(new QNError(`${featureName} not implemented`));
+    },
+    [handleError]
+  );
 };

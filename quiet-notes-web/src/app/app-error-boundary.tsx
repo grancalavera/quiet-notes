@@ -1,7 +1,15 @@
-import { Alert, H4 } from "@blueprintjs/core";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import React, { useState } from "react";
 import { isFirebaseError, isQnError } from "./app-error";
 import { useAppState } from "./app-state";
+import Typography from "@mui/material/Typography";
 
 export class AppErrorBoundary extends React.Component<
   {},
@@ -57,35 +65,60 @@ interface ErrorAlertProps {
 
 const ErrorAlert = ({ error, ...props }: ErrorAlertProps) => {
   return (
-    <Alert intent="danger" icon="error" {...props}>
+    <Dialog
+      open={props.isOpen}
+      onClose={props.onClose}
+      aria-labelledby="error-alert-title"
+      aria-describedby="error-alert-description"
+    >
       {(() => {
         if (isFirebaseError(error)) {
           return (
-            <div>
-              <H4>{error.name}</H4>
-              <p>{error.code}</p>
-              {process.env.NODE_ENV === "development" && <p>{error.message}</p>}
-            </div>
+            <>
+              <DialogTitle id="error-alert-title">{error.name}</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="error-alert-description">
+                  <Typography variant="body1">{error.code}</Typography>
+                </DialogContentText>
+                {process.env.NODE_ENV === "development" && (
+                  <Typography variant="body1">{error.message}</Typography>
+                )}
+              </DialogContent>
+            </>
           );
         } else if (isQnError(error)) {
           return (
-            <div>
-              <H4>{error.name}</H4>
-              <p>{error.message}</p>
-              {process.env.NODE_ENV === "development" && (
-                <pre>{JSON.stringify(error.data ?? {}, null, 2)}</pre>
-              )}
-            </div>
+            <>
+              <DialogTitle id="error-alert-title">{error.name}</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="error-alert-description">
+                  {error.message}
+                </DialogContentText>
+                {process.env.NODE_ENV === "development" && (
+                  <>
+                    <Typography variant="body1">
+                      Come back soon to check if it has been approved.
+                    </Typography>
+                    <pre>{JSON.stringify(error.data ?? {}, null, 2)}</pre>
+                  </>
+                )}
+              </DialogContent>
+            </>
           );
         } else {
           return (
-            <div>
-              <H4>Fatal Error</H4>
-              <p>Something went wrong! Please reload the page.</p>
-            </div>
+            <>
+              <DialogTitle id="error-alert-title">Fatal Error</DialogTitle>
+              <DialogContentText id="error-alert-decription">
+                Something went wrong! Please reload the page.
+              </DialogContentText>
+            </>
           );
         }
       })()}
-    </Alert>
+      <DialogActions>
+        <Button onClick={props.onClose}>ok</Button>
+      </DialogActions>
+    </Dialog>
   );
 };
