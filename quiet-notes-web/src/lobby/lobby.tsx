@@ -1,8 +1,7 @@
-import { H4 } from "@blueprintjs/core";
+import Typography from "@mui/material/Typography";
 import { Redirect } from "react-router-dom";
 import { useHasRole } from "../app/app-state";
 import { CenterLayout } from "../layout/center-layout";
-
 export const Lobby = () => {
   const [isAdmin] = useHasRole("admin");
   const [isAuthor] = useHasRole("author");
@@ -13,8 +12,10 @@ export const Lobby = () => {
       {isAdmin && <Redirect to="/admin" />}
       <CenterLayout>
         <div>
-          <H4>Your application is being reviewed!</H4>
-          <p>Come back soon to check if it has been approved.</p>
+          <Typography variant="h6">Your application is being reviewed!</Typography>
+          <Typography variant="body1">
+            Come back soon to check if it has been approved.
+          </Typography>
         </div>
       </CenterLayout>
     </>

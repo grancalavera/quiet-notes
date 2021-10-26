@@ -5,13 +5,4 @@
   overflow: hidden;
   height: 100%;
   padding: $qn-padding;
-
-  textarea {
-    &.bp3-input,
-    &.bp3-input.bp3-large,
-    &.bp3-input.bp3-small {
-      resize: none;
-      height: 100%;
-    }
-  }
 }

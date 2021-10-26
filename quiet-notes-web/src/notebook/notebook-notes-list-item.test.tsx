@@ -1,18 +1,20 @@
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, prettyDOM } from "@testing-library/react";
 import {
-  b,
   createdAt,
-  defaultNoteTitle,
-  maxTitleLength,
   NotesListItem,
   NotesListItemProps,
-  testId,
+  tid,
   updatedAt,
 } from "./notebook-notes-list-item";
 
 interface Scenario {
   name: string;
   props: NotesListItemProps;
+  expected: {
+    ariaCurrent: "true" | "false";
+    hasCreatedDate: boolean;
+    hasUpdatedDate: boolean;
+  };
 }
 
 const spyOnSelect = jest.fn();
@@ -33,6 +35,11 @@ const scenarios: Scenario[] = [
       onSelect: spyOnSelect,
       isSelected: false,
     },
+    expected: {
+      ariaCurrent: "false",
+      hasCreatedDate: false,
+      hasUpdatedDate: false,
+    },
   },
   {
     name: "newly created note, not selected",
@@ -40,6 +47,11 @@ const scenarios: Scenario[] = [
       note: { author: "mock", content: "", id: "1", _version: 0, _createdAt },
       onSelect: spyOnSelect,
       isSelected: false,
+    },
+    expected: {
+      ariaCurrent: "false",
+      hasCreatedDate: true,
+      hasUpdatedDate: false,
     },
   },
   {
@@ -49,6 +61,11 @@ const scenarios: Scenario[] = [
       onSelect: spyOnSelect,
       isSelected: true,
     },
+    expected: {
+      ariaCurrent: "true",
+      hasCreatedDate: true,
+      hasUpdatedDate: false,
+    },
   },
   {
     name: "updated note",
@@ -57,15 +74,16 @@ const scenarios: Scenario[] = [
       onSelect: spyOnSelect,
       isSelected: true,
     },
+    expected: {
+      ariaCurrent: "true",
+      hasCreatedDate: true,
+      hasUpdatedDate: true,
+    },
   },
 ];
 
 describe.each(scenarios)("<NotesListItem />", (scenario) => {
-  const { name, props } = scenario;
-
-  const showCreatedDate = !!props.note._createdAt;
-  const showUpdatedDate = !!props.note._updatedAt;
-  const isSelected = props.isSelected;
+  const { name, props, expected } = scenario;
 
   // eslint-disable-next-line jest/valid-title
   describe(name, () => {
@@ -75,40 +93,30 @@ describe.each(scenarios)("<NotesListItem />", (scenario) => {
 
     it("should select a note by id", () => {
       const { getByTestId } = render(<NotesListItem {...props} />);
-      fireEvent.click(getByTestId(testId));
+      fireEvent.click(getByTestId(tid.trigger));
       expect(spyOnSelect).toBeCalledTimes(1);
       expect(spyOnSelect).toBeCalledWith(props.note.id);
     });
 
-    it(`${shouldOrNot(showCreatedDate)} match formatted created date`, () => {
+    it(`${shouldOrNot(expected.hasCreatedDate)} match formatted created date`, () => {
       const { queryAllByText } = render(<NotesListItem {...props} />);
       const actual = queryAllByText(createdAtWithFormat).length;
-      const expected = zeroOrOne(showCreatedDate);
-      expect(actual).toEqual(expected);
+      const expectedCount = zeroOrOne(expected.hasCreatedDate);
+      expect(actual).toEqual(expectedCount);
     });
 
-    it(`${shouldOrNot(showUpdatedDate)} match formatted updated date`, () => {
+    it(`${shouldOrNot(expected.hasUpdatedDate)} match formatted updated date`, () => {
       const { queryAllByText } = render(<NotesListItem {...props} />);
       const actual = queryAllByText(updatedAtWithFormat).length;
-      const expected = zeroOrOne(showUpdatedDate);
-      expect(actual).toEqual(expected);
+      const expectedCount = zeroOrOne(expected.hasUpdatedDate);
+      expect(actual).toEqual(expectedCount);
     });
 
-    it(`${shouldOrNot(isSelected)} be selected by blueprint`, () => {
+    it(`aria-current should be ${expected.ariaCurrent}`, () => {
       const { getByTestId } = render(<NotesListItem {...props} />);
-      const actual = getByTestId(testId).classList.contains("bp3-intent-primary");
-      expect(actual).toEqual(isSelected);
-    });
-
-    it(`${shouldOrNot(isSelected)} be selected by quiet notes`, () => {
-      const { getByTestId } = render(<NotesListItem {...props} />);
-      const expectedClasses = b({ isSelected }).toString().split(" ");
-      const actualClasses: string[] = [];
-      getByTestId(testId).classList.forEach((c) => actualClasses.push(c));
-      const actual = expectedClasses.every((className) =>
-        actualClasses.includes(className)
-      );
-      expect(actual).toBeTruthy();
+      const item = getByTestId(tid.component);
+      const actual = item.getAttribute("aria-current");
+      expect(actual).toEqual(expected.ariaCurrent);
     });
   });
 });

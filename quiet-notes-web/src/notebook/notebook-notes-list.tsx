@@ -1,7 +1,9 @@
-import { NonIdealState, Spinner } from "@blueprintjs/core";
+import { CircularProgress } from "@mui/material";
 import { ReactNode, useEffect } from "react";
 import { useUser } from "../app/app-state";
 import { block } from "../app/bem";
+import { CreateNoteButton } from "../components/CreateNoteButton";
+import { CenterLayout } from "../layout/center-layout";
 import { useNotesCollection } from "../notebook-service/notebook-service";
 import { NotesListItem } from "./notebook-notes-list-item";
 import "./notebook-notes-list.scss";
@@ -11,7 +13,6 @@ import {
   useSelectedNoteId,
   useSelectNote,
 } from "./notebook-state";
-import { CreateNoteButton } from "./notebook-toolbars";
 
 export const b = block("notes-list");
 export const testId = b().toString();
@@ -32,7 +33,11 @@ export const NotesList = () => {
   let children: ReactNode;
 
   if (isLoading) {
-    children = <Spinner />;
+    children = (
+      <CenterLayout>
+        <CircularProgress />
+      </CenterLayout>
+    );
   } else if (notes && notes.length > 0) {
     children = (
       <>
@@ -48,11 +53,9 @@ export const NotesList = () => {
     );
   } else {
     children = (
-      <NonIdealState
-        icon="warning-sign"
-        title="Create a new note"
-        action={<CreateNoteButton showLabel />}
-      />
+      <CenterLayout>
+        <CreateNoteButton showLabel />
+      </CenterLayout>
     );
   }
 

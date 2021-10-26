@@ -1,4 +1,5 @@
-import { Button, Spinner } from "@blueprintjs/core";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import firebase from "firebase/app";
 import { QNRole } from "quiet-notes-lib";
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
@@ -46,27 +47,29 @@ interface LocationState {
   from?: { pathname?: string };
 }
 
-export const LoginPage = () => (
-  <AuthState
-    authenticated={
-      <Redirect
-        to={useLocation<LocationState | undefined>().state?.from?.pathname ?? "/"}
-      />
-    }
-    notAuthenticated={
-      <CenterLayout>
-        <Button
-          large
-          onClick={() => {
-            firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
-          }}
-        >
-          Sign In with Google
-        </Button>
-      </CenterLayout>
-    }
-  />
-);
+export const LoginPage = () => {
+  return (
+    <AuthState
+      authenticated={
+        <Redirect
+          to={useLocation<LocationState | undefined>().state?.from?.pathname ?? "/"}
+        />
+      }
+      notAuthenticated={
+        <CenterLayout>
+          <Button
+            variant="contained"
+            onClick={() => {
+              firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+            }}
+          >
+            Sign In with Google
+          </Button>
+        </CenterLayout>
+      }
+    />
+  );
+};
 
 interface AuthStateProps {
   authenticated: ReactNode;
@@ -100,7 +103,7 @@ const AuthState = ({ authenticated, notAuthenticated }: AuthStateProps) => {
       {!isLoading && !user && notAuthenticated}
       {isLoading && (
         <CenterLayout>
-          <Spinner />
+          <CircularProgress />
         </CenterLayout>
       )}
     </>

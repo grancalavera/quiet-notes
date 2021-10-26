@@ -1,16 +1,15 @@
-import { Callout, Classes } from "@blueprintjs/core";
-import { truncate } from "lodash";
-import { block } from "../app/bem";
+import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
 import { formatDate } from "../date/format";
 import { usePrevious } from "../utils/use-previous";
 import { deriveTitle, Note } from "./notebook-model";
-import "./notebook-notes-list-item.scss";
-import { DeleteNoteButton } from "./notebook-toolbars";
 
-export const b = block("notes-list-item");
-export const testId = b().toString();
+export const tid = {
+  component: "notes-list-item",
+  trigger: "notes-list-item-trigger",
+};
+
 export const defaultNoteTitle = "Untitled Note";
-export const maxTitleLength = 25;
+export const maxTitleLength = 27;
 
 export const createdAt = (date?: Date) =>
   date ? `Created ${formatDate(date)}` : "\u00A0";
@@ -31,27 +30,31 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
   });
 
   return (
-    <Callout
-      data-testid={testId}
-      className={b({ isSelected }).toString()}
-      intent={isSelected ? "primary" : "none"}
-      icon="document"
-      onClick={() => onSelect(note.id)}
-      title={truncate(deriveTitle(note), { length: maxTitleLength }) || defaultNoteTitle}
+    <Card
+      sx={{ mb: 1, bgcolor: isSelected ? "action.selected" : "" }}
+      aria-current={isSelected ? "true" : "false"}
+      data-testid={tid.component}
     >
-      <div>
-        <p className={b("list-item-detail").mix(Classes.TEXT_SMALL, Classes.TEXT_MUTED)}>
-          <span>{createdAt(note._createdAt ?? previous?._createdAt)}</span>
-          <br />
-          <span>{updatedAt(note._updatedAt ?? previous?._updatedAt)}</span>
-        </p>
-        <DeleteNoteButton
-          noteId={note.id}
-          deselect={isSelected}
-          className={b("delete-button")}
-          minimal
-        />
-      </div>
-    </Callout>
+      <CardActionArea onClick={() => onSelect(note.id)} data-testid={tid.trigger}>
+        <CardContent>
+          <Typography gutterBottom variant="h6" noWrap>
+            {deriveTitle(note) || defaultNoteTitle}
+          </Typography>
+
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+            {createdAt(note._createdAt ?? previous?._createdAt)}
+          </Typography>
+
+          <Typography variant="body2" color="text.secondary">
+            {updatedAt(note._updatedAt ?? previous?._updatedAt)}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+
+      {/* change to https://mui.com/components/menus/#context-menu */}
+      {/* <CardActions sx={{ justifyContent: "flex-end" }}>
+        <DeleteNoteButton noteId={note.id} isSelected={isSelected} />
+      </CardActions> */}
+    </Card>
   );
 }

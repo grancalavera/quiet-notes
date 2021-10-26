@@ -1,16 +1,9 @@
-import { useEffect, VFC } from "react";
-import { useTheme } from "./use-theme";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { FC, useMemo } from "react";
+import { useQNTheme } from "./use-theme";
 
-export const Theme: VFC = () => {
-  const theme = useTheme((s) => s.theme);
-
-  useEffect(() => {
-    if (theme === "dark") {
-      document.body.classList.add("bp3-dark");
-    } else {
-      document.body.classList.remove("bp3-dark");
-    }
-  }, [theme]);
-
-  return null;
+export const Theme: FC = ({ children }) => {
+  const mode = useQNTheme();
+  const theme = useMemo(() => createTheme({ palette: { mode } }), [mode]);
+  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };

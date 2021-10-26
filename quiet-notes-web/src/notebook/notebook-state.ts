@@ -10,7 +10,7 @@ interface NotebookState {
   changeSortType: (sortType: NotebookSortType) => void;
 }
 
-type NotebookSortType = NotebookState["sortType"];
+export type NotebookSortType = NotebookState["sortType"];
 
 const useNotebookState = create<NotebookState & State>((set, get) => ({
   notes: [],

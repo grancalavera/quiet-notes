@@ -10,6 +10,8 @@ admin.initializeApp({
 export const onboardUser = functions.auth.user().onCreate(async (user) => {
   console.log("onboard user", user.uid);
 
+  console.log({ config: functions.config() });
+
   const roles: QNRole[] = ["user"];
   if (user.email === functions.config().quiet_notes.default_admin) {
     roles.push("admin");

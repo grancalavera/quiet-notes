@@ -1,6 +1,17 @@
-import { Button, Checkbox, HTMLTable } from "@blueprintjs/core";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import {
+  Checkbox,
+  CircularProgress,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import { QNRole, QNToggleRole, QNUserRecord } from "quiet-notes-lib";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState, VFC } from "react";
 import { Column, useTable } from "react-table";
 import { block } from "../app/bem";
 import { useToggleRole, useUserList } from "../user-service/user-service";
@@ -8,7 +19,7 @@ import "./admin.scss";
 
 const b = block("admin");
 
-export const Admin = () => {
+export const Admin: VFC = () => {
   const { data, refetch, isLoading } = useUserList();
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
@@ -19,38 +30,58 @@ export const Admin = () => {
   return (
     <div className={b()}>
       <div className={b("toolbar")}>
-        <Button loading={isLoading} onClick={refetch} icon="refresh" minimal />
+        <IconButton onClick={() => refetch()} disabled={isLoading}>
+          {isLoading ? <CircularProgress size={24} /> : <RefreshIcon />}
+        </IconButton>
       </div>
-      <div className={b("body")}>
-        <HTMLTable {...getTableProps()} striped interactive>
-          <thead>
+
+      <TableContainer component={QNTableContainer}>
+        <Table
+          aria-label="manage users"
+          sx={{ backgroundColor: "background.paper" }}
+          {...getTableProps()}
+        >
+          <TableHead sx={{ backgroundColor: "background.paper" }}>
             {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
+              <TableRow {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
-                  <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+                  <TableCell>{column.render("Header")}</TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
+          </TableHead>
+
+          <TableBody {...getTableBodyProps()}>
             {rows.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <TableRow {...row.getRowProps()}>
                   {row.cells.map((cell) => {
-                    return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
+                    return (
+                      <TableCell {...cell.getCellProps()}>
+                        {cell.render("Cell")}
+                      </TableCell>
+                    );
                   })}
-                </tr>
+                </TableRow>
               );
             })}
-          </tbody>
-        </HTMLTable>
-      </div>
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };
 
-const CheckboxCell = ({ value }: { value: QNToggleRole }) => {
+const QNTableContainer: FC = ({ children }) => (
+  <div className={b("body")}>{children}</div>
+);
+
+interface CheckboxCellProps {
+  value: QNToggleRole;
+}
+
+const CheckboxCell: VFC<CheckboxCellProps> = ({ value }) => {
   const [checked, setChecked] = useState(value.enabled);
   const { mutate: toggleRole } = useToggleRole();
 
@@ -60,7 +91,7 @@ const CheckboxCell = ({ value }: { value: QNToggleRole }) => {
 
   return (
     <Checkbox
-      large
+      inputProps={{ "aria-label": `Toggle ${value.role} role` }}
       checked={checked}
       onChange={() => {
         setChecked((current) => {

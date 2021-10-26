@@ -15,7 +15,7 @@ const loadTheme = (): QuietNotesTheme =>
 
 const saveTheme = (theme: QuietNotesTheme): void => localStorage.setItem(key, theme);
 
-export const useTheme = create<ThemeState & State>((set, get) => ({
+const useTheme = create<ThemeState & State>((set, get) => ({
   theme: loadTheme(),
   toggle: () =>
     set(() => {
@@ -25,3 +25,6 @@ export const useTheme = create<ThemeState & State>((set, get) => ({
       return { theme, className };
     }),
 }));
+
+export const useQNTheme = () => useTheme((s) => s.theme);
+export const useToggleQNTheme = () => useTheme((s) => s.toggle);

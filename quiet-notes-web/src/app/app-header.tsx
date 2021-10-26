@@ -1,7 +1,10 @@
-import { Button, H3, Icon, Popover } from "@blueprintjs/core";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { Avatar, Button, IconButton, Paper, Popover, Typography } from "@mui/material";
 import firebase from "firebase/app";
+import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useTheme } from "../theme/use-theme";
+import { ToggleThemeSwitch } from "../components/ToggleThemeSwitch";
+import { useQNTheme, useToggleQNTheme } from "../theme/use-theme";
 import "./app-header.scss";
 import { useIsAdmin, useUser } from "./app-state";
 import { block } from "./bem";
@@ -12,17 +15,21 @@ export const AppHeader = () => {
   const history = useHistory();
 
   return (
-    <div className={b("header")}>
-      <H3 className={b("app-title").toString()} onClick={() => history.push("/")}>
+    <Paper className={b("header").toString()} variant="outlined" square>
+      <Typography
+        variant="h4"
+        onClick={() => history.push("/")}
+        sx={{ userSelect: "none" }}
+      >
         Quiet Notes
-      </H3>
+      </Typography>
 
       <span className={b("toolbar")}>
         <AdminLink />
-        <ToggleThemeButton className={b("theme-switch")} />
+        <ToggleThemeButton />
         <Profile />
       </span>
-    </div>
+    </Paper>
   );
 };
 
@@ -31,64 +38,72 @@ const AdminLink = () => {
   const [isAdmin] = useIsAdmin();
 
   return (
-    <>{isAdmin && <Button icon="cog" minimal onClick={() => history.push("/admin")} />}</>
+    <>
+      {isAdmin && (
+        <IconButton onClick={() => history.push("/admin")}>
+          <SettingsIcon />
+        </IconButton>
+      )}
+    </>
   );
 };
 
-const Avatar = (props: { size?: number }) => {
-  const size = props.size ?? 30;
+const UserAvatar = ({ size = 30 }: { size?: number }) => {
   const user = useUser();
-
-  return user?.photoURL ? (
-    <span
-      className={b("avatar")}
-      style={{
-        backgroundImage: `url(${user.photoURL})`,
-        width: size,
-        height: size,
-        borderRadius: size / 2,
-      }}
-    ></span>
-  ) : (
-    <Icon icon="user" iconSize={size} />
-  );
+  const photoURL = user.photoURL ?? undefined;
+  const username = user.displayName ?? user.email ?? "";
+  return <Avatar alt={username} src={photoURL} sx={{ width: size, height: size }} />;
 };
 
 const Profile = () => {
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const user = useUser();
 
   const content = (
     <div className={b("profile")}>
-      <Avatar size={80} />
-      <p>
+      <UserAvatar size={80} />
+
+      <Typography variant="body1">
         <strong>{user?.displayName}</strong>
-      </p>
-      <p>
+      </Typography>
+
+      <Typography variant="body1">
         <em>{user?.email}</em>
-      </p>
-      <p>
+      </Typography>
+
+      <Typography variant="body1">
         <em>{user?.uid}</em>
-      </p>
-      <Button onClick={() => firebase.auth().signOut()}>Sign Out</Button>
+      </Typography>
+
+      <Button onClick={() => firebase.auth().signOut()} variant="contained">
+        Sign Out
+      </Button>
     </div>
   );
 
+  const open = !!anchorEl;
+  const id = open ? "user-profile" : undefined;
+
   return (
-    <Popover className={b()} content={content} position="bottom-right">
-      <Avatar />
-    </Popover>
+    <>
+      <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} aria-describedby={id}>
+        <UserAvatar />
+      </IconButton>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        onClose={() => setAnchorEl(null)}
+      >
+        {content}
+      </Popover>
+    </>
   );
 };
 
-const ToggleThemeButton = (props: { className?: string }) => {
-  const [theme, toggleTheme] = useTheme((s) => [s.theme, s.toggle]);
-
-  return (
-    <Button
-      icon={theme === "dark" ? "flash" : "moon"}
-      className={props.className?.toString()}
-      minimal
-      onClick={toggleTheme}
-    />
-  );
+const ToggleThemeButton = () => {
+  const theme = useQNTheme();
+  const toggleTheme = useToggleQNTheme();
+  return <ToggleThemeSwitch checked={theme === "dark"} onChange={() => toggleTheme()} />;
 };
