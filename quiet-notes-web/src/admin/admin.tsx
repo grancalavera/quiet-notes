@@ -33,11 +33,11 @@ export const Admin: VFC = () => {
           <TableHead sx={{ backgroundColor: "background.paper" }}>
             <TableRow>
               <TableCell>Email</TableCell>
+              <TableCell>Author</TableCell>
+              <TableCell>Admin</TableCell>
               <TableCell>Created</TableCell>
               <TableCell>Signed In</TableCell>
               <TableCell>UID</TableCell>
-              <TableCell>Author</TableCell>
-              <TableCell>Admin</TableCell>
             </TableRow>
           </TableHead>
 
@@ -45,9 +45,6 @@ export const Admin: VFC = () => {
             {(data?.users ?? []).map((user) => (
               <TableRow key={user.uid}>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.metadata.creationTime}</TableCell>
-                <TableCell>{user.metadata.lastSignInTime}</TableCell>
-                <TableCell>{user.uid}</TableCell>
                 <TableCell>
                   <CheckboxCell
                     value={{
@@ -66,6 +63,9 @@ export const Admin: VFC = () => {
                     }}
                   />
                 </TableCell>
+                <TableCell>{user.metadata.creationTime}</TableCell>
+                <TableCell>{user.metadata.lastSignInTime}</TableCell>
+                <TableCell>{user.uid}</TableCell>
               </TableRow>
             ))}
           </TableBody>
