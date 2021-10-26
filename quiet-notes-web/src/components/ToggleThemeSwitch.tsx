@@ -27,7 +27,7 @@ const SwitchThumb = styled("span")(
   ({ theme }) => `
   position: absolute;
   display: block;
-  background-color: ${theme.palette.mode === "dark" ? "#001233" : "#ff9505"};
+  background-color: ${theme.palette.mode === "dark" ? "#112c5d" : "#ff9505"};
   width: 32px;
   height: 32px;
   border-radius: 16px;
