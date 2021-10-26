@@ -1,5 +1,5 @@
 import SettingsIcon from "@mui/icons-material/Settings";
-import { Avatar, Button, IconButton, Popover, Typography } from "@mui/material";
+import { Avatar, Button, IconButton, Paper, Popover, Typography } from "@mui/material";
 import firebase from "firebase/app";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -15,7 +15,7 @@ export const AppHeader = () => {
   const history = useHistory();
 
   return (
-    <div className={b("header")}>
+    <Paper className={b("header").toString()} variant="outlined" square>
       <Typography
         variant="h4"
         onClick={() => history.push("/")}
@@ -29,7 +29,7 @@ export const AppHeader = () => {
         <ToggleThemeButton />
         <Profile />
       </span>
-    </div>
+    </Paper>
   );
 };
 
