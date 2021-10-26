@@ -10,8 +10,9 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { QNToggleRole } from "quiet-notes-lib";
+import { QNRole, QNToggleRole, QNUserRecord } from "quiet-notes-lib";
 import { FC, useEffect, useState, VFC } from "react";
+import { Column, useTable } from "react-table";
 import { block } from "../app/bem";
 import { useToggleRole, useUserList } from "../user-service/user-service";
 import "./admin.scss";
@@ -20,6 +21,11 @@ const b = block("admin");
 
 export const Admin: VFC = () => {
   const { data, refetch, isLoading } = useUserList();
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
+    columns,
+    data: data?.users ?? [],
+    getRowId: (x) => x.uid,
+  });
 
   return (
     <div className={b()}>
@@ -28,46 +34,38 @@ export const Admin: VFC = () => {
           {isLoading ? <CircularProgress size={24} /> : <RefreshIcon />}
         </IconButton>
       </div>
-      <TableContainer component={QNTableContainer}>
-        <Table aria-label="manage users" sx={{ backgroundColor: "background.paper" }}>
-          <TableHead sx={{ backgroundColor: "background.paper" }}>
-            <TableRow>
-              <TableCell>Email</TableCell>
-              <TableCell>Author</TableCell>
-              <TableCell>Admin</TableCell>
-              <TableCell>Created</TableCell>
-              <TableCell>Signed In</TableCell>
-              <TableCell>UID</TableCell>
-            </TableRow>
-          </TableHead>
 
-          <TableBody>
-            {(data?.users ?? []).map((user) => (
-              <TableRow key={user.uid}>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>
-                  <CheckboxCell
-                    value={{
-                      email: user.email ?? "",
-                      role: "author",
-                      enabled: user.customClaims.roles.includes("author"),
-                    }}
-                  />
-                </TableCell>
-                <TableCell>
-                  <CheckboxCell
-                    value={{
-                      email: user.email ?? "",
-                      role: "admin",
-                      enabled: user.customClaims.roles.includes("admin"),
-                    }}
-                  />
-                </TableCell>
-                <TableCell>{user.metadata.creationTime}</TableCell>
-                <TableCell>{user.metadata.lastSignInTime}</TableCell>
-                <TableCell>{user.uid}</TableCell>
+      <TableContainer component={QNTableContainer}>
+        <Table
+          aria-label="manage users"
+          sx={{ backgroundColor: "background.paper" }}
+          {...getTableProps()}
+        >
+          <TableHead sx={{ backgroundColor: "background.paper" }}>
+            {headerGroups.map((headerGroup) => (
+              <TableRow {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <TableCell>{column.render("Header")}</TableCell>
+                ))}
               </TableRow>
             ))}
+          </TableHead>
+
+          <TableBody {...getTableBodyProps()}>
+            {rows.map((row) => {
+              prepareRow(row);
+              return (
+                <TableRow {...row.getRowProps()}>
+                  {row.cells.map((cell) => {
+                    return (
+                      <TableCell {...cell.getCellProps()}>
+                        {cell.render("Cell")}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
@@ -79,7 +77,11 @@ const QNTableContainer: FC = ({ children }) => (
   <div className={b("body")}>{children}</div>
 );
 
-const CheckboxCell: VFC<{ value: QNToggleRole }> = ({ value }) => {
+interface CheckboxCellProps {
+  value: QNToggleRole;
+}
+
+const CheckboxCell: VFC<CheckboxCellProps> = ({ value }) => {
   const [checked, setChecked] = useState(value.enabled);
   const { mutate: toggleRole } = useToggleRole();
 
@@ -101,3 +103,28 @@ const CheckboxCell: VFC<{ value: QNToggleRole }> = ({ value }) => {
     />
   );
 };
+
+const toggleRoleAccessor =
+  (role: QNRole) =>
+  (user: QNUserRecord): QNToggleRole => ({
+    email: user.email ?? "",
+    role,
+    enabled: user.customClaims.roles.includes(role),
+  });
+
+const columns: Column<QNUserRecord>[] = [
+  { Header: "Email", accessor: (x) => x.email },
+  {
+    Header: "Author",
+    accessor: toggleRoleAccessor("author"),
+    Cell: CheckboxCell,
+  },
+  {
+    Header: "Admin",
+    accessor: toggleRoleAccessor("admin"),
+    Cell: CheckboxCell,
+  },
+  { Header: "Created", accessor: (x) => x.metadata.creationTime },
+  { Header: "Signed In", accessor: (x) => x.metadata.lastSignInTime },
+  { Header: "User UID", accessor: (x) => x.uid },
+];
