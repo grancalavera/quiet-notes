@@ -83,9 +83,6 @@ const toggleRoleAccessor =
 
 const columns: Column<QNUserRecord>[] = [
   { Header: "Email", accessor: (x) => x.email },
-  { Header: "Created", accessor: (x) => x.metadata.creationTime },
-  { Header: "Signed In", accessor: (x) => x.metadata.lastSignInTime },
-  { Header: "User UID", accessor: (x) => x.uid },
   {
     Header: "Author",
     accessor: toggleRoleAccessor("author"),
@@ -96,4 +93,7 @@ const columns: Column<QNUserRecord>[] = [
     accessor: toggleRoleAccessor("admin"),
     Cell: CheckboxCell,
   },
+  { Header: "Created", accessor: (x) => x.metadata.creationTime },
+  { Header: "Signed In", accessor: (x) => x.metadata.lastSignInTime },
+  { Header: "User UID", accessor: (x) => x.uid },
 ];
