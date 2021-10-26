@@ -2,6 +2,7 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import Paper from "@mui/material/Paper";
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
@@ -23,49 +24,51 @@ import { Theme } from "./theme/theme";
 ReactDOM.render(
   <React.StrictMode>
     <Theme>
-      <AppErrorBoundary>
-        <App>
-          <BrowserRouter>
-            <Switch>
-              <Route exact path="/">
-                <Redirect to="/notebook" />
-              </Route>
+      <Paper>
+        <AppErrorBoundary>
+          <App>
+            <BrowserRouter>
+              <Switch>
+                <Route exact path="/">
+                  <Redirect to="/notebook" />
+                </Route>
 
-              <Route exact path="/login" component={LoginPage} />
+                <Route exact path="/login" component={LoginPage} />
 
-              <PrivateRoute>
-                <AppLayout
-                  header={<AppHeader />}
-                  body={
-                    <Switch>
-                      <Route exact path="/lobby">
-                        <Lobby />
-                      </Route>
+                <PrivateRoute>
+                  <AppLayout
+                    header={<AppHeader />}
+                    body={
+                      <Switch>
+                        <Route exact path="/lobby">
+                          <Lobby />
+                        </Route>
 
-                      <AuthorRoute path="/notebook/:noteId?">
-                        <NotebookLayout
-                          sidebarToolbar={<SidebarToolbar />}
-                          sidebar={<NotesList />}
-                          editorToolbar={<NoteEditorToolbar />}
-                          editor={<NoteEditorContainer />}
-                        />
-                      </AuthorRoute>
+                        <AuthorRoute path="/notebook/:noteId?">
+                          <NotebookLayout
+                            sidebarToolbar={<SidebarToolbar />}
+                            sidebar={<NotesList />}
+                            editorToolbar={<NoteEditorToolbar />}
+                            editor={<NoteEditorContainer />}
+                          />
+                        </AuthorRoute>
 
-                      <AdminRoute path="/admin">
-                        <Admin />
-                      </AdminRoute>
+                        <AdminRoute path="/admin">
+                          <Admin />
+                        </AdminRoute>
 
-                      <Route>
-                        <Redirect to="/" />
-                      </Route>
-                    </Switch>
-                  }
-                />
-              </PrivateRoute>
-            </Switch>
-          </BrowserRouter>
-        </App>
-      </AppErrorBoundary>
+                        <Route>
+                          <Redirect to="/" />
+                        </Route>
+                      </Switch>
+                    }
+                  />
+                </PrivateRoute>
+              </Switch>
+            </BrowserRouter>
+          </App>
+        </AppErrorBoundary>
+      </Paper>
     </Theme>
   </React.StrictMode>,
   document.getElementById("root")
