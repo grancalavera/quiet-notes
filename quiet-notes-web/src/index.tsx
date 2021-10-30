@@ -2,7 +2,7 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import Paper from "@mui/material/Paper";
+import "normalize.css";
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
@@ -12,7 +12,7 @@ import { AdminRoute, AuthorRoute, LoginPage, PrivateRoute } from "./app/app-auth
 import { AppErrorBoundary } from "./app/app-error-boundary";
 import { AppHeader } from "./app/app-header";
 import { AppLayout } from "./app/app-layout";
-import "./index.scss";
+import { ApplicationLayout } from "./layout/application-layout";
 import { Lobby } from "./lobby/lobby";
 import { NotebookLayout } from "./notebook/notebook-layout";
 import { NoteEditorContainer } from "./notebook/notebook-note-editor";
@@ -24,7 +24,7 @@ import { Theme } from "./theme/theme";
 ReactDOM.render(
   <React.StrictMode>
     <Theme>
-      <Paper square sx={{ height: "100%" }}>
+      <ApplicationLayout>
         <AppErrorBoundary>
           <App>
             <BrowserRouter>
@@ -68,7 +68,7 @@ ReactDOM.render(
             </BrowserRouter>
           </App>
         </AppErrorBoundary>
-      </Paper>
+      </ApplicationLayout>
     </Theme>
   </React.StrictMode>,
   document.getElementById("root")
