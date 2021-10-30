@@ -26,7 +26,6 @@
     "**/*.spec.{js,jsx,ts,tsx}",
     "**/tests/**",
     "**/__tests__/**",
-    "**/*.d.ts",
-    "@types/**"
+    "**/*.d.ts"
   ]
 }
