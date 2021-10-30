@@ -1,4 +1,4 @@
-import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
 import { ReactNode } from "react";
 import { block } from "../app/bem";
 import "./notebook-layout.scss";
@@ -16,16 +16,28 @@ const b = block("notebook-layout");
 export const NotebookLayout = (props: NotebookLayoutProps) => {
   return (
     <div className={b({}).mix(props.className)}>
-      <Paper variant="outlined" square className={b("sidebar-toolbar").toString()}>
+      <Box
+        sx={{
+          borderRightWidth: 1,
+          borderRightStyle: "solid",
+          borderRightColor: "divider",
+        }}
+        className={b("sidebar-toolbar").toString()}
+      >
         {props.sidebarToolbar}
-      </Paper>
-
-      <Paper variant="outlined" square className={b("sidebar").toString()}>
+      </Box>
+      <Box
+        sx={{
+          borderRightWidth: 1,
+          borderRightStyle: "solid",
+          borderRightColor: "divider",
+        }}
+        className={b("sidebar").toString()}
+      >
         {props.sidebar}
-      </Paper>
-
-      <div className={b("editor-toolbar")}>{props.editorToolbar}</div>
-      <div className={b("editor")}>{props.editor}</div>
+      </Box>
+      <Box className={b("editor-toolbar")}>{props.editorToolbar}</Box>
+      <Box className={b("editor")}>{props.editor}</Box>
     </div>
   );
 };

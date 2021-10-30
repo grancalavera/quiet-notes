@@ -15,7 +15,7 @@ export const AppHeader = () => {
   const history = useHistory();
 
   return (
-    <Box className={b("header").toString()}>
+    <Box className={b("header").toString()} sx={{ backgroundColor: "divider" }}>
       <Typography
         variant="h4"
         onClick={() => history.push("/")}
