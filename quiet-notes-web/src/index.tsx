@@ -24,7 +24,7 @@ import { Theme } from "./theme/theme";
 ReactDOM.render(
   <React.StrictMode>
     <Theme>
-      <Paper>
+      <Paper square sx={{ height: "100%" }}>
         <AppErrorBoundary>
           <App>
             <BrowserRouter>
