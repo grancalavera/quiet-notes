@@ -16,11 +16,11 @@ const b = block("notebook-layout");
 export const NotebookLayout = (props: NotebookLayoutProps) => {
   return (
     <div className={b({}).mix(props.className)}>
-      <Paper variant="outlined" square className={b("sidebar-toolbar")}>
+      <Paper variant="outlined" square className={b("sidebar-toolbar").toString()}>
         {props.sidebarToolbar}
       </Paper>
 
-      <Paper variant="outlined" square className={b("sidebar")}>
+      <Paper variant="outlined" square className={b("sidebar").toString()}>
         {props.sidebar}
       </Paper>
 
