@@ -1,21 +1,19 @@
 import { CircularProgress } from "@mui/material";
 import { ReactNode, useEffect } from "react";
 import { useUser } from "../app/app-state";
-import { block } from "../app/bem";
 import { CreateNoteButton } from "../components/CreateNoteButton";
 import { CenterLayout } from "../layout/center-layout";
 import { useNotesCollection } from "../notebook-service/notebook-service";
 import { NotesListItem } from "./notebook-notes-list-item";
-import "./notebook-notes-list.scss";
 import {
   useLoadNotes,
   useNotebookNotes,
   useSelectedNoteId,
   useSelectNote,
 } from "./notebook-state";
+import Box from "@mui/material/Box";
 
-export const b = block("notes-list");
-export const testId = b().toString();
+export const testId = "notes-list";
 
 export const NotesList = () => {
   const user = useUser();
@@ -60,8 +58,11 @@ export const NotesList = () => {
   }
 
   return (
-    <div className={b()} data-testid={testId}>
+    <Box
+      sx={{ height: "100%", overflowY: "auto", overflowX: "hidden", padding: "0.5rem" }}
+      data-testid={testId}
+    >
       {children}
-    </div>
+    </Box>
   );
 };

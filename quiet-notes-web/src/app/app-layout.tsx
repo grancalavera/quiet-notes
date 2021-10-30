@@ -1,20 +1,30 @@
+import Box from "@mui/material/Box";
+import { styled } from "@mui/material/styles";
 import { ReactNode } from "react";
-import { block } from "../app/bem";
-import "./app-layout.scss";
 
 interface AppLayoutProps {
-  className?: string;
   header?: ReactNode;
   body?: ReactNode;
 }
 
-const b = block("app-layout");
-
 export const AppLayout = (props: AppLayoutProps) => {
   return (
-    <div className={b({}).mix(props.className)}>
-      <div className={b("header")}>{props.header}</div>
-      <div className={b("body")}>{props.body}</div>
-    </div>
+    <Layout>
+      <Box sx={{ gridArea: "header" }}>{props.header}</Box>
+      <Box sx={{ gridArea: "body", overflowY: "auto", overflowX: "hidden" }}>
+        {props.body}
+      </Box>
+    </Layout>
   );
 };
+
+const Layout = styled("div")`
+  display: grid;
+  height: 100vh;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+
+  grid-template-areas:
+    "header"
+    "body";
+`;
