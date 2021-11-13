@@ -26,5 +26,5 @@ const useTheme = create<ThemeState & State>((set, get) => ({
     }),
 }));
 
-export const useQNTheme = () => useTheme((s) => s.theme);
-export const useToggleQNTheme = () => useTheme((s) => s.toggle);
+export const useAppTheme = () => useTheme((s) => s.theme);
+export const useToggleAppTheme = () => useTheme((s) => s.toggle);

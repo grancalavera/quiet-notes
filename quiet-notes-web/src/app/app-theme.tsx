@@ -1,9 +1,9 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { FC, useMemo } from "react";
-import { useQNTheme } from "./use-theme";
+import { useAppTheme } from "./use-app-theme";
 
-export const Theme: FC = ({ children }) => {
-  const mode = useQNTheme();
+export const AppTheme: FC = ({ children }) => {
+  const mode = useAppTheme();
   const theme = useMemo(() => createTheme({ palette: { mode } }), [mode]);
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };

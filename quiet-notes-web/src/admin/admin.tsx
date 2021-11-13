@@ -10,14 +10,11 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { QNRole, QNToggleRole, QNUserRecord } from "quiet-notes-lib";
-import { FC, useEffect, useState, VFC } from "react";
+import { useEffect, useState, VFC } from "react";
 import { Column, useTable } from "react-table";
-import { block } from "../app/bem";
 import { useToggleRole, useUserList } from "../user-service/user-service";
-import "./admin.scss";
-
-const b = block("admin");
 
 export const Admin: VFC = () => {
   const { data, refetch, isLoading } = useUserList();
@@ -28,14 +25,14 @@ export const Admin: VFC = () => {
   });
 
   return (
-    <div className={b()}>
-      <div className={b("toolbar")}>
+    <AdminLayout>
+      <ToolbarLayout>
         <IconButton onClick={() => refetch()} disabled={isLoading}>
           {isLoading ? <CircularProgress size={24} /> : <RefreshIcon />}
         </IconButton>
-      </div>
+      </ToolbarLayout>
 
-      <TableContainer component={QNTableContainer}>
+      <TableContainer component={AdminTableLayout}>
         <Table
           aria-label="manage users"
           sx={{ backgroundColor: "background.paper" }}
@@ -69,13 +66,9 @@ export const Admin: VFC = () => {
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
+    </AdminLayout>
   );
 };
-
-const QNTableContainer: FC = ({ children }) => (
-  <div className={b("body")}>{children}</div>
-);
 
 interface CheckboxCellProps {
   value: QNToggleRole;
@@ -128,3 +121,32 @@ const columns: Column<QNUserRecord>[] = [
   { Header: "Signed In", accessor: (x) => x.metadata.lastSignInTime },
   { Header: "User UID", accessor: (x) => x.uid },
 ];
+
+const AdminLayout = styled("div")`
+  overflow: hidden;
+  height: 100%;
+  padding: 0.5rem;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  row-gap: 0.5rem;
+`;
+
+const ToolbarLayout = styled("div")`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const AdminTableLayout = styled("div")`
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  & table {
+    width: 100%;
+
+    thead {
+      position: sticky;
+      z-index: 1;
+      top: 0;
+    }
+  }
+`;

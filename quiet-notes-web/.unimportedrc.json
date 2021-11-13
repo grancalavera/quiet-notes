@@ -1,20 +1,20 @@
 {
   "ignoreUnresolved": [],
-  "ignoreUnimported": [
-    "src/setupTests.ts"
-  ],
+  "ignoreUnimported": ["src/setupTests.ts", "src/setupProxy.js", "http-proxy-middleware"],
   "ignoreUnused": [
+    "@testing-library/dom",
     "@testing-library/jest-dom",
+    "@testing-library/react-hooks",
     "@testing-library/react",
     "@testing-library/user-event",
     "@types/jest",
-    "@types/lodash",
     "@types/node",
-    "@types/react",
     "@types/react-dom",
-    "normalize.css",
+    "@types/react-router-dom",
+    "@types/react-table",
+    "history",
+    "http-proxy-middleware",
     "react-scripts",
-    "sass",
     "typescript",
     "unimported"
   ],

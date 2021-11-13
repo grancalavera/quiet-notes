@@ -1,7 +1,0 @@
-@import "./constants.scss";
-
-@mixin b($block) {
-  .#{$qn-namespace}-#{$block} {
-    @content;
-  }
-}

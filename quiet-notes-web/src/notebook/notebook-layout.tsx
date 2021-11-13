@@ -1,7 +1,6 @@
-import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import { styled } from "@mui/material/styles";
 import { ReactNode } from "react";
-import { block } from "../app/bem";
-import "./notebook-layout.scss";
 
 interface NotebookLayoutProps {
   className?: string;
@@ -11,21 +10,54 @@ interface NotebookLayoutProps {
   editor?: ReactNode;
 }
 
-const b = block("notebook-layout");
-
 export const NotebookLayout = (props: NotebookLayoutProps) => {
   return (
-    <div className={b({}).mix(props.className)}>
-      <Paper variant="outlined" square className={b("sidebar-toolbar")}>
+    <Layout>
+      <Box
+        sx={{
+          borderRightWidth: 1,
+          borderRightStyle: "solid",
+          borderRightColor: "divider",
+          gridArea: "sidebar-toolbar",
+        }}
+      >
         {props.sidebarToolbar}
-      </Paper>
-
-      <Paper variant="outlined" square className={b("sidebar")}>
+      </Box>
+      <Box
+        sx={{
+          borderRightWidth: 1,
+          borderRightStyle: "solid",
+          borderRightColor: "divider",
+          gridArea: "sidebar",
+        }}
+      >
         {props.sidebar}
-      </Paper>
-
-      <div className={b("editor-toolbar")}>{props.editorToolbar}</div>
-      <div className={b("editor")}>{props.editor}</div>
-    </div>
+      </Box>
+      <Box
+        sx={{
+          gridArea: "editor-toolbar",
+        }}
+      >
+        {props.editorToolbar}
+      </Box>
+      <Box
+        sx={{
+          gridArea: "editor",
+        }}
+      >
+        {props.editor}
+      </Box>
+    </Layout>
   );
 };
+
+const Layout = styled("div")`
+  display: grid;
+  height: 100%;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: auto 1fr;
+
+  grid-template-areas:
+    "sidebar-toolbar editor-toolbar"
+    "sidebar editor";
+`;

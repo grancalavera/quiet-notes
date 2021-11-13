@@ -1,9 +1,9 @@
 import { TextareaAutosize } from "@mui/material";
+import Box from "@mui/material/Box";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { useEffect, useRef } from "react";
 import { isFirebaseError } from "../app/app-error";
 import { useErrorHandler } from "../app/app-state";
-import { block } from "../app/bem";
 import { CreateNoteButton } from "../components/CreateNoteButton";
 import { CenterLayout } from "../layout/center-layout";
 import { useNote, useUpdateNote } from "../notebook-service/notebook-service";
@@ -13,10 +13,7 @@ import {
   useReset,
   useUpdateContent,
 } from "./notebook-editor-state";
-import "./notebook-note-editor.scss";
 import { useDeselectNote, useSelectedNoteId } from "./notebook-state";
-
-const b = block("note-editor");
 
 export const NoteEditorContainer = () => {
   const selectedNoteId = useSelectedNoteId();
@@ -62,7 +59,7 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
   useEffect(() => () => reset(), [reset]);
 
   return (
-    <div className={b()}>
+    <Box sx={{ overflow: "hidden", height: "100%", padding: "0.5rem" }}>
       <TextareaAutosize
         aria-label="a quiet note"
         ref={inputRef}
@@ -76,6 +73,6 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
           padding: "1em",
         }}
       />
-    </div>
+    </Box>
   );
 };

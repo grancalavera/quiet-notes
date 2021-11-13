@@ -1,27 +1,32 @@
 import { ButtonGroup } from "@mui/material";
-import { block } from "../app/bem";
+import { styled } from "@mui/material/styles";
 import { CreateNoteButton } from "../components/CreateNoteButton";
 import { DeleteNoteButton } from "../components/DeleteNoteButton";
 import { useSelectedNoteId } from "./notebook-state";
-import "./notebook-toolbars.scss";
 import { SortMenu } from "./SortNotesMenu";
-
-const b = block("note-editor-toolbar");
 
 export const NoteEditorToolbar = () => {
   const selectedNoteId = useSelectedNoteId();
   return (
-    <div className={b()}>
+    <Layout>
       <ButtonGroup>
         {selectedNoteId && <DeleteNoteButton noteId={selectedNoteId} isSelected={true} />}
         <CreateNoteButton />
       </ButtonGroup>
-    </div>
+    </Layout>
   );
 };
 
 export const SidebarToolbar = () => (
-  <div className={b()}>
+  <Layout>
     <SortMenu />
-  </div>
+  </Layout>
 );
+
+const Layout = styled("div")`
+  height: 100%;
+  padding: 0.5rem;
+  padding-bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+`;

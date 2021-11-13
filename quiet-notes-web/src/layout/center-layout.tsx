@@ -1,14 +1,6 @@
-import { ReactNode } from "react";
-import { block } from "../app/bem";
-import "./center-layout.scss";
+import Box from "@mui/material/Box";
+import { FC } from "react";
 
-const b = block("center-layout");
-
-interface CenterLayoutProps {
-  children?: ReactNode;
-  className?: string;
-}
-
-export const CenterLayout = ({ children, ...props }: CenterLayoutProps) => {
-  return <div className={b({}).mix(props.className)}>{children}</div>;
-};
+export const CenterLayout: FC = ({ children }) => (
+  <Box sx={{ height: "100%", display: "grid", placeItems: "center" }}>{children}</Box>
+);

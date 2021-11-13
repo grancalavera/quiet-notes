@@ -1,35 +1,39 @@
 import SettingsIcon from "@mui/icons-material/Settings";
-import { Avatar, Button, IconButton, Paper, Popover, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  Popover,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
 import firebase from "firebase/app";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { ToggleThemeSwitch } from "../components/ToggleThemeSwitch";
-import { useQNTheme, useToggleQNTheme } from "../theme/use-theme";
-import "./app-header.scss";
 import { useIsAdmin, useUser } from "./app-state";
-import { block } from "./bem";
-
-const b = block("app-header");
+import { useAppTheme, useToggleAppTheme } from "./use-app-theme";
 
 export const AppHeader = () => {
   const history = useHistory();
 
   return (
-    <Paper className={b("header").toString()} variant="outlined" square>
+    <HeaderLayout sx={{ backgroundColor: "divider" }}>
       <Typography
         variant="h4"
         onClick={() => history.push("/")}
-        sx={{ userSelect: "none" }}
+        sx={{ userSelect: "none", cursor: "pointer" }}
       >
         Quiet Notes
       </Typography>
-
-      <span className={b("toolbar")}>
+      <ToolbarLayout direction="row" spacing={1}>
         <AdminLink />
         <ToggleThemeButton />
         <Profile />
-      </span>
-    </Paper>
+      </ToolbarLayout>
+    </HeaderLayout>
   );
 };
 
@@ -60,7 +64,7 @@ const Profile = () => {
   const user = useUser();
 
   const content = (
-    <div className={b("profile")}>
+    <ProfileLayout spacing={1}>
       <UserAvatar size={80} />
 
       <Typography variant="body1">
@@ -78,7 +82,7 @@ const Profile = () => {
       <Button onClick={() => firebase.auth().signOut()} variant="contained">
         Sign Out
       </Button>
-    </div>
+    </ProfileLayout>
   );
 
   const open = !!anchorEl;
@@ -103,7 +107,29 @@ const Profile = () => {
 };
 
 const ToggleThemeButton = () => {
-  const theme = useQNTheme();
-  const toggleTheme = useToggleQNTheme();
+  const theme = useAppTheme();
+  const toggleTheme = useToggleAppTheme();
   return <ToggleThemeSwitch checked={theme === "dark"} onChange={() => toggleTheme()} />;
 };
+
+const HeaderLayout = styled(Box)`
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const ProfileLayout = styled(Stack)`
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  padding-top: 2rem;
+  padding-right: 3rem;
+  padding-left: 3rem;
+  position: relative;
+  padding-bottom: 2.5rem;
+`;
+
+const ToolbarLayout = styled(Stack)`
+  align-items: center;
+`;
