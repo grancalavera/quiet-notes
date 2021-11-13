@@ -3,74 +3,62 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "normalize.css";
-import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { Admin } from "./admin/admin";
-import { App } from "./app/app";
 import { AdminRoute, AuthorRoute, LoginPage, PrivateRoute } from "./app/app-auth";
-import { AppErrorBoundary } from "./app/app-error-boundary";
 import { AppHeader } from "./app/app-header";
-import { AppLayout } from "./app/app-layout";
-import { ApplicationLayout } from "./layout/application-layout";
+import { Application } from "./app/application";
+import { HeaderLayout } from "./layout/header-layout";
 import { Lobby } from "./lobby/lobby";
 import { NotebookLayout } from "./notebook/notebook-layout";
 import { NoteEditorContainer } from "./notebook/notebook-note-editor";
 import { NotesList } from "./notebook/notebook-notes-list";
 import { NoteEditorToolbar, SidebarToolbar } from "./notebook/notebook-toolbars";
 import reportWebVitals from "./reportWebVitals";
-import { Theme } from "./theme/theme";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Theme>
-      <ApplicationLayout>
-        <AppErrorBoundary>
-          <App>
-            <BrowserRouter>
+  <Application>
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/">
+          <Redirect to="/notebook" />
+        </Route>
+
+        <Route exact path="/login" component={LoginPage} />
+
+        <PrivateRoute>
+          <HeaderLayout
+            header={<AppHeader />}
+            body={
               <Switch>
-                <Route exact path="/">
-                  <Redirect to="/notebook" />
+                <Route exact path="/lobby">
+                  <Lobby />
                 </Route>
 
-                <Route exact path="/login" component={LoginPage} />
-
-                <PrivateRoute>
-                  <AppLayout
-                    header={<AppHeader />}
-                    body={
-                      <Switch>
-                        <Route exact path="/lobby">
-                          <Lobby />
-                        </Route>
-
-                        <AuthorRoute path="/notebook/:noteId?">
-                          <NotebookLayout
-                            sidebarToolbar={<SidebarToolbar />}
-                            sidebar={<NotesList />}
-                            editorToolbar={<NoteEditorToolbar />}
-                            editor={<NoteEditorContainer />}
-                          />
-                        </AuthorRoute>
-
-                        <AdminRoute path="/admin">
-                          <Admin />
-                        </AdminRoute>
-
-                        <Route>
-                          <Redirect to="/" />
-                        </Route>
-                      </Switch>
-                    }
+                <AuthorRoute path="/notebook/:noteId?">
+                  <NotebookLayout
+                    sidebarToolbar={<SidebarToolbar />}
+                    sidebar={<NotesList />}
+                    editorToolbar={<NoteEditorToolbar />}
+                    editor={<NoteEditorContainer />}
                   />
-                </PrivateRoute>
+                </AuthorRoute>
+
+                <AdminRoute path="/admin">
+                  <Admin />
+                </AdminRoute>
+
+                <Route>
+                  <Redirect to="/" />
+                </Route>
               </Switch>
-            </BrowserRouter>
-          </App>
-        </AppErrorBoundary>
-      </ApplicationLayout>
-    </Theme>
-  </React.StrictMode>,
+            }
+          />
+        </PrivateRoute>
+      </Switch>
+    </BrowserRouter>
+  </Application>,
   document.getElementById("root")
 );
 

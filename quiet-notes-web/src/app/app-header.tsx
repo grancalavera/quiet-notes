@@ -13,8 +13,8 @@ import firebase from "firebase/app";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { ToggleThemeSwitch } from "../components/ToggleThemeSwitch";
-import { useQNTheme, useToggleQNTheme } from "../theme/use-theme";
 import { useIsAdmin, useUser } from "./app-state";
+import { useAppTheme, useToggleAppTheme } from "./use-app-theme";
 
 export const AppHeader = () => {
   const history = useHistory();
@@ -107,8 +107,8 @@ const Profile = () => {
 };
 
 const ToggleThemeButton = () => {
-  const theme = useQNTheme();
-  const toggleTheme = useToggleQNTheme();
+  const theme = useAppTheme();
+  const toggleTheme = useToggleAppTheme();
   return <ToggleThemeSwitch checked={theme === "dark"} onChange={() => toggleTheme()} />;
 };
 
