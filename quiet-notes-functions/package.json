@@ -11,9 +11,6 @@
     "logs": "firebase functions:log",
     "mock-users": "GOOGLE_APPLICATION_CREDENTIALS=~/quiet-notes-firebase-adminsdk.json ts-node src/scripts/mock-users.ts"
   },
-  "engines": {
-    "node": "16"
-  },
   "main": "lib/index.js",
   "dependencies": {
     "@firebase/app-types": "0.7.0",

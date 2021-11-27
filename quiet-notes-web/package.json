@@ -50,7 +50,7 @@
     "serve": "vite preview",
     "build:ci": "yarn install --frozen-lockfile && yarn test:ci && yarn build",
     "test": "jest",
-    "test:ci": "react-scripts test --watchAll=false --verbose",
+    "test:ci": "jest --watchAll=false --verbose",
     "unimported": "unimported"
   },
   "eslintConfig": {
