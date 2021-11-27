@@ -16,7 +16,6 @@ interface Scenario {
 const note = (content: string, _version: number): Note => ({
   author: "",
   id: "",
-  title: content,
   content,
   _version,
   _createdAt: new Date(0),

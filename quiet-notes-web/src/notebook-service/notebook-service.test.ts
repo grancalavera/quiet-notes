@@ -60,7 +60,6 @@ describe("global error handling", () => {
         author: "",
         content: "",
         id: "",
-        title: "",
         _version: 0,
         _createdAt: new Date(0),
         _updatedAt: new Date(0),

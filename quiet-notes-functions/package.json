@@ -12,7 +12,7 @@
     "mock-users": "GOOGLE_APPLICATION_CREDENTIALS=~/quiet-notes-firebase-adminsdk.json ts-node src/scripts/mock-users.ts"
   },
   "engines": {
-    "node": "14"
+    "node": "16"
   },
   "main": "lib/index.js",
   "dependencies": {

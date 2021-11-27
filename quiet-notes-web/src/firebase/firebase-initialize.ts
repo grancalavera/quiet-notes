@@ -2,6 +2,10 @@ import firebase from "firebase/app";
 
 import { useEffect, useState } from "react";
 
+const env: any = (import.meta as any).env;
+const isDev = env.DEV;
+const emulate = env.VITE_FIREBASE_USE_EMULATORS === "true";
+
 const initializeFirebase = async (onInitialized: () => void) => {
   if (firebase.apps.length === 0) {
     const response = await fetch("/__/firebase/init.json");
@@ -9,25 +13,16 @@ const initializeFirebase = async (onInitialized: () => void) => {
     firebase.initializeApp(config);
   }
 
-  const isDev = process.env.NODE_ENV === "development";
-  const emulate = process.env.REACT_APP_FIREBASE_USE_EMULATORS === "true";
-
   if (isDev && emulate) {
-    firebase.auth().useEmulator(process.env.REACT_APP_FIREBASE_EMULATOR_AUTH!);
+    firebase.auth().useEmulator(env.VITE_FIREBASE_EMULATOR_AUTH);
 
     firebase
       .firestore()
-      .useEmulator(
-        "localhost",
-        parseInt(process.env.REACT_APP_FIREBASE_EMULATOR_FIRESTORE_PORT!)
-      );
+      .useEmulator("localhost", parseInt(env.VITE_FIREBASE_EMULATOR_FIRESTORE_PORT));
 
     firebase
       .functions()
-      .useEmulator(
-        "localhost",
-        parseInt(process.env.REACT_APP_FIREBASE_EMULATOR_FUNCTIONS_PORT!)
-      );
+      .useEmulator("localhost", parseInt(env.VITE_FIREBASE_EMULATOR_FUNCTIONS_PORT));
   }
 
   onInitialized();

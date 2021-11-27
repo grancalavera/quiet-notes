@@ -15,7 +15,7 @@
     "source": "quiet-notes-functions"
   },
   "hosting": {
-    "public": "quiet-notes-web/build",
+    "public": "quiet-notes-web/dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {

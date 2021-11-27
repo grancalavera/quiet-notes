@@ -12,12 +12,10 @@
 //   Emulator Hub running at localhost:4400
 //   Other reserved ports: 4500
 
-// "proxy": "https://quiet-notes-e83fb.web.app"
-
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const fs = require("fs");
-const emulated = process.env.REACT_APP_FIREBASE_USE_EMULATORS === "true";
 
+const emulated = process.env.REACT_APP_FIREBASE_USE_EMULATORS === "true";
 const target = emulated ? "http://localhost:5000" : "https://quiet-notes-e83fb.web.app";
 
 fs.writeFileSync("proxy-setup.json", JSON.stringify({ emulated, target }, null, 2));
