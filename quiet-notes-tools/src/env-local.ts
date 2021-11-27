@@ -4,9 +4,9 @@ import { readFileSync, writeFileSync } from "fs";
 type EmulatorPorts = Record<"auth" | "firestore" | "functions", number>;
 
 const getEnvLocal = (ports: EmulatorPorts) => `
-REACT_APP_FIREBASE_EMULATOR_AUTH=http://localhost:${ports.auth}
-REACT_APP_FIREBASE_EMULATOR_FIRESTORE_PORT=${ports.firestore}
-REACT_APP_FIREBASE_EMULATOR_FUNCTIONS_PORT=${ports.functions}
+VITE_FIREBASE_EMULATOR_AUTH=http://localhost:${ports.auth}
+VITE_FIREBASE_EMULATOR_FIRESTORE_PORT=${ports.firestore}
+VITE_FIREBASE_EMULATOR_FUNCTIONS_PORT=${ports.functions}
 BROWSER=none
 `;
 
