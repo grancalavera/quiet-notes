@@ -19,13 +19,5 @@ export default {
   transform: {
     [assetFile]: "<rootDir>/jest/transformAssetFiles.js",
   },
-  coverageThreshold: {
-    global: {
-      branches: 70,
-      functions: 70,
-      lines: 70,
-      statements: -10,
-    },
-  },
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
 };
