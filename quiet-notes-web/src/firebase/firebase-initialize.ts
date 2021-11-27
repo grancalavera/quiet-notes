@@ -2,7 +2,7 @@ import firebase from "firebase/app";
 
 import { useEffect, useState } from "react";
 
-const env: any = (import.meta as any).env;
+const env = import.meta.env;
 const isDev = env.DEV;
 const emulate = env.VITE_FIREBASE_USE_EMULATORS === "true";
 
