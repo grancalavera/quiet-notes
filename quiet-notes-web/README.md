@@ -34,3 +34,6 @@ real 19.62
 user 37.64
 sys 2.10
 ```
+
+https://www.simicart.com/manifest-generator.html/
+https://favicomatic.com/

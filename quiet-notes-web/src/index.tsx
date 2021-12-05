@@ -3,8 +3,10 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "normalize.css";
+import { VFC } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import { useRegisterSW } from "virtual:pwa-register/react";
 import { Admin } from "./admin/admin";
 import { AdminRoute, AuthorRoute, LoginPage, PrivateRoute } from "./app/app-auth";
 import { AppHeader } from "./app/app-header";
@@ -17,8 +19,14 @@ import { NotesList } from "./notebook/notebook-notes-list";
 import { NoteEditorToolbar, SidebarToolbar } from "./notebook/notebook-toolbars";
 import reportWebVitals from "./reportWebVitals";
 
+const RegisterSW: VFC = () => {
+  useRegisterSW({ onRegistered: () => console.log("SW Registered") });
+  return <></>;
+};
+
 ReactDOM.render(
   <Application>
+    <RegisterSW />
     <BrowserRouter>
       <Switch>
         <Route exact path="/">
