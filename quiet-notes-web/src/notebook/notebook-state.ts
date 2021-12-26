@@ -2,6 +2,8 @@ import { useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import create, { State } from "zustand";
 import { deriveTitle, Note } from "./notebook-model";
+import { createSignal } from "@react-rxjs/utils";
+import { bind } from "@react-rxjs/core";
 
 interface NotebookState {
   notes: Note[];
@@ -73,8 +75,5 @@ export const useSortType = () => useNotebookState(selectSortType);
 const selectChangeSortType = (s: NotebookState) => s.changeSortType;
 export const useChangeSortType = () => useNotebookState(selectChangeSortType);
 
-const selectNotes = (s: NotebookState) => s.notes;
-export const useNotebookNotes = () => useNotebookState(selectNotes);
-
-const selectLoadNotes = (s: NotebookState) => s.loadNotes;
-export const useLoadNotes = () => useNotebookState(selectLoadNotes);
+export const [notes$, loadNotes] = createSignal<Note[]>();
+export const [useNotes] = bind(notes$, []);

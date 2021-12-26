@@ -5,12 +5,7 @@ import { CreateNoteButton } from "../components/CreateNoteButton";
 import { CenterLayout } from "../layout/center-layout";
 import { useNotesCollection } from "../notebook-service/notebook-service";
 import { NotesListItem } from "./notebook-notes-list-item";
-import {
-  useLoadNotes,
-  useNotebookNotes,
-  useSelectedNoteId,
-  useSelectNote,
-} from "./notebook-state";
+import { useNotes, useSelectedNoteId, useSelectNote, loadNotes } from "./notebook-state";
 import Box from "@mui/material/Box";
 
 export const testId = "notes-list";
@@ -21,8 +16,7 @@ export const NotesList = () => {
   const selectedNoteId = useSelectedNoteId();
   const selectNote = useSelectNote();
 
-  const notebookNotes = useNotebookNotes();
-  const loadNotes = useLoadNotes();
+  const notebookNotes = useNotes();
 
   useEffect(() => {
     notes && loadNotes(notes);
