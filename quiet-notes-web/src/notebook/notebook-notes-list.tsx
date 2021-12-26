@@ -1,12 +1,12 @@
-import { CircularProgress } from "@mui/material";
+import Box from "@mui/material/Box";
 import { ReactNode, useEffect } from "react";
 import { useUser } from "../app/app-state";
 import { CreateNoteButton } from "../components/CreateNoteButton";
 import { CenterLayout } from "../layout/center-layout";
+import { LoadingLayout } from "../layout/loading-layout";
 import { useNotesCollection } from "../notebook-service/notebook-service";
 import { NotesListItem } from "./notebook-notes-list-item";
-import { useNotes, useSelectedNoteId, useSelectNote, loadNotes } from "./notebook-state";
-import Box from "@mui/material/Box";
+import { loadNotes, useNotes, useSelectedNoteId, useSelectNote } from "./notebook-state";
 
 export const testId = "notes-list";
 
@@ -25,11 +25,7 @@ export const NotesList = () => {
   let children: ReactNode;
 
   if (isLoading) {
-    children = (
-      <CenterLayout>
-        <CircularProgress />
-      </CenterLayout>
-    );
+    children = <LoadingLayout />;
   } else if (notes && notes.length > 0) {
     children = (
       <>

@@ -6,6 +6,7 @@ import { AppErrorBoundary } from "./app-error-boundary";
 import { Services } from "./app-services";
 import { AppTheme } from "./app-theme";
 import CircularProgress from "@mui/material/CircularProgress";
+import { LoadingLayout } from "../layout/loading-layout";
 
 export const Application: FC = ({ children }) => {
   return (
@@ -13,13 +14,7 @@ export const Application: FC = ({ children }) => {
       <AppTheme>
         <FullPageLayout>
           <AppErrorBoundary>
-            <Subscribe
-              fallback={
-                <CenterLayout>
-                  <CircularProgress size={50} />
-                </CenterLayout>
-              }
-            >
+            <Subscribe fallback={<LoadingLayout />}>
               <Services>{children}</Services>
             </Subscribe>
           </AppErrorBoundary>

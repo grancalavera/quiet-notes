@@ -1,26 +1,11 @@
+import { bind } from "@react-rxjs/core";
+import { createSignal } from "@react-rxjs/utils";
 import { useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import create, { State } from "zustand";
+import { combineLatest, map } from "rxjs";
 import { deriveTitle, Note } from "./notebook-model";
-import { createSignal } from "@react-rxjs/utils";
-import { bind } from "@react-rxjs/core";
 
-interface NotebookState {
-  notes: Note[];
-  loadNotes: (notes: Note[]) => void;
-  sortType: "ByTitleAsc" | "ByTitleDesc" | "ByDateAsc" | "ByDateDesc";
-  changeSortType: (sortType: NotebookSortType) => void;
-}
-
-export type NotebookSortType = NotebookState["sortType"];
-
-const useNotebookState = create<NotebookState & State>((set, get) => ({
-  notes: [],
-  sortType: "ByDateDesc",
-  changeSortType: (sortType) =>
-    set({ sortType, notes: sortNotes(sortType, get().notes) }),
-  loadNotes: (notes) => set({ notes: sortNotes(get().sortType, notes) }),
-}));
+export type NotebookSortType = "ByTitleAsc" | "ByTitleDesc" | "ByDateAsc" | "ByDateDesc";
 
 const sortNotes = (sortType: NotebookSortType, [...notes]: Note[]): Note[] =>
   notes.sort(sort[sortType]);
@@ -69,11 +54,15 @@ export const useDeselectNote = () => {
   }, [history]);
 };
 
-const selectSortType = (s: NotebookState) => s.sortType;
-export const useSortType = () => useNotebookState(selectSortType);
+export const [sortType$, changeSortType] = createSignal<NotebookSortType>();
 
-const selectChangeSortType = (s: NotebookState) => s.changeSortType;
-export const useChangeSortType = () => useNotebookState(selectChangeSortType);
+export const [useSortType, sortTypeWithDefault$] = bind(sortType$, "ByDateDesc");
 
 export const [notes$, loadNotes] = createSignal<Note[]>();
-export const [useNotes] = bind(notes$, []);
+
+export const [useNotes] = bind(
+  combineLatest([sortTypeWithDefault$, notes$]).pipe(
+    map(([sortType, notes]) => sortNotes(sortType, notes))
+  ),
+  []
+);
