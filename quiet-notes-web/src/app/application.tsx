@@ -1,8 +1,11 @@
+import { Subscribe } from "@react-rxjs/core";
 import { FC, StrictMode } from "react";
+import { CenterLayout } from "../layout/center-layout";
 import { FullPageLayout } from "../layout/full-page-layout";
 import { AppErrorBoundary } from "./app-error-boundary";
-import { AppServices } from "./app-services";
+import { Services } from "./app-services";
 import { AppTheme } from "./app-theme";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export const Application: FC = ({ children }) => {
   return (
@@ -10,7 +13,15 @@ export const Application: FC = ({ children }) => {
       <AppTheme>
         <FullPageLayout>
           <AppErrorBoundary>
-            <AppServices>{children}</AppServices>
+            <Subscribe
+              fallback={
+                <CenterLayout>
+                  <CircularProgress size={50} />
+                </CenterLayout>
+              }
+            >
+              <Services>{children}</Services>
+            </Subscribe>
           </AppErrorBoundary>
         </FullPageLayout>
       </AppTheme>
