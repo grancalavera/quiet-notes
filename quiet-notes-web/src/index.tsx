@@ -20,7 +20,21 @@ import { NoteEditorToolbar, SidebarToolbar } from "./notebook/notebook-toolbars"
 import reportWebVitals from "./reportWebVitals";
 
 const RegisterSW: VFC = () => {
-  useRegisterSW({ onRegistered: () => console.log("SW Registered") });
+  useRegisterSW({
+    onRegistered: () => {
+      console.log("SW Registered");
+    },
+    onNeedRefresh: () => {
+      console.log("SW need refresh");
+    },
+    onOfflineReady: () => {
+      console.log("SW offline ready");
+    },
+    onRegisterError: () => {
+      console.log("SW register error");
+    },
+  });
+
   return <></>;
 };
 
