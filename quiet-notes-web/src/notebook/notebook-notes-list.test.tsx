@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { act, renderHook } from "@testing-library/react-hooks";
 import { createMemoryHistory } from "history";
 import { Route, Router, useHistory } from "react-router-dom";
-import { useUser } from "../app/app-state";
+import { useUser } from "../auth/user";
 import "../env";
 import { useNotesCollectionInternal } from "../notebook-service/notebook-service-internal";
 import { Note } from "./notebook-model";
@@ -19,9 +19,9 @@ jest.mock("../notebook-service/notebook-service-internal", () => ({
   useNoteInternal: jest.fn(),
 }));
 
-jest.mock("../app/app-state", () => {
-  const appState = jest.requireActual("../app/app-state");
-  return { ...appState, useUser: jest.fn() };
+jest.mock("../auth/user", () => {
+  const user = jest.requireActual("../auth/user");
+  return { ...user, useUser: jest.fn() };
 });
 
 jest.mock("react-router-dom", () => {
