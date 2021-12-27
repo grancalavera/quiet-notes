@@ -74,12 +74,5 @@ interface AuthStateProps {
   notAuthenticated: ReactNode;
 }
 
-const AuthState = ({ authenticated, notAuthenticated }: AuthStateProps) => {
-  const user = useAuthState();
-
-  useEffect(() => {
-    console.count("render AuthState");
-  }, []);
-
-  return user ? <>{authenticated}</> : <>{notAuthenticated}</>;
-};
+const AuthState = ({ authenticated, notAuthenticated }: AuthStateProps) =>
+  useAuthState() ? <>{authenticated}</> : <>{notAuthenticated}</>;
