@@ -51,34 +51,33 @@ ReactDOM.render(
 
         <PrivateRoute>
           <HeaderLayout
-            header={
-              // <>Header</>
-              <AppHeader />
-            }
+            header={<AppHeader />}
             body={
-              <>Body</>
-              //   <Switch>
-              //     <Route exact path="/lobby">
-              //       <Lobby />
-              //     </Route>
+              <Switch>
+                <Route exact path="/lobby">
+                  <Lobby />
+                </Route>
 
-              //     <AuthorRoute path="/notebook/:noteId?">
-              //       <NotebookLayout
-              //         sidebarToolbar={<SidebarToolbar />}
-              //         sidebar={<NotesList />}
-              //         editorToolbar={<NoteEditorToolbar />}
-              //         editor={<NoteEditorContainer />}
-              //       />
-              //     </AuthorRoute>
+                <AuthorRoute path="/notebook/:noteId?">
+                  <NotebookLayout
+                    sidebarToolbar={<SidebarToolbar />}
+                    sidebar={
+                      <NotesList />
+                      // <>Notes List< />
+                    }
+                    editorToolbar={<NoteEditorToolbar />}
+                    editor={<NoteEditorContainer />}
+                  />
+                </AuthorRoute>
 
-              //     <AdminRoute path="/admin">
-              //       <Admin />
-              //     </AdminRoute>
+                <AdminRoute path="/admin">
+                  <Admin />
+                </AdminRoute>
 
-              //     <Route>
-              //       <Redirect to="/" />
-              //     </Route>
-              //   </Switch>
+                <Route>
+                  <Redirect to="/" />
+                </Route>
+              </Switch>
             }
           />
         </PrivateRoute>

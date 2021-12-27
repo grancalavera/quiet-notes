@@ -1,8 +1,12 @@
 import { addCleanup, renderHook } from "@testing-library/react-hooks";
+import { FirebaseError } from "firebase/app";
 import { useAppState } from "../app/app-state";
 import { Note } from "../notebook/notebook-model";
 import { useNote, useNotesCollection } from "./notebook-service";
 import { useNoteInternal, useNotesCollectionInternal } from "./notebook-service-internal";
+import "../env";
+
+jest.mock("../env");
 
 jest.mock("./notebook-service-internal", () => ({
   useNotesCollectionInternal: jest.fn(),
@@ -17,10 +21,10 @@ const useNoteInternal_mock = useNoteInternal as jest.MockedFunction<
   typeof useNoteInternal
 >;
 
-const mockError = {
+const mockError: FirebaseError = {
   code: "mock error code",
   message: "mock error message",
-  name: "mock error name",
+  name: "FirebaseError",
 };
 
 describe("global error handling", () => {

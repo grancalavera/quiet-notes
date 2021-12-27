@@ -5,8 +5,8 @@ import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { fromFetch } from "rxjs/fetch";
 import { map, shareReplay, switchMap, tap } from "rxjs/operators";
+import { env } from "../env";
 
-const env = import.meta.env;
 const isDev = env.DEV;
 const emulate = env.VITE_FIREBASE_USE_EMULATORS === "true";
 
@@ -42,4 +42,5 @@ export const firebaseApp$ = fromFetch("/__/firebase/init.json").pipe(
 );
 
 export const [useFirebase] = bind(firebaseApp$);
-export const useFirebaseAuth = () => getAuth(useFirebase());
+export const useAuth = () => getAuth(useFirebase());
+export const useFirestore = () => getFirestore(useFirebase());

@@ -4,7 +4,7 @@ import { QNRole } from "quiet-notes-lib";
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import * as firebaseHooks from "react-firebase-hooks/auth";
 import { Redirect, Route, RouteProps, useLocation } from "react-router-dom";
-import { useFirebase, useFirebaseAuth } from "../firebase/firebase-initialize";
+import { useFirebase, useAuth } from "../firebase/firebase-initialize";
 import { CenterLayout } from "../layout/center-layout";
 import { LoadingLayout } from "../layout/loading-layout";
 import { useAppState, useHasRole } from "./app-state";
@@ -49,7 +49,7 @@ interface LocationState {
 }
 
 export const LoginPage = () => {
-  const auth = useFirebaseAuth();
+  const auth = useAuth();
 
   return (
     <AuthState
@@ -80,7 +80,7 @@ interface AuthStateProps {
 }
 
 const AuthState = ({ authenticated, notAuthenticated }: AuthStateProps) => {
-  const auth = useFirebaseAuth();
+  const auth = useAuth();
 
   const setUser = useAppState((s) => s.setUser);
   const reset = useAppState((s) => s.reset);

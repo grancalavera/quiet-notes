@@ -1,7 +1,7 @@
-import firebase from "firebase/compat/app";
+import { FirebaseError } from "firebase/app";
 import { hasOwnProperty } from "../utils/has-own-property";
 
-export type AppError = firebase.FirebaseError | QNError;
+export type AppError = FirebaseError | QNError;
 
 export class QNError extends Error {
   public readonly data: unknown;
@@ -13,9 +13,7 @@ export class QNError extends Error {
   }
 }
 
-export const isFirebaseError = (
-  candidate: unknown
-): candidate is firebase.FirebaseError =>
+export const isFirebaseError = (candidate: unknown): candidate is FirebaseError =>
   hasErrorName(candidate) && candidate.name === "FirebaseError";
 
 export const isQnError = (candidate: unknown): candidate is QNError =>

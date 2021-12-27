@@ -1,12 +1,12 @@
-import firebase from "firebase/compat/app";
 import { useEffect } from "react";
 import { useErrorHandler } from "../app/app-state";
+import { FirebaseError } from "firebase/app";
 
 export interface FirebaseErrorHandlerOptions {
-  handleError?: (error: firebase.FirebaseError) => void;
+  handleError?: (error: FirebaseError) => void;
 }
 
-type FirebaseHookResult<TData> = [TData, boolean, firebase.FirebaseError | undefined];
+type FirebaseHookResult<TData> = [TData, boolean, FirebaseError | undefined];
 
 export const useFirebaseErrorHandler = <TData>(
   result: FirebaseHookResult<TData>,

@@ -1,12 +1,14 @@
+import { deleteDoc, Firestore, setDoc } from "firebase/firestore";
 import { useErrorHandler } from "../app/app-state";
 import {
   FirebaseErrorHandlerOptions,
   useFirebaseErrorHandler,
 } from "../firebase/firebase-error-handler";
+import { useFirestore } from "../firebase/firebase-initialize";
 import { useFirebaseMutation } from "../firebase/firebase-mutation";
 import { Note } from "../notebook/notebook-model";
 import {
-  notesCollection,
+  getNoteDocRef,
   useNoteInternal,
   useNotesCollectionInternal,
 } from "./notebook-service-internal";
@@ -35,24 +37,37 @@ export const useNote = (id: string, options: FirebaseErrorHandlerOptions = {}) =
   return useFirebaseErrorHandler(result, options);
 };
 
-export const useCreateNote = () =>
-  useFirebaseMutation(createNote, { onError: useErrorHandler() });
-
-export const useDeleteNote = () =>
-  useFirebaseMutation(deleteNote, { onError: useErrorHandler() });
-
-export const useUpdateNote = () =>
-  useFirebaseMutation(updateNote, { onError: useErrorHandler() });
-
-const createNote = async (author: string): Promise<string> => {
-  const { id, ...data } = authorToWriteModel(author);
-  await notesCollection().doc(id).set(data);
-  return id;
+export const useCreateNote = () => {
+  const db = useFirestore();
+  return useFirebaseMutation(createNote(db), { onError: useErrorHandler() });
 };
 
-const updateNote = (note: Note): Promise<void> => {
-  const { id, ...data } = noteToWriteModel(note);
-  return notesCollection().doc(id).set(data, { merge: true });
+export const useDeleteNote = () => {
+  const db = useFirestore();
+  return useFirebaseMutation(deleteNote(db), { onError: useErrorHandler() });
 };
 
-const deleteNote = (id: string): Promise<void> => notesCollection().doc(id).delete();
+export const useUpdateNote = () => {
+  const db = useFirestore();
+  return useFirebaseMutation(updateNote(db), { onError: useErrorHandler() });
+};
+
+const createNote =
+  (db: Firestore) =>
+  async (author: string): Promise<string> => {
+    const { id, ...data } = authorToWriteModel(author);
+    await setDoc(getNoteDocRef(db, id), data);
+    return id;
+  };
+
+const updateNote =
+  (db: Firestore) =>
+  (note: Note): Promise<void> => {
+    const { id, ...data } = noteToWriteModel(note);
+    return setDoc(getNoteDocRef(db, id), data, { merge: true });
+  };
+
+const deleteNote =
+  (db: Firestore) =>
+  (id: string): Promise<void> =>
+    deleteDoc(getNoteDocRef(db, id));

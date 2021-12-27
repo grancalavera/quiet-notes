@@ -15,7 +15,6 @@ export const NotesList = () => {
   const [notes, isLoading] = useNotesCollection(user.uid);
   const selectedNoteId = useSelectedNoteId();
   const selectNote = useSelectNote();
-
   const notebookNotes = useNotes();
 
   useEffect(() => {
