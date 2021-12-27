@@ -1,10 +1,10 @@
 import Button from "@mui/material/Button";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { QNRole } from "quiet-notes-lib";
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import * as firebaseHooks from "react-firebase-hooks/auth";
 import { Redirect, Route, RouteProps, useLocation } from "react-router-dom";
+import { useFirebase, useFirebaseAuth } from "../firebase/firebase-initialize";
 import { CenterLayout } from "../layout/center-layout";
 import { LoadingLayout } from "../layout/loading-layout";
 import { useAppState, useHasRole } from "./app-state";
@@ -49,6 +49,8 @@ interface LocationState {
 }
 
 export const LoginPage = () => {
+  const auth = useFirebaseAuth();
+
   return (
     <AuthState
       authenticated={
@@ -61,7 +63,7 @@ export const LoginPage = () => {
           <Button
             variant="contained"
             onClick={() => {
-              firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+              signInWithPopup(auth, new GoogleAuthProvider());
             }}
           >
             Sign In with Google
@@ -78,10 +80,12 @@ interface AuthStateProps {
 }
 
 const AuthState = ({ authenticated, notAuthenticated }: AuthStateProps) => {
+  const auth = useFirebaseAuth();
+
   const setUser = useAppState((s) => s.setUser);
   const reset = useAppState((s) => s.reset);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, isLoading] = firebaseHooks.useAuthState(firebase.auth());
+  const [user, isLoading] = firebaseHooks.useAuthState(auth);
 
   useEffect(() => {
     if (user) {
