@@ -6,6 +6,7 @@ import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import * as firebaseHooks from "react-firebase-hooks/auth";
 import { Redirect, Route, RouteProps, useLocation } from "react-router-dom";
 import { CenterLayout } from "../layout/center-layout";
+import { LoadingLayout } from "../layout/loading-layout";
 import { useAppState, useHasRole } from "./app-state";
 
 type CustomRouteProps<T extends {} = {}> = PropsWithChildren<T> &
@@ -80,7 +81,6 @@ const AuthState = ({ authenticated, notAuthenticated }: AuthStateProps) => {
   const setUser = useAppState((s) => s.setUser);
   const reset = useAppState((s) => s.reset);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   const [user, isLoading] = firebaseHooks.useAuthState(firebase.auth());
 
   useEffect(() => {
@@ -101,11 +101,7 @@ const AuthState = ({ authenticated, notAuthenticated }: AuthStateProps) => {
     <>
       {isAuthenticated && authenticated}
       {!isLoading && !user && notAuthenticated}
-      {isLoading && (
-        <CenterLayout>
-          <CircularProgress />
-        </CenterLayout>
-      )}
+      {isLoading && <LoadingLayout />}
     </>
   );
 };

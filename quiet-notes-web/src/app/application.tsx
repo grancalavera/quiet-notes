@@ -1,12 +1,10 @@
 import { Subscribe } from "@react-rxjs/core";
 import { FC, StrictMode } from "react";
-import { CenterLayout } from "../layout/center-layout";
 import { FullPageLayout } from "../layout/full-page-layout";
+import { LoadingLayout } from "../layout/loading-layout";
 import { AppErrorBoundary } from "./app-error-boundary";
 import { Services } from "./app-services";
 import { AppTheme } from "./app-theme";
-import CircularProgress from "@mui/material/CircularProgress";
-import { LoadingLayout } from "../layout/loading-layout";
 
 export const Application: FC = ({ children }) => {
   return (
