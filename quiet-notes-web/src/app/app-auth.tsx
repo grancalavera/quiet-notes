@@ -1,6 +1,6 @@
 import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
 import { QNRole } from "quiet-notes-lib";
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import * as firebaseHooks from "react-firebase-hooks/auth";

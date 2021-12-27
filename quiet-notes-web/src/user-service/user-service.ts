@@ -1,4 +1,4 @@
-import firebase from "firebase";
+import firebase from "firebase/compat/app";
 import { QNListUsersResponse, QNToggleRole, QNToggleRoleResponse } from "quiet-notes-lib";
 import { useCallback, useEffect, useState } from "react";
 import { useUnknownErrorHandler } from "../app/app-state";

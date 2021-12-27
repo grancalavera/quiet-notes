@@ -1,4 +1,4 @@
-import firebase from "firebase";
+import firebase from "firebase/compat/app";
 import { useCallback, useState } from "react";
 import { isFirebaseError } from "../app/app-error";
 

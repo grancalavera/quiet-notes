@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { ToggleThemeSwitch } from "../components/ToggleThemeSwitch";

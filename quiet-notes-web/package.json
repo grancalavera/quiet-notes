@@ -26,7 +26,7 @@
     "@vitejs/plugin-react": "1.1.0",
     "clsx": "1.1.1",
     "date-fns": "2.22.1",
-    "firebase": "8.9.0",
+    "firebase": "9.6.1",
     "history": "4.10.1",
     "http-proxy-middleware": "2.0.1",
     "jest": "27.3.1",

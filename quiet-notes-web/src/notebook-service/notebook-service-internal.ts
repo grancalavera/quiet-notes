@@ -1,4 +1,5 @@
-import firebase from "firebase";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
 import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
 
 export const notesCollection = () => firebase.firestore().collection("notes");

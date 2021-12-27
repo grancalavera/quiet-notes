@@ -1,4 +1,4 @@
-import firebase from "firebase";
+import firebase from "firebase/compat/app";
 import { hasOwnProperty } from "../utils/has-own-property";
 
 export type AppError = firebase.FirebaseError | QNError;

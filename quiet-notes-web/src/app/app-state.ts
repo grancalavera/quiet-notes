@@ -1,6 +1,6 @@
 import create, { State } from "zustand";
 import { AppError, errorFromUnknown, QNError } from "./app-error";
-import firebase from "firebase";
+import firebase from "firebase/compat/app";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { QNRole } from "quiet-notes-lib";
 

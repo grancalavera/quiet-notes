@@ -1,4 +1,4 @@
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { fromFetch } from "rxjs/fetch";
 import { map, shareReplay, switchMap, tap } from "rxjs/operators";
 

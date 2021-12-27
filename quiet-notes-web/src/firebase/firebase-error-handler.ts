@@ -1,4 +1,4 @@
-import firebase from "firebase";
+import firebase from "firebase/compat/app";
 import { useEffect } from "react";
 import { useErrorHandler } from "../app/app-state";
 
