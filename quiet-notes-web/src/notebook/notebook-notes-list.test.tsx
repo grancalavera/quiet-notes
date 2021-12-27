@@ -1,15 +1,18 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { act, renderHook } from "@testing-library/react-hooks";
+import { createMemoryHistory } from "history";
+import { Route, Router, useHistory } from "react-router-dom";
 import { useUser } from "../app/app-state";
+import "../env";
 import { useNotesCollectionInternal } from "../notebook-service/notebook-service-internal";
 import { Note } from "./notebook-model";
 import { NotesList, testId } from "./notebook-notes-list";
 import { tid as itemTid } from "./notebook-notes-list-item";
 import { useDeselectNote, useSelectNote } from "./notebook-state";
-import { Route, Router, useHistory } from "react-router-dom";
-import { createMemoryHistory } from "history";
 
 const history = createMemoryHistory();
+
+jest.mock("../env");
 
 jest.mock("../notebook-service/notebook-service-internal", () => ({
   useNotesCollectionInternal: jest.fn(),

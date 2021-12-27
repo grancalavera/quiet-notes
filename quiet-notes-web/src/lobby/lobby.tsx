@@ -2,6 +2,7 @@ import Typography from "@mui/material/Typography";
 import { Redirect } from "react-router-dom";
 import { useHasRole } from "../app/app-state";
 import { CenterLayout } from "../layout/center-layout";
+
 export const Lobby = () => {
   const [isAdmin] = useHasRole("admin");
   const [isAuthor] = useHasRole("author");

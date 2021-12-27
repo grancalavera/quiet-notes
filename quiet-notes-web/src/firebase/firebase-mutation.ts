@@ -1,4 +1,4 @@
-import firebase from "firebase";
+import { FirebaseError } from "firebase/app";
 import { useCallback, useState } from "react";
 import { isFirebaseError } from "../app/app-error";
 
@@ -10,7 +10,7 @@ interface FirebaseMutation<TVariables = unknown, TData = unknown> {
 }
 
 interface FirebaseMutationOptions {
-  onError?: (e: firebase.FirebaseError) => void;
+  onError?: (e: FirebaseError) => void;
 }
 
 export const useFirebaseMutation = <TVariables = unknown, TData = unknown>(

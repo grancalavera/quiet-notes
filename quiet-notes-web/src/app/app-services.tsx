@@ -1,8 +1,5 @@
 import { FC } from "react";
-import { firebase$ } from "../firebase/firebase-initialize";
-import { bind } from "@react-rxjs/core";
-
-export const [useFirebase] = bind(firebase$);
+import { useFirebase } from "../firebase/firebase-initialize";
 
 export const Services: FC = ({ children }) => {
   useFirebase();
