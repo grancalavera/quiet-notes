@@ -1,6 +1,4 @@
-import { User } from "firebase/auth";
-import { QNRole } from "quiet-notes-lib";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback } from "react";
 import create, { State } from "zustand";
 import { AppError, errorFromUnknown, QNError } from "./app-error";
 
@@ -8,63 +6,13 @@ interface AppState extends State {
   errors: AppError[];
   handleError: (error: AppError) => void;
   dismissError: () => void;
-
-  getUser: () => User;
-  setUser: (user: User) => void;
-  reset: () => void;
 }
 
-const throwUserNotSet = (): User => {
-  throw new Error("User not set");
-};
-
 export const useAppState = create<AppState>((set) => ({
-  getUser: throwUserNotSet,
-  setUser: (user: User) => set({ getUser: () => user }),
-  reset: () => set({ getUser: throwUserNotSet }),
-
   errors: [],
   handleError: (error) => set(({ errors }) => ({ errors: [...errors, error] })),
   dismissError: () => set(({ errors }) => ({ errors: errors.slice(1) })),
 }));
-
-const selectUser = (s: AppState) => s.getUser();
-export const useUser = () => useAppState(selectUser);
-
-const useUserRoles = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [roles, setRoles] = useState<string[]>();
-  const handleError = useErrorHandler();
-  const user = useUser();
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    user
-      .getIdTokenResult(true)
-      .then(({ claims }) => {
-        const roles: string[] = claims.roles as string[];
-        setRoles(roles);
-      })
-      .catch((e) => handleError(e))
-      .finally(() => setIsLoading(false));
-  }, [handleError, user]);
-
-  return [roles, isLoading] as const;
-};
-
-export const useHasRole = (roleName: QNRole) => {
-  const [roles, isLoading] = useUserRoles();
-
-  return useMemo(
-    () => [(roles ?? []).includes(roleName), isLoading] as const,
-
-    [isLoading, roleName, roles]
-  );
-};
-
-export const useIsAdmin = () => useHasRole("admin");
-export const useIsAuthor = () => useHasRole("author");
 
 const selectHandleError = (s: AppState) => s.handleError;
 

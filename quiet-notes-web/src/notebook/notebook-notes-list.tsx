@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import { ReactNode, useEffect } from "react";
-import { useUser } from "../app/app-state";
+import { useUser } from "../auth/user";
 import { CreateNoteButton } from "../components/CreateNoteButton";
 import { CenterLayout } from "../layout/center-layout";
 import { LoadingLayout } from "../layout/loading-layout";
