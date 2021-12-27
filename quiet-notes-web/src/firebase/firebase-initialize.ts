@@ -44,3 +44,4 @@ export const firebaseApp$ = fromFetch("/__/firebase/init.json").pipe(
 export const [useFirebase] = bind(firebaseApp$);
 export const useAuth = () => getAuth(useFirebase());
 export const useFirestore = () => getFirestore(useFirebase());
+export const useFunctions = () => getFunctions(useFirebase());

@@ -1,10 +1,8 @@
+import { User } from "firebase/auth";
+import { QNRole } from "quiet-notes-lib";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import create, { State } from "zustand";
 import { AppError, errorFromUnknown, QNError } from "./app-error";
-import firebase from "firebase/compat/app";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { QNRole } from "quiet-notes-lib";
-
-type User = firebase.User;
 
 interface AppState extends State {
   errors: AppError[];
@@ -45,7 +43,7 @@ const useUserRoles = () => {
     user
       .getIdTokenResult(true)
       .then(({ claims }) => {
-        const roles: string[] = claims.roles;
+        const roles: string[] = claims.roles as string[];
         setRoles(roles);
       })
       .catch((e) => handleError(e))
