@@ -1,13 +1,15 @@
 import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
-import { History } from "history";
 import { useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { combineLatest, of } from "rxjs";
-import { map, switchMap, switchMapTo, tap } from "rxjs/operators";
+import { combineLatest } from "rxjs";
+import { map, switchMap, switchMapTo } from "rxjs/operators";
 import { user$ } from "../auth/user-streams";
 import { firebaseApp$ } from "../firebase/firebase-initialize";
-import { createNoteInternal } from "../notebook-service/notebook-service";
+import {
+  createNoteInternal,
+  notebookService$,
+} from "../notebook-service/notebook-service";
 import { deriveTitle, Note } from "./notebook-model";
 
 export type NotebookSortType = "ByTitleAsc" | "ByTitleDesc" | "ByDateAsc" | "ByDateDesc";
@@ -65,8 +67,8 @@ export const [createNote$, createNote] = createSignal<void>();
 
 export const [useCreatedNoteId] = bind<string | undefined>(
   createNote$.pipe(
-    switchMapTo(combineLatest([firebaseApp$, user$])),
-    switchMap(([app, user]) => createNoteInternal(app)(user.uid))
+    switchMapTo(notebookService$),
+    switchMap(({ createNote }) => createNote())
   ),
   undefined
 );

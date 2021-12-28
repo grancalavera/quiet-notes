@@ -1,13 +1,16 @@
 import { FirebaseApp } from "firebase/app";
-import { deleteDoc, Firestore, setDoc } from "firebase/firestore";
+import { deleteDoc, Firestore, getFirestore, setDoc } from "firebase/firestore";
+import { combineLatest } from "rxjs";
+import { map } from "rxjs/operators";
 import { useErrorHandler } from "../app/app-state";
+import { user$ } from "../auth/user-streams";
 import {
   FirebaseErrorHandlerOptions,
   useFirebaseErrorHandler,
 } from "../firebase/firebase-error-handler";
-import { useFirebase, useFirestore } from "../firebase/firebase-initialize";
+import { firebaseApp$, useFirebase } from "../firebase/firebase-initialize";
 import { useFirebaseMutation } from "../firebase/firebase-mutation";
-import { Note } from "../notebook/notebook-model";
+import { Note, NoteId } from "../notebook/notebook-model";
 import {
   getNoteDocRef,
   useNoteInternal,
@@ -38,11 +41,6 @@ export const useNote = (id: string, options: FirebaseErrorHandlerOptions = {}) =
   return useFirebaseErrorHandler(result, options);
 };
 
-export const useCreateNote = () => {
-  const app = useFirebase();
-  return useFirebaseMutation(createNoteInternal(app), { onError: useErrorHandler() });
-};
-
 export const useDeleteNote = () => {
   const app = useFirebase();
   return useFirebaseMutation(deleteNoteInternal(app), { onError: useErrorHandler() });
@@ -53,13 +51,14 @@ export const useUpdateNote = () => {
   return useFirebaseMutation(updateNoteInternal(app), { onError: useErrorHandler() });
 };
 
-export const createNoteInternal =
-  (app: FirebaseApp) =>
-  async (author: string): Promise<string> => {
-    const { id, ...data } = authorToWriteModel(author);
-    await setDoc(getNoteDocRef(app, id), data);
-    return id;
-  };
+export const createNoteInternal = async (
+  app: FirebaseApp,
+  author: string
+): Promise<string> => {
+  const { id, ...data } = authorToWriteModel(author);
+  await setDoc(getNoteDocRef(app, id), data);
+  return id;
+};
 
 const updateNoteInternal =
   (app: FirebaseApp) =>
@@ -72,3 +71,21 @@ const deleteNoteInternal =
   (app: FirebaseApp) =>
   (id: string): Promise<void> =>
     deleteDoc(getNoteDocRef(app, id));
+
+interface NotebookService {
+  createNote: () => Promise<NoteId>;
+}
+
+export const notebookService$ = combineLatest([firebaseApp$, user$]).pipe(
+  map(([app, user]) => {
+    const service: NotebookService = {
+      createNote: async () => {
+        const { id, ...data } = authorToWriteModel(user.uid);
+        await setDoc(getNoteDocRef(app, id), data);
+        return id;
+      },
+    };
+
+    return service;
+  })
+);
