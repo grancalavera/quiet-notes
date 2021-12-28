@@ -1,6 +1,7 @@
 import { FirebaseApp } from "firebase/app";
+import { User } from "firebase/auth";
 import { deleteDoc, Firestore, getFirestore, setDoc } from "firebase/firestore";
-import { combineLatest } from "rxjs";
+import { combineLatest, from, Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { useErrorHandler } from "../app/app-state";
 import { user$ } from "../auth/user-streams";
@@ -11,6 +12,7 @@ import {
 import { firebaseApp$, useFirebase } from "../firebase/firebase-initialize";
 import { useFirebaseMutation } from "../firebase/firebase-mutation";
 import { Note, NoteId } from "../notebook/notebook-model";
+import { hasOwnProperty } from "../utils/has-own-property";
 import {
   getNoteDocRef,
   useNoteInternal,
@@ -73,19 +75,58 @@ const deleteNoteInternal =
     deleteDoc(getNoteDocRef(app, id));
 
 interface NotebookService {
-  createNote: () => Promise<NoteId>;
+  createNote: () => Observable<NoteId>;
 }
 
-export const notebookService$ = combineLatest([firebaseApp$, user$]).pipe(
-  map(([app, user]) => {
-    const service: NotebookService = {
-      createNote: async () => {
-        const { id, ...data } = authorToWriteModel(user.uid);
-        await setDoc(getNoteDocRef(app, id), data);
-        return id;
-      },
+interface NotebookServiceContext {
+  app: FirebaseApp;
+  user: User;
+}
+
+const notebookServiceRuntime: ServiceRuntime<NotebookService, NotebookServiceContext> = {
+  createNote: (context) => () => {
+    const { app, user } = context;
+    const { id, ...data } = authorToWriteModel(user.uid);
+    return from(setDoc(getNoteDocRef(app, id), data)).pipe(map(() => id));
+  },
+};
+
+export const notebookService$: Observable<NotebookService> = combineLatest([
+  firebaseApp$,
+  user$,
+]).pipe(map(([app, user]) => createService(notebookServiceRuntime, { app, user })));
+
+type ServiceRuntime<TSchema extends {}, TContext> = {
+  [Key in keyof TSchema]: (context: TContext) => TSchema[Key];
+};
+
+export const createService = <TSchema extends {}, TContext>(
+  runtime: ServiceRuntime<TSchema, TContext>,
+  context: TContext
+): TSchema => {
+  const descriptors = Object.keys(runtime).map((property) => {
+    const descriptor: PropertyDescriptor = {
+      enumerable: true,
+      configurable: false,
+      writable: false,
+      value: getOperation(runtime, context, property),
     };
 
-    return service;
-  })
-);
+    return [property, descriptor] as const;
+  });
+
+  return Object.defineProperties({} as TSchema, Object.fromEntries(descriptors));
+};
+
+const getOperation = <TSchema extends {}, TContext>(
+  runtime: ServiceRuntime<TSchema, TContext>,
+  context: TContext,
+  name: string
+) => {
+  if (hasOwnProperty(runtime, name)) {
+    const createOperation = runtime[name as keyof TSchema];
+    return createOperation(context);
+  } else {
+    return undefined;
+  }
+};
