@@ -3,7 +3,6 @@ import { getAuth } from "firebase/auth";
 import { QNRole } from "quiet-notes-lib";
 import { useMemo } from "react";
 import { authState } from "rxfire/auth";
-import { from } from "rxjs";
 import { filter, map, switchMap } from "rxjs/operators";
 import { firebaseApp$ } from "../firebase/firebase-initialize";
 
@@ -11,7 +10,7 @@ export const authState$ = firebaseApp$.pipe(switchMap((app) => authState(getAuth
 export const user$ = authState$.pipe(filter(Boolean));
 
 export const userRoles$ = user$.pipe(
-  switchMap((user) => from(user.getIdTokenResult(true))),
+  switchMap((user) => user.getIdTokenResult(true)),
   map(({ claims }) => claims.roles as string[])
 );
 

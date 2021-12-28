@@ -1,10 +1,11 @@
+import { FirebaseApp } from "firebase/app";
 import { deleteDoc, Firestore, setDoc } from "firebase/firestore";
 import { useErrorHandler } from "../app/app-state";
 import {
   FirebaseErrorHandlerOptions,
   useFirebaseErrorHandler,
 } from "../firebase/firebase-error-handler";
-import { useFirestore } from "../firebase/firebase-initialize";
+import { useFirebase, useFirestore } from "../firebase/firebase-initialize";
 import { useFirebaseMutation } from "../firebase/firebase-mutation";
 import { Note } from "../notebook/notebook-model";
 import {
@@ -38,36 +39,36 @@ export const useNote = (id: string, options: FirebaseErrorHandlerOptions = {}) =
 };
 
 export const useCreateNote = () => {
-  const db = useFirestore();
-  return useFirebaseMutation(createNote(db), { onError: useErrorHandler() });
+  const app = useFirebase();
+  return useFirebaseMutation(createNoteInternal(app), { onError: useErrorHandler() });
 };
 
 export const useDeleteNote = () => {
-  const db = useFirestore();
-  return useFirebaseMutation(deleteNote(db), { onError: useErrorHandler() });
+  const app = useFirebase();
+  return useFirebaseMutation(deleteNoteInternal(app), { onError: useErrorHandler() });
 };
 
 export const useUpdateNote = () => {
-  const db = useFirestore();
-  return useFirebaseMutation(updateNote(db), { onError: useErrorHandler() });
+  const app = useFirebase();
+  return useFirebaseMutation(updateNoteInternal(app), { onError: useErrorHandler() });
 };
 
-const createNote =
-  (db: Firestore) =>
+export const createNoteInternal =
+  (app: FirebaseApp) =>
   async (author: string): Promise<string> => {
     const { id, ...data } = authorToWriteModel(author);
-    await setDoc(getNoteDocRef(db, id), data);
+    await setDoc(getNoteDocRef(app, id), data);
     return id;
   };
 
-const updateNote =
-  (db: Firestore) =>
+const updateNoteInternal =
+  (app: FirebaseApp) =>
   (note: Note): Promise<void> => {
     const { id, ...data } = noteToWriteModel(note);
-    return setDoc(getNoteDocRef(db, id), data, { merge: true });
+    return setDoc(getNoteDocRef(app, id), data, { merge: true });
   };
 
-const deleteNote =
-  (db: Firestore) =>
+const deleteNoteInternal =
+  (app: FirebaseApp) =>
   (id: string): Promise<void> =>
-    deleteDoc(getNoteDocRef(db, id));
+    deleteDoc(getNoteDocRef(app, id));

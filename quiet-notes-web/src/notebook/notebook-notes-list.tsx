@@ -1,10 +1,11 @@
 import Box from "@mui/material/Box";
 import { ReactNode, useEffect } from "react";
-import { useUser } from "../auth/user";
+import { useUser } from "../auth/user-streams";
 import { CreateNoteButton } from "../components/CreateNoteButton";
 import { CenterLayout } from "../layout/center-layout";
 import { LoadingLayout } from "../layout/loading-layout";
 import { useNotesCollection } from "../notebook-service/notebook-service";
+import { useTheNotesCollection } from "../notebook-service/notebook-streams";
 import { NotesListItem } from "./notebook-notes-list-item";
 import { loadNotes, useNotes, useSelectedNoteId, useSelectNote } from "./notebook-state";
 
@@ -16,6 +17,12 @@ export const NotesList = () => {
   const selectedNoteId = useSelectedNoteId();
   const selectNote = useSelectNote();
   const notebookNotes = useNotes();
+
+  const result = useTheNotesCollection();
+
+  useEffect(() => {
+    console.log({ result });
+  }, [result]);
 
   useEffect(() => {
     notes && loadNotes(notes);

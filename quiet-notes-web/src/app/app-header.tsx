@@ -12,7 +12,7 @@ import { styled } from "@mui/material/styles";
 import { signOut } from "firebase/auth";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useIsAdmin, useUser } from "../auth/user";
+import { useIsAdmin, useUser } from "../auth/user-streams";
 import { ToggleThemeSwitch } from "../components/ToggleThemeSwitch";
 import { useAuth } from "../firebase/firebase-initialize";
 import { useAppTheme, useToggleAppTheme } from "./use-app-theme";

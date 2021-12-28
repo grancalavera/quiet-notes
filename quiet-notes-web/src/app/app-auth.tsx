@@ -3,7 +3,7 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { QNRole } from "quiet-notes-lib";
 import { PropsWithChildren, ReactNode, useEffect } from "react";
 import { Redirect, Route, RouteProps, useLocation } from "react-router-dom";
-import { useAuthState, useHasRole } from "../auth/user";
+import { useAuthState, useHasRole } from "../auth/user-streams";
 import { useAuth } from "../firebase/firebase-initialize";
 import { CenterLayout } from "../layout/center-layout";
 

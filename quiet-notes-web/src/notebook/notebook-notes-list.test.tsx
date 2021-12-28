@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { act, renderHook } from "@testing-library/react-hooks";
 import { createMemoryHistory } from "history";
 import { Route, Router, useHistory } from "react-router-dom";
-import { useUser } from "../auth/user";
+import { useUser } from "../auth/user-streams";
 import "../env";
 import { useNotesCollectionInternal } from "../notebook-service/notebook-service-internal";
 import { Note } from "./notebook-model";

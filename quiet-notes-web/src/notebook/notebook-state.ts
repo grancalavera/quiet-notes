@@ -1,8 +1,13 @@
 import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
+import { History } from "history";
 import { useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { combineLatest, map } from "rxjs";
+import { combineLatest, of } from "rxjs";
+import { map, switchMap, switchMapTo, tap } from "rxjs/operators";
+import { user$ } from "../auth/user-streams";
+import { firebaseApp$ } from "../firebase/firebase-initialize";
+import { createNoteInternal } from "../notebook-service/notebook-service";
 import { deriveTitle, Note } from "./notebook-model";
 
 export type NotebookSortType = "ByTitleAsc" | "ByTitleDesc" | "ByDateAsc" | "ByDateDesc";
@@ -35,17 +40,6 @@ const sort: Record<NotebookSortType, (a: Note, b: Note) => number> = {
 
 export const useSelectedNoteId = () => useParams<{ noteId?: string }>().noteId;
 
-export const useSelectNote = () => {
-  const history = useHistory();
-
-  return useCallback(
-    (noteId: string) => {
-      history.push(`/notebook/${noteId}`);
-    },
-    [history]
-  );
-};
-
 export const useDeselectNote = () => {
   const history = useHistory();
 
@@ -66,3 +60,24 @@ export const [useNotes] = bind(
   ),
   []
 );
+
+export const [createNote$, createNote] = createSignal<void>();
+
+export const [useCreatedNoteId] = bind<string | undefined>(
+  createNote$.pipe(
+    switchMapTo(combineLatest([firebaseApp$, user$])),
+    switchMap(([app, user]) => createNoteInternal(app)(user.uid))
+  ),
+  undefined
+);
+
+export const useSelectNote = () => {
+  const history = useHistory();
+
+  return useCallback(
+    (noteId: string) => {
+      history.push(`/notebook/${noteId}`);
+    },
+    [history]
+  );
+};
