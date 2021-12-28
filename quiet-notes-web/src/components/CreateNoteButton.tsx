@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { useEffect, VFC } from "react";
-import { useUser } from "../app/app-state";
+import { useUser } from "../auth/user";
 import { useCreateNote } from "../notebook-service/notebook-service";
 import { useSelectNote } from "../notebook/notebook-state";
 

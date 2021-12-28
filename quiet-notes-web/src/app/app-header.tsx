@@ -12,9 +12,9 @@ import { styled } from "@mui/material/styles";
 import { signOut } from "firebase/auth";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useIsAdmin, useUser } from "../auth/user";
 import { ToggleThemeSwitch } from "../components/ToggleThemeSwitch";
 import { useAuth } from "../firebase/firebase-initialize";
-import { useIsAdmin, useUser } from "./app-state";
 import { useAppTheme, useToggleAppTheme } from "./use-app-theme";
 
 export const AppHeader = () => {
@@ -40,7 +40,7 @@ export const AppHeader = () => {
 
 const AdminLink = () => {
   const history = useHistory();
-  const [isAdmin] = useIsAdmin();
+  const isAdmin = useIsAdmin();
 
   return (
     <>

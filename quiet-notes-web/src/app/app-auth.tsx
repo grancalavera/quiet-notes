@@ -1,13 +1,11 @@
 import Button from "@mui/material/Button";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { QNRole } from "quiet-notes-lib";
-import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
-import * as firebaseHooks from "react-firebase-hooks/auth";
+import { PropsWithChildren, ReactNode, useEffect } from "react";
 import { Redirect, Route, RouteProps, useLocation } from "react-router-dom";
-import { useFirebase, useAuth } from "../firebase/firebase-initialize";
+import { useAuthState, useHasRole } from "../auth/user";
+import { useAuth } from "../firebase/firebase-initialize";
 import { CenterLayout } from "../layout/center-layout";
-import { LoadingLayout } from "../layout/loading-layout";
-import { useAppState, useHasRole } from "./app-state";
 
 type CustomRouteProps<T extends {} = {}> = PropsWithChildren<T> &
   RouteProps<string> &
@@ -31,15 +29,12 @@ export const PrivateRoute = ({ children, ...rest }: CustomRouteProps) => (
 
 const createRoleRoute =
   (role: QNRole, redirectTo: string) =>
-  ({ children, ...rest }: CustomRouteProps) => {
-    const [hasRole, isLoading] = useHasRole(role);
-
-    return (
+  ({ children, ...rest }: CustomRouteProps) =>
+    (
       <Route {...rest}>
-        {isLoading ? <></> : hasRole ? <>{children}</> : <Redirect to={redirectTo} />}
+        {useHasRole(role) ? <>{children}</> : <Redirect to={redirectTo} />}
       </Route>
     );
-  };
 
 export const AdminRoute = createRoleRoute("admin", "/");
 export const AuthorRoute = createRoleRoute("author", "/lobby");
@@ -79,33 +74,5 @@ interface AuthStateProps {
   notAuthenticated: ReactNode;
 }
 
-const AuthState = ({ authenticated, notAuthenticated }: AuthStateProps) => {
-  const auth = useAuth();
-
-  const setUser = useAppState((s) => s.setUser);
-  const reset = useAppState((s) => s.reset);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, isLoading] = firebaseHooks.useAuthState(auth);
-
-  useEffect(() => {
-    if (user) {
-      setUser(user);
-      setIsAuthenticated(true);
-    }
-  }, [setUser, user]);
-
-  useEffect(() => {
-    if (!isLoading && !user) {
-      reset();
-      setIsAuthenticated(false);
-    }
-  }, [isLoading, reset, user]);
-
-  return (
-    <>
-      {isAuthenticated && authenticated}
-      {!isLoading && !user && notAuthenticated}
-      {isLoading && <LoadingLayout />}
-    </>
-  );
-};
+const AuthState = ({ authenticated, notAuthenticated }: AuthStateProps) =>
+  useAuthState() ? <>{authenticated}</> : <>{notAuthenticated}</>;
