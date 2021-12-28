@@ -1,11 +1,14 @@
 import { FirebaseApp } from "firebase/app";
 import { deleteDoc, setDoc } from "firebase/firestore";
+import { combineLatest } from "rxjs";
+import { switchMap } from "rxjs/operators";
 import { useErrorHandler } from "../app/app-state";
+import { user$ } from "../auth/user-streams";
 import {
   FirebaseErrorHandlerOptions,
   useFirebaseErrorHandler,
 } from "../firebase/firebase-error-handler";
-import { useFirebase } from "../firebase/firebase-initialize";
+import { firebaseApp$, useFirebase } from "../firebase/firebase-initialize";
 import { useFirebaseMutation } from "../firebase/firebase-mutation";
 import { Note } from "../notebook/notebook-model";
 import {
@@ -68,3 +71,8 @@ const deleteNoteInternal =
   (app: FirebaseApp) =>
   (id: string): Promise<void> =>
     deleteDoc(getNoteDocRef(app, id));
+
+const serviceContext$ = combineLatest([firebaseApp$, user$]);
+
+export const createNote = () =>
+  serviceContext$.pipe(switchMap(([app, user]) => createNoteInternal(app, user.uid)));
