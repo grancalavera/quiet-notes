@@ -3,7 +3,7 @@ import { createSignal } from "@react-rxjs/utils";
 import { useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { combineLatest } from "rxjs";
-import { map, switchMap, switchMapTo } from "rxjs/operators";
+import { map, switchMapTo } from "rxjs/operators";
 import * as notebookService from "../notebook-service/notebook-service";
 import { getNotesCollection } from "../notebook-service/notebook-service";
 import { deriveTitle, Note } from "./notebook-model";
