@@ -19,8 +19,8 @@ jest.mock("../notebook-service/notebook-service-internal", () => ({
   useNoteInternal: jest.fn(),
 }));
 
-jest.mock("../auth/user", () => {
-  const user = jest.requireActual("../auth/user");
+jest.mock("../auth/user-streams", () => {
+  const user = jest.requireActual("../auth/user-streams");
   return { ...user, useUser: jest.fn() };
 });
 
