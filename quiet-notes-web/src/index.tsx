@@ -14,7 +14,7 @@ import { Lobby } from "./lobby/lobby";
 import { NotebookLayout } from "./notebook/notebook-layout";
 import { NoteEditorContainer } from "./notebook/notebook-note-editor";
 import { NotesList } from "./notebook/notebook-notes-list";
-import { NotebookRedirectNewNotes } from "./notebook/notebook-redirect-new-notes";
+import { NotebookNewNoteHandler } from "./notebook/notebook-new-note-handler";
 import { NoteEditorToolbar, SidebarToolbar } from "./notebook/notebook-toolbars";
 import reportWebVitals from "./reportWebVitals";
 
@@ -45,7 +45,7 @@ ReactDOM.render(
                       editorToolbar={<NoteEditorToolbar />}
                       editor={<NoteEditorContainer />}
                     />
-                    <NotebookRedirectNewNotes />
+                    <NotebookNewNoteHandler />
                   </>
                 </AuthorRoute>
 
