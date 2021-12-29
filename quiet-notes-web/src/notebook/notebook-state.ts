@@ -5,6 +5,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { combineLatest } from "rxjs";
 import { map, switchMap, switchMapTo } from "rxjs/operators";
 import * as notebookService from "../notebook-service/notebook-service";
+import { getNotesCollection } from "../notebook-service/notebook-service";
 import { deriveTitle, Note } from "./notebook-model";
 
 export type NotebookSortType = "ByTitleAsc" | "ByTitleDesc" | "ByDateAsc" | "ByDateDesc";
@@ -75,3 +76,5 @@ export const useSelectNote = () => {
     [history]
   );
 };
+
+export const [useNotesCollection] = bind(getNotesCollection());
