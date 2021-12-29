@@ -1,16 +1,8 @@
 import { FirebaseApp } from "firebase/app";
-import {
-  collection,
-  doc,
-  DocumentReference,
-  Firestore,
-  getFirestore,
-  query,
-  where,
-} from "firebase/firestore";
-import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
-import { useFirebase, useFirestore } from "../firebase/firebase-initialize";
+import { doc, DocumentReference, getFirestore } from "firebase/firestore";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 import { FirebaseHookResult } from "../firebase/firebase-hook-result";
+import { useFirebase } from "../firebase/firebase-initialize";
 
 interface NotebookServiceOptions<
   TDocument = unknown,
@@ -20,18 +12,6 @@ interface NotebookServiceOptions<
   transform: (document: TDocument) => TData;
   idField: IdField;
 }
-
-export const useNotesCollectionInternal = <
-  IdField extends string,
-  TDocument = unknown,
-  TData = TDocument
->(
-  author: string,
-  options: NotebookServiceOptions<TDocument, TData, IdField>
-): FirebaseHookResult<TData[] | undefined> => {
-  const q = query(collection(useFirestore(), "notes"), where("author", "==", author));
-  return useCollectionData(q, options) as FirebaseHookResult<TData[] | undefined>;
-};
 
 export const useNoteInternal = <
   IdField extends string,

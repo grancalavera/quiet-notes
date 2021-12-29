@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import { collectionData } from "rxfire/firestore";
 import { combineLatest } from "rxjs";
-import { switchMap, delay } from "rxjs/operators";
+import { switchMap } from "rxjs/operators";
 import { useErrorHandler } from "../app/app-state";
 import { user$ } from "../auth/user-streams";
 import {
@@ -23,28 +23,13 @@ import {
 import { firebaseApp$, useFirebase } from "../firebase/firebase-initialize";
 import { useFirebaseMutation } from "../firebase/firebase-mutation";
 import { Note } from "../notebook/notebook-model";
-import {
-  getNoteDocRef,
-  useNoteInternal,
-  useNotesCollectionInternal,
-} from "./notebook-service-internal";
+import { getNoteDocRef, useNoteInternal } from "./notebook-service-internal";
 import {
   authorToWriteModel,
   noteFromReadModel,
   NoteReadModel,
   noteToWriteModel,
 } from "./notebook-service-model";
-
-export const useNotesCollection = (
-  author: string,
-  options: FirebaseErrorHandlerOptions = {}
-) => {
-  const result = useNotesCollectionInternal(author, {
-    idField: "id",
-    transform: noteFromReadModel,
-  });
-  return useFirebaseErrorHandler(result, options);
-};
 
 export const useNote = (id: string, options: FirebaseErrorHandlerOptions = {}) => {
   const result = useNoteInternal(id, {
