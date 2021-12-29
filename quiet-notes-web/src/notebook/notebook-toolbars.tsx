@@ -3,7 +3,7 @@ import { styled } from "@mui/material/styles";
 import { CreateNoteButton } from "../components/CreateNoteButton";
 import { DeleteNoteButton } from "../components/DeleteNoteButton";
 import { useSelectedNoteId } from "./notebook-state";
-import { SortMenu } from "./SortNotesMenu";
+import { SortMenu } from "./notebook-sort-menu";
 
 export const NoteEditorToolbar = () => {
   const selectedNoteId = useSelectedNoteId();
