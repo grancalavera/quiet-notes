@@ -4,8 +4,18 @@ import { useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { combineLatest } from "rxjs";
 import { map, switchMapTo } from "rxjs/operators";
-import * as notebookService from "../notebook-service/notebook-service";
+import { notebookService } from "../notebook-service/notebook-service";
 import { NotebookSortType, sortNotes } from "./notebook-sort";
+
+export const [sortType$, changeSortType] = createSignal<NotebookSortType>();
+
+export const [useSortType, sortTypeWithDefault$] = bind(sortType$, "ByDateDesc");
+
+export const [useNotesCollection] = bind(
+  combineLatest([sortTypeWithDefault$, notebookService.getNotesCollection()]).pipe(
+    map(([sortType, notes]) => sortNotes(sortType, notes))
+  )
+);
 
 export const useSelectedNoteId = () => useParams<{ noteId?: string }>().noteId;
 
@@ -26,17 +36,9 @@ export const useDeselectNote = () => {
   }, [history]);
 };
 
-export const [sortType$, changeSortType] = createSignal<NotebookSortType>();
-export const [useSortType, sortTypeWithDefault$] = bind(sortType$, "ByDateDesc");
 export const [createNote$, createNote] = createSignal<void>();
 
 export const [useCreatedNoteId] = bind<string | undefined>(
   createNote$.pipe(switchMapTo(notebookService.createNote())),
   undefined
-);
-
-export const [useNotesCollection] = bind(
-  combineLatest([sortTypeWithDefault$, notebookService.getNotesCollection()]).pipe(
-    map(([sortType, notes]) => sortNotes(sortType, notes))
-  )
 );
