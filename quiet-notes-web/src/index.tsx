@@ -12,7 +12,7 @@ import { Application } from "./app/application";
 import { HeaderLayout } from "./layout/header-layout";
 import { Lobby } from "./lobby/lobby";
 import { NotebookLayout } from "./notebook/notebook-layout";
-import { NoteEditorContainer } from "./notebook/notebook-note-editor";
+import { NoteEditor } from "./notebook/notebook-note-editor";
 import { NotesList } from "./notebook/notebook-notes-list";
 import { NotebookNewNoteHandler } from "./notebook/notebook-new-note-handler";
 import { NoteEditorToolbar, SidebarToolbar } from "./notebook/notebook-toolbars";
@@ -43,7 +43,7 @@ ReactDOM.render(
                       sidebarToolbar={<SidebarToolbar />}
                       sidebar={<NotesList />}
                       editorToolbar={<NoteEditorToolbar />}
-                      editor={<NoteEditorContainer />}
+                      editor={<NoteEditor />}
                     />
                     <NotebookNewNoteHandler />
                   </>

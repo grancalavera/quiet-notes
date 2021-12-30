@@ -3,7 +3,7 @@ import { Subscribe } from "@react-rxjs/core";
 import { VFC } from "react";
 import { LoadingLayout } from "../layout/loading-layout";
 import { NotesListItem } from "./notebook-notes-list-item";
-import { useNotesCollection, useSelectedNoteId, useSelectNote } from "./notebook-state";
+import { useNotesCollection, useOpenNoteId, useOpenNoteById } from "./notebook-state";
 
 export const testId = "notes-list";
 
@@ -21,8 +21,8 @@ export const NotesList = () => {
 };
 
 const NotesListInternal: VFC = () => {
-  const selectedNoteId = useSelectedNoteId();
-  const selectNote = useSelectNote();
+  const selectedNoteId = useOpenNoteId();
+  const openNoteById = useOpenNoteById();
   const notes = useNotesCollection();
   return (
     <>
@@ -31,7 +31,7 @@ const NotesListInternal: VFC = () => {
           note={note}
           key={note.id}
           isSelected={note.id === selectedNoteId}
-          onSelect={() => selectNote(note.id)}
+          onSelect={() => openNoteById(note.id)}
         />
       ))}
     </>

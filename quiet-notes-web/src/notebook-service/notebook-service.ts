@@ -2,21 +2,16 @@ import { combineLatest } from "rxjs";
 import { switchMap } from "rxjs/operators";
 import { useErrorHandler } from "../app/app-state";
 import { user$ } from "../auth/user-streams";
-import {
-  FirebaseErrorHandlerOptions,
-  useFirebaseErrorHandler,
-} from "../firebase/firebase-error-handler";
 import { firebaseApp$, useFirebase } from "../firebase/firebase-initialize";
 import { useFirebaseMutation } from "../firebase/firebase-mutation";
 import { NotebookServiceSchema } from "./noetbook-service-schema";
 import {
   createNoteInternal,
   deleteNoteInternal,
+  getNoteByIdInternal,
   getNotesCollectionInternal,
   updateNoteInternal,
-  useNoteInternal,
 } from "./notebook-service-internal";
-import { noteFromReadModel } from "./notebook-service-model";
 
 const serviceContext$ = combineLatest([firebaseApp$, user$]);
 
@@ -29,9 +24,8 @@ export const notebookService: NotebookServiceSchema = {
   createNote: () =>
     serviceContext$.pipe(switchMap(([app, user]) => createNoteInternal(app, user))),
 
-  getNoteById: (id) => {
-    throw new Error("getNoteById not implemented");
-  },
+  getNoteById: (noteId) =>
+    serviceContext$.pipe(switchMap(([app]) => getNoteByIdInternal(app, noteId))),
 
   updateNote: (note) => {
     throw new Error("updateNote not implemented");
@@ -40,14 +34,6 @@ export const notebookService: NotebookServiceSchema = {
   deleteNote: (id) => {
     throw new Error("deleteNote not implemented");
   },
-};
-
-export const useNote = (id: string, options: FirebaseErrorHandlerOptions = {}) => {
-  const result = useNoteInternal(id, {
-    idField: "id",
-    transform: noteFromReadModel,
-  });
-  return useFirebaseErrorHandler(result, options);
 };
 
 export const useDeleteNote = () => {

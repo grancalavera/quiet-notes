@@ -2,14 +2,23 @@ import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
 import { useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { combineLatest } from "rxjs";
-import { map, switchMapTo } from "rxjs/operators";
+import { combineLatest, NEVER, Observable, of } from "rxjs";
+import {
+  filter,
+  first,
+  map,
+  mergeWith,
+  scan,
+  switchMap,
+  switchMapTo,
+  tap,
+} from "rxjs/operators";
 import { notebookService } from "../notebook-service/notebook-service";
+import { Note, NoteId } from "./notebook-model";
 import { NotebookSortType, sortNotes } from "./notebook-sort";
 
-export const [sortType$, changeSortType] = createSignal<NotebookSortType>();
-
-export const [useSortType, sortTypeWithDefault$] = bind(sortType$, "ByDateDesc");
+export const [sortTypeSignal$, changeSortType] = createSignal<NotebookSortType>();
+export const [useSortType, sortTypeWithDefault$] = bind(sortTypeSignal$, "ByDateDesc");
 
 export const [useNotesCollection] = bind(
   combineLatest([sortTypeWithDefault$, notebookService.getNotesCollection()]).pipe(
@@ -17,28 +26,41 @@ export const [useNotesCollection] = bind(
   )
 );
 
-export const useSelectedNoteId = () => useParams<{ noteId?: string }>().noteId;
+export const useOpenNoteId = () => useParams<{ noteId?: string }>().noteId;
 
-export const useSelectNote = () => {
+export const useOpenNoteById = () => {
   const history = useHistory();
   return useCallback(
-    (noteId: string) => {
+    (noteId: NoteId) => {
       history.push(`/notebook/${noteId}`);
     },
     [history]
   );
 };
 
-export const useDeselectNote = () => {
+export const useCloseNote = () => {
   const history = useHistory();
   return useCallback(() => {
     history.push("/notebook");
   }, [history]);
 };
 
-export const [createNote$, createNote] = createSignal<void>();
+export const [noteId$, loadNoteById] = createSignal<NoteId>();
+export const [noteContent$, changeNoteContent] = createSignal<string>();
+
+const note$: Observable<Note> = noteId$.pipe(
+  switchMap((noteId) => notebookService.getNoteById(noteId)),
+  switchMap((note) =>
+    combineLatest([of(note), of(note.content).pipe(mergeWith(noteContent$))])
+  ),
+  map(([note, content]) => ({ ...note, content }))
+);
+
+export const [useNote] = bind<Note>(note$);
+
+export const [createNoteSignal$, createNote] = createSignal<void>();
 
 export const [useCreatedNoteId] = bind<string | undefined>(
-  createNote$.pipe(switchMapTo(notebookService.createNote())),
+  createNoteSignal$.pipe(switchMapTo(notebookService.createNote())),
   undefined
 );

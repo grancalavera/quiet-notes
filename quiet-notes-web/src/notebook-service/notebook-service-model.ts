@@ -28,7 +28,7 @@ export interface NoteWriteModel {
   _createdAt?: FieldValue;
 }
 
-export const authorToWriteModel = (author: string): NoteWriteModel => ({
+export const noteFromUserUid = (author: string): NoteWriteModel => ({
   id: nanoid(),
   content: "",
   author,

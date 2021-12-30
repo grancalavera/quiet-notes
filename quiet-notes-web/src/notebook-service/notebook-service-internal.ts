@@ -4,20 +4,17 @@ import {
   collection,
   deleteDoc,
   doc,
-  DocumentReference,
   getFirestore,
   query,
   setDoc,
   where,
 } from "firebase/firestore";
-import { useDocumentData } from "react-firebase-hooks/firestore";
-import { collectionData } from "rxfire/firestore";
-import { FirebaseHookResult } from "../firebase/firebase-hook-result";
-import { useFirebase } from "../firebase/firebase-initialize";
-import { Note } from "../notebook/notebook-model";
+import { collectionData, docData } from "rxfire/firestore";
+import { Observable } from "rxjs";
+import { Note, NoteId } from "../notebook/notebook-model";
 import {
-  authorToWriteModel,
   noteConverter,
+  noteFromUserUid,
   noteToWriteModel,
 } from "./notebook-service-model";
 
@@ -29,20 +26,6 @@ interface NotebookServiceOptions<
   transform: (document: TDocument) => TData;
   idField: IdField;
 }
-
-export const useNoteInternal = <
-  IdField extends string,
-  TDocument = unknown,
-  TData = TDocument
->(
-  id: string,
-  options: NotebookServiceOptions<TDocument, TData, IdField>
-): FirebaseHookResult<TData | undefined> => {
-  const docRef = getNoteDocRef(useFirebase(), id) as DocumentReference<TData>;
-  return useDocumentData<TData, IdField>(docRef, options) as FirebaseHookResult<
-    TData | undefined
-  >;
-};
 
 const getNoteDocRef = (app: FirebaseApp, id: string) =>
   doc(getFirestore(app), "notes", id);
@@ -63,7 +46,7 @@ export const createNoteInternal = async (
   app: FirebaseApp,
   user: User
 ): Promise<string> => {
-  const { id, ...data } = authorToWriteModel(user.uid);
+  const { id, ...data } = noteFromUserUid(user.uid);
   await setDoc(getNoteDocRef(app, id), data);
   return id;
 };
@@ -74,4 +57,12 @@ export const getNotesCollectionInternal = (app: FirebaseApp, user: User) => {
   );
   const q = query(collectionRef, where("author", "==", user.uid));
   return collectionData(q, { idField: "id" });
+};
+
+export const getNoteByIdInternal = (
+  app: FirebaseApp,
+  noteId: NoteId
+): Observable<Note> => {
+  const noteDocRef = getNoteDocRef(app, noteId).withConverter(noteConverter);
+  return docData(noteDocRef, { idField: "id" });
 };
