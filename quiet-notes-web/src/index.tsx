@@ -11,10 +11,10 @@ import { AppHeader } from "./app/app-header";
 import { Application } from "./app/application";
 import { HeaderLayout } from "./layout/header-layout";
 import { Lobby } from "./lobby/lobby";
+import { CreatedNoteHandler } from "./notebook/notebook-create-note-handlers";
 import { NotebookLayout } from "./notebook/notebook-layout";
 import { NoteEditor } from "./notebook/notebook-note-editor";
 import { NotesList } from "./notebook/notebook-notes-list";
-import { NotebookNewNoteHandler } from "./notebook/notebook-new-note-handler";
 import { NoteEditorToolbar, SidebarToolbar } from "./notebook/notebook-toolbars";
 import reportWebVitals from "./reportWebVitals";
 
@@ -45,7 +45,7 @@ ReactDOM.render(
                       editorToolbar={<NoteEditorToolbar />}
                       editor={<NoteEditor />}
                     />
-                    <NotebookNewNoteHandler />
+                    <CreatedNoteHandler />
                   </>
                 </AuthorRoute>
 

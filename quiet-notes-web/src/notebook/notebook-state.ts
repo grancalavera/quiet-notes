@@ -2,17 +2,8 @@ import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
 import { useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { combineLatest, NEVER, Observable, of } from "rxjs";
-import {
-  filter,
-  first,
-  map,
-  mergeWith,
-  scan,
-  switchMap,
-  switchMapTo,
-  tap,
-} from "rxjs/operators";
+import { combineLatest, Observable, of } from "rxjs";
+import { map, mergeWith, switchMap, switchMapTo } from "rxjs/operators";
 import { notebookService } from "../notebook-service/notebook-service";
 import { Note, NoteId } from "./notebook-model";
 import { NotebookSortType, sortNotes } from "./notebook-sort";
@@ -64,3 +55,9 @@ export const [useCreatedNoteId] = bind<string | undefined>(
   createNoteSignal$.pipe(switchMapTo(notebookService.createNote())),
   undefined
 );
+
+export const [deleteNoteSignal$, deleteNote] = createSignal<NoteId>();
+
+deleteNoteSignal$
+  .pipe(switchMap((noteId) => notebookService.deleteNote(noteId)))
+  .subscribe();

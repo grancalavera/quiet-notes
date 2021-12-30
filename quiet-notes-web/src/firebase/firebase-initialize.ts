@@ -41,7 +41,11 @@ export const firebaseApp$ = fromFetch("/__/firebase/init.json").pipe(
   shareReplay(1)
 );
 
+export const firestore$ = firebaseApp$.pipe(map((app) => getFirestore(app)));
+export const auth$ = firebaseApp$.pipe(map((app) => getAuth(app)));
+export const functions$ = firebaseApp$.pipe(map((app) => getFunctions(app)));
+
 export const [useFirebase] = bind(firebaseApp$);
-export const useAuth = () => getAuth(useFirebase());
-export const useFirestore = () => getFirestore(useFirebase());
-export const useFunctions = () => getFunctions(useFirebase());
+export const [useAuth] = bind(auth$);
+export const [useFirestore] = bind(firestore$);
+export const [useFunctions] = bind(functions$);

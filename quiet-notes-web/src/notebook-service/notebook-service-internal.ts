@@ -1,10 +1,9 @@
-import { FirebaseApp } from "firebase/app";
 import { User } from "firebase/auth";
 import {
   collection,
   deleteDoc,
   doc,
-  getFirestore,
+  Firestore,
   query,
   setDoc,
   where,
@@ -18,51 +17,31 @@ import {
   noteToWriteModel,
 } from "./notebook-service-model";
 
-interface NotebookServiceOptions<
-  TDocument = unknown,
-  TData = TDocument,
-  IdField extends string = ""
-> {
-  transform: (document: TDocument) => TData;
-  idField: IdField;
-}
-
-const getNoteDocRef = (app: FirebaseApp, id: string) =>
-  doc(getFirestore(app), "notes", id);
+const getNoteDocRef = (db: Firestore, id: string) => doc(db, "notes", id);
 
 export const updateNoteInternal =
-  (app: FirebaseApp) =>
+  (db: Firestore) =>
   (note: Note): Promise<void> => {
     const { id, ...data } = noteToWriteModel(note);
-    return setDoc(getNoteDocRef(app, id), data, { merge: true });
+    return setDoc(getNoteDocRef(db, id), data, { merge: true });
   };
 
-export const deleteNoteInternal =
-  (app: FirebaseApp) =>
-  (id: string): Promise<void> =>
-    deleteDoc(getNoteDocRef(app, id));
-
-export const createNoteInternal = async (
-  app: FirebaseApp,
-  user: User
-): Promise<string> => {
+export const createNoteInternal = async (db: Firestore, user: User): Promise<string> => {
   const { id, ...data } = noteFromUserUid(user.uid);
-  await setDoc(getNoteDocRef(app, id), data);
+  await setDoc(getNoteDocRef(db, id), data);
   return id;
 };
 
-export const getNotesCollectionInternal = (app: FirebaseApp, user: User) => {
-  const collectionRef = collection(getFirestore(app), "notes").withConverter(
-    noteConverter
-  );
+export const deleteNoteInternal = async (db: Firestore, noteId: NoteId): Promise<void> =>
+  deleteDoc(getNoteDocRef(db, noteId));
+
+export const getNotesCollectionInternal = (db: Firestore, user: User) => {
+  const collectionRef = collection(db, "notes").withConverter(noteConverter);
   const q = query(collectionRef, where("author", "==", user.uid));
   return collectionData(q, { idField: "id" });
 };
 
-export const getNoteByIdInternal = (
-  app: FirebaseApp,
-  noteId: NoteId
-): Observable<Note> => {
-  const noteDocRef = getNoteDocRef(app, noteId).withConverter(noteConverter);
+export const getNoteByIdInternal = (db: Firestore, noteId: NoteId): Observable<Note> => {
+  const noteDocRef = getNoteDocRef(db, noteId).withConverter(noteConverter);
   return docData(noteDocRef, { idField: "id" });
 };

@@ -2,9 +2,9 @@ import { combineLatest } from "rxjs";
 import { switchMap } from "rxjs/operators";
 import { useErrorHandler } from "../app/app-state";
 import { user$ } from "../auth/user-streams";
-import { firebaseApp$, useFirebase } from "../firebase/firebase-initialize";
+import { firestore$, useFirestore } from "../firebase/firebase-initialize";
 import { useFirebaseMutation } from "../firebase/firebase-mutation";
-import { NotebookServiceSchema } from "./noetbook-service-schema";
+import { NotebookServiceSchema } from "./notebook-service-schema";
 import {
   createNoteInternal,
   deleteNoteInternal,
@@ -13,35 +13,27 @@ import {
   updateNoteInternal,
 } from "./notebook-service-internal";
 
-const serviceContext$ = combineLatest([firebaseApp$, user$]);
+const serviceContext$ = combineLatest([firestore$, user$]);
 
 export const notebookService: NotebookServiceSchema = {
   getNotesCollection: () =>
-    serviceContext$.pipe(
-      switchMap(([app, user]) => getNotesCollectionInternal(app, user))
-    ),
+    serviceContext$.pipe(switchMap(([db, user]) => getNotesCollectionInternal(db, user))),
 
   createNote: () =>
-    serviceContext$.pipe(switchMap(([app, user]) => createNoteInternal(app, user))),
+    serviceContext$.pipe(switchMap(([db, user]) => createNoteInternal(db, user))),
 
   getNoteById: (noteId) =>
-    serviceContext$.pipe(switchMap(([app]) => getNoteByIdInternal(app, noteId))),
+    serviceContext$.pipe(switchMap(([db]) => getNoteByIdInternal(db, noteId))),
 
   updateNote: (note) => {
     throw new Error("updateNote not implemented");
   },
 
-  deleteNote: (id) => {
-    throw new Error("deleteNote not implemented");
-  },
-};
-
-export const useDeleteNote = () => {
-  const app = useFirebase();
-  return useFirebaseMutation(deleteNoteInternal(app), { onError: useErrorHandler() });
+  deleteNote: (noteId) =>
+    serviceContext$.pipe(switchMap(([db]) => deleteNoteInternal(db, noteId))),
 };
 
 export const useUpdateNote = () => {
-  const app = useFirebase();
-  return useFirebaseMutation(updateNoteInternal(app), { onError: useErrorHandler() });
+  const db = useFirestore();
+  return useFirebaseMutation(updateNoteInternal(db), { onError: useErrorHandler() });
 };
