@@ -7,7 +7,7 @@ import { LoadingLayout } from "../layout/loading-layout";
 import {
   changeNoteContent,
   loadNoteById,
-  useNote,
+  useNoteContent,
   useOpenNoteId,
 } from "./notebook-state";
 
@@ -32,14 +32,13 @@ export const NoteEditor = () => {
 const NoteEditorInternal: VFC = () => {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   useEffect(() => inputRef.current?.focus(), []);
-  const note = useNote();
 
   return (
     <Box sx={{ overflow: "hidden", height: "100%", padding: "0.5rem" }}>
       <TextareaAutosize
         aria-label="a quiet note"
         ref={inputRef}
-        value={note.content}
+        value={useNoteContent()}
         onChange={(e) => changeNoteContent(e.target.value)}
         style={{
           resize: "none",

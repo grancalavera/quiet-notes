@@ -19,12 +19,10 @@ import {
 
 const getNoteDocRef = (db: Firestore, id: string) => doc(db, "notes", id);
 
-export const updateNoteInternal =
-  (db: Firestore) =>
-  (note: Note): Promise<void> => {
-    const { id, ...data } = noteToWriteModel(note);
-    return setDoc(getNoteDocRef(db, id), data, { merge: true });
-  };
+export const updateNoteInternal = (db: Firestore, note: Note): Promise<void> => {
+  const { id, ...data } = noteToWriteModel(note);
+  return setDoc(getNoteDocRef(db, id), data, { merge: true });
+};
 
 export const createNoteInternal = async (db: Firestore, user: User): Promise<string> => {
   const { id, ...data } = noteFromUserUid(user.uid);

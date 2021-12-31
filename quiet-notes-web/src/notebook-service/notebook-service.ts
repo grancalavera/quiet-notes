@@ -1,10 +1,7 @@
 import { combineLatest } from "rxjs";
 import { switchMap } from "rxjs/operators";
-import { useErrorHandler } from "../app/app-state";
 import { user$ } from "../auth/user-streams";
-import { firestore$, useFirestore } from "../firebase/firebase-initialize";
-import { useFirebaseMutation } from "../firebase/firebase-mutation";
-import { NotebookServiceSchema } from "./notebook-service-schema";
+import { firestore$ } from "../firebase/firebase-initialize";
 import {
   createNoteInternal,
   deleteNoteInternal,
@@ -12,6 +9,7 @@ import {
   getNotesCollectionInternal,
   updateNoteInternal,
 } from "./notebook-service-internal";
+import { NotebookServiceSchema } from "./notebook-service-schema";
 
 const serviceContext$ = combineLatest([firestore$, user$]);
 
@@ -25,15 +23,9 @@ export const notebookService: NotebookServiceSchema = {
   getNoteById: (noteId) =>
     serviceContext$.pipe(switchMap(([db]) => getNoteByIdInternal(db, noteId))),
 
-  updateNote: (note) => {
-    throw new Error("updateNote not implemented");
-  },
+  updateNote: (note) =>
+    serviceContext$.pipe(switchMap(([db]) => updateNoteInternal(db, note))),
 
   deleteNote: (noteId) =>
     serviceContext$.pipe(switchMap(([db]) => deleteNoteInternal(db, noteId))),
-};
-
-export const useUpdateNote = () => {
-  const db = useFirestore();
-  return useFirebaseMutation(updateNoteInternal(db), { onError: useErrorHandler() });
 };
