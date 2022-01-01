@@ -14,7 +14,7 @@ import { styled } from "@mui/material/styles";
 import { QNRole, QNToggleRole, QNUserRecord } from "quiet-notes-lib";
 import { useEffect, useState, VFC } from "react";
 import { Column, useTable } from "react-table";
-import { useToggleRole, useUserList } from "../user-service/user-service";
+import { useToggleRole, useUserList } from "../services/admin-service";
 
 export const Admin: VFC = () => {
   const { data, refetch, isLoading } = useUserList();

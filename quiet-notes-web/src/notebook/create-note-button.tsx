@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { VFC } from "react";
-import { createNote } from "../notebook/notebook-state";
+import { createNote } from "./notebook-state";
 
 export const CreateNoteButton: VFC<{ showLabel?: boolean }> = (props) => {
   const label = "create note";

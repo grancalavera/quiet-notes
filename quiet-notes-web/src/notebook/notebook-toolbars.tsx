@@ -1,11 +1,10 @@
 import ButtonGroup from "@mui/material/ButtonGroup";
 import CircularProgress from "@mui/material/CircularProgress";
-
 import { styled } from "@mui/material/styles";
-import { CreateNoteButton } from "../components/CreateNoteButton";
-import { DeleteNoteButton } from "../components/DeleteNoteButton";
-import { useIsUpdatingNote, useOpenNoteId } from "./notebook-state";
+import { CreateNoteButton } from "./create-note-button";
+import { DeleteNoteButton } from "./delete-note-button";
 import { SortMenu } from "./notebook-sort-menu";
+import { useIsUpdatingNote, useOpenNoteId } from "./notebook-state";
 
 export const NoteEditorToolbar = () => {
   const selectedNoteId = useOpenNoteId();

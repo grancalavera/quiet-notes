@@ -1,7 +1,7 @@
 import { TextareaAutosize } from "@mui/material";
 import Box from "@mui/material/Box";
 import { Suspense, useEffect, useRef, VFC } from "react";
-import { CreateNoteButton } from "../components/CreateNoteButton";
+import { CreateNoteButton } from "./create-note-button";
 import { CenterLayout } from "../layout/center-layout";
 import { LoadingLayout } from "../layout/loading-layout";
 import {
