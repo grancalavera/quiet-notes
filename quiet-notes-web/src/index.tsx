@@ -6,7 +6,7 @@ import "normalize.css";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { Admin } from "./admin/admin";
-import { AdminRoute, AuthorRoute, LoginPage, PrivateRoute } from "./app/app-auth";
+import { AdminRoute, AuthorRoute, LoginPage, PrivateRoute } from "./auth/auth";
 import { AppHeader } from "./app/app-header";
 import { Application } from "./app/application";
 import { HeaderLayout } from "./layout/header-layout";

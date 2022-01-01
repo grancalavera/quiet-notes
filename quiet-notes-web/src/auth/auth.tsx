@@ -2,7 +2,7 @@ import Button from "@mui/material/Button";
 import { QNRole } from "quiet-notes-lib";
 import { PropsWithChildren, ReactNode } from "react";
 import { Redirect, Route, RouteProps, useLocation } from "react-router-dom";
-import { useAuthState, useHasRole } from "../auth/auth-service";
+import { useAuthState, useHasRole } from "./auth-state";
 import { CenterLayout } from "../layout/center-layout";
 import { authService } from "../services/auth-service";
 

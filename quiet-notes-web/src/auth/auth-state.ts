@@ -5,7 +5,7 @@ import { authService } from "../services/auth-service";
 
 export const [useAuthState] = bind(authService.authState$);
 export const [useUser] = bind(authService.user$);
-export const [useUserRoles] = bind(authService.roles$);
+const [useUserRoles] = bind(authService.roles$);
 
 export const useHasRole = (roleName: QNRole): boolean => {
   const roles = useUserRoles();
