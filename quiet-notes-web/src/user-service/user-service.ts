@@ -2,7 +2,7 @@ import { Functions, httpsCallable } from "firebase/functions";
 import { QNListUsersResponse, QNToggleRole, QNToggleRoleResponse } from "quiet-notes-lib";
 import { useCallback, useEffect, useState } from "react";
 import { useUnknownErrorHandler } from "../app/app-state";
-import { useFunctions } from "../firebase/firebase-initialize";
+import { useFunctions } from "../services/firebase";
 
 const listUsers = (fns: Functions) =>
   httpsCallable<void, QNListUsersResponse>(fns, "listUsers")();

@@ -4,14 +4,14 @@ import { QNRole } from "quiet-notes-lib";
 import { useMemo } from "react";
 import { authState } from "rxfire/auth";
 import { filter, map, switchMap } from "rxjs/operators";
-import { firebaseApp$ } from "../firebase/firebase-initialize";
+import { app$ } from "../services/firebase";
 
-export const authState$ = firebaseApp$.pipe(switchMap((app) => authState(getAuth(app))));
+export const authState$ = app$.pipe(switchMap((app) => authState(getAuth(app))));
 export const user$ = authState$.pipe(filter(Boolean));
 
-export const userRoles$ = user$.pipe(
+const userRoles$ = user$.pipe(
   switchMap((user) => user.getIdTokenResult(true)),
-  map(({ claims }) => claims.roles as string[])
+  map(({ claims }) => claims.roles as QNRole[])
 );
 
 export const [useAuthState] = bind(authState$);

@@ -1,11 +1,10 @@
 import Button from "@mui/material/Button";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { QNRole } from "quiet-notes-lib";
-import { PropsWithChildren, ReactNode, useEffect } from "react";
+import { PropsWithChildren, ReactNode } from "react";
 import { Redirect, Route, RouteProps, useLocation } from "react-router-dom";
-import { useAuthState, useHasRole } from "../auth/user-streams";
-import { useAuth } from "../firebase/firebase-initialize";
+import { useAuthState, useHasRole } from "../auth/auth-service";
 import { CenterLayout } from "../layout/center-layout";
+import { authService } from "../services/auth-service";
 
 type CustomRouteProps<T extends {} = {}> = PropsWithChildren<T> &
   RouteProps<string> &
@@ -44,8 +43,6 @@ interface LocationState {
 }
 
 export const LoginPage = () => {
-  const auth = useAuth();
-
   return (
     <AuthState
       authenticated={
@@ -58,7 +55,7 @@ export const LoginPage = () => {
           <Button
             variant="contained"
             onClick={() => {
-              signInWithPopup(auth, new GoogleAuthProvider());
+              authService.signIn();
             }}
           >
             Sign In with Google

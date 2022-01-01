@@ -1,5 +1,4 @@
 import { nanoid } from "nanoid";
-import { Note } from "../notebook/notebook-model";
 import {
   Timestamp,
   FieldValue,
@@ -9,6 +8,7 @@ import {
   QueryDocumentSnapshot,
   SnapshotOptions,
 } from "firebase/firestore";
+import { Note } from "../notebook/notebook-model";
 
 export interface NoteReadModel {
   readonly id: string;

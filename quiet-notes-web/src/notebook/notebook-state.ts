@@ -4,18 +4,15 @@ import { useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { combineLatest, concat, Observable, of } from "rxjs";
 import {
-  debounce,
   debounceTime,
-  delay,
   filter,
   map,
   mergeWith,
-  startWith,
   switchMap,
   switchMapTo,
   tap,
 } from "rxjs/operators";
-import { notebookService } from "../notebook-service/notebook-service";
+import { notebookService } from "../services/notebook-service";
 import { Note, NoteId } from "./notebook-model";
 import { NotebookSortType, sortNotes } from "./notebook-sort";
 

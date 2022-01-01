@@ -10,7 +10,7 @@ import { env } from "../env";
 const isDev = env.DEV;
 const emulate = env.VITE_FIREBASE_USE_EMULATORS === "true";
 
-export const firebaseApp$ = fromFetch("/__/firebase/init.json").pipe(
+export const app$ = fromFetch("/__/firebase/init.json").pipe(
   switchMap((response) => {
     if (response.ok) {
       return response.json();
@@ -41,11 +41,8 @@ export const firebaseApp$ = fromFetch("/__/firebase/init.json").pipe(
   shareReplay(1)
 );
 
-export const firestore$ = firebaseApp$.pipe(map((app) => getFirestore(app)));
-export const auth$ = firebaseApp$.pipe(map((app) => getAuth(app)));
-export const functions$ = firebaseApp$.pipe(map((app) => getFunctions(app)));
+export const auth$ = app$.pipe(map((app) => getAuth(app)));
+export const firestore$ = app$.pipe(map((app) => getFirestore(app)));
+export const functions$ = app$.pipe(map((app) => getFunctions(app)));
 
-export const [useFirebase] = bind(firebaseApp$);
-export const [useAuth] = bind(auth$);
-export const [useFirestore] = bind(firestore$);
 export const [useFunctions] = bind(functions$);

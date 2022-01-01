@@ -1,7 +1,7 @@
 import { combineLatest } from "rxjs";
 import { switchMap } from "rxjs/operators";
-import { user$ } from "../auth/user-streams";
-import { firestore$ } from "../firebase/firebase-initialize";
+import { user$ } from "../auth/auth-service";
+import { firestore$ } from "./firebase";
 import {
   createNoteInternal,
   deleteNoteInternal,

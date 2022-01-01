@@ -3,7 +3,6 @@ import { FC, StrictMode } from "react";
 import { FullPageLayout } from "../layout/full-page-layout";
 import { LoadingLayout } from "../layout/loading-layout";
 import { AppErrorBoundary } from "./app-error-boundary";
-import { Services } from "./app-services";
 import { AppTheme } from "./app-theme";
 
 export const Application: FC = ({ children }) => {
@@ -12,9 +11,7 @@ export const Application: FC = ({ children }) => {
       <AppTheme>
         <FullPageLayout>
           <AppErrorBoundary>
-            <Subscribe fallback={<LoadingLayout />}>
-              <Services>{children}</Services>
-            </Subscribe>
+            <Subscribe fallback={<LoadingLayout />}>{children}</Subscribe>
           </AppErrorBoundary>
         </FullPageLayout>
       </AppTheme>
