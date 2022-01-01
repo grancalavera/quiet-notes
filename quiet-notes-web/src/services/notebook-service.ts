@@ -1,6 +1,6 @@
 import { combineLatest } from "rxjs";
 import { switchMap } from "rxjs/operators";
-import { user$ } from "../auth/auth-service";
+import { authService } from "./auth-service";
 import { firestore$ } from "./firebase";
 import {
   createNoteInternal,
@@ -11,7 +11,7 @@ import {
 } from "./notebook-service-internal";
 import { NotebookServiceSchema } from "./notebook-service-schema";
 
-const serviceContext$ = combineLatest([firestore$, user$]);
+const serviceContext$ = combineLatest([firestore$, authService.user$]);
 
 export const notebookService: NotebookServiceSchema = {
   getNotesCollection: () =>
