@@ -2,12 +2,13 @@ import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
 import { useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { combineLatest, concat, Observable, of } from "rxjs";
+import { combineLatest, Observable } from "rxjs";
 import {
   debounceTime,
   filter,
   map,
   mergeWith,
+  shareReplay,
   switchMap,
   switchMapTo,
   tap,
@@ -47,30 +48,29 @@ export const useCloseNote = () => {
 export const [noteId$, loadNoteById] = createSignal<NoteId>();
 export const [noteContentChanges$, changeNoteContent] = createSignal<string>();
 
-const note$ = noteId$.pipe(switchMap((noteId) => notebookService.getNoteById(noteId)));
+const note$ = noteId$.pipe(
+  switchMap((noteId) => notebookService.getNoteById(noteId)),
+  filter(Boolean)
+);
 
 const noteContent$ = note$.pipe(
   map(({ content }) => content),
   mergeWith(noteContentChanges$)
 );
 
-export const [useIsUpdatingNote] = bind(
-  combineLatest([note$, noteContent$]).pipe(
+combineLatest([note$, noteContent$])
+  .pipe(
     debounceTime(500),
     filter(([note, contentChange]) => note.content !== contentChange),
-    switchMap(([note, content]) => concat(of(true), updateNote(note, content), of(false)))
-  ),
-  false
-);
+    tap(([note, content]) => console.log("update", { note, content })),
+    switchMap(([note, content]) => updateNote(note, content))
+  )
+  .subscribe({
+    next: () => console.log("note updated..."),
+  });
 
 const updateNote = (note: Note, content: string): Observable<void> =>
   notebookService.updateNote({ ...note, content });
-
-noteContent$.pipe(
-  mergeWith(note$),
-  tap((noteContent) => console.log("updating:", { noteContent })),
-  map(() => false)
-);
 
 export const [useNoteContent] = bind(noteContent$);
 
