@@ -2,19 +2,18 @@ import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
 import { useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { combineLatest, Observable } from "rxjs";
+import { combineLatest, of } from "rxjs";
 import {
+  catchError,
   debounceTime,
   filter,
   map,
-  mergeWith,
-  shareReplay,
+  startWith,
   switchMap,
   switchMapTo,
-  tap,
 } from "rxjs/operators";
 import { notebookService } from "../services/notebook-service";
-import { Note, NoteId } from "./notebook-model";
+import { NoteId } from "./notebook-model";
 import { NotebookSortType, sortNotes } from "./notebook-sort";
 
 export const [sortTypeSignal$, changeSortType] = createSignal<NotebookSortType>();
@@ -45,34 +44,39 @@ export const useCloseNote = () => {
   }, [history]);
 };
 
-export const [noteId$, loadNoteById] = createSignal<NoteId>();
-export const [noteContentChanges$, changeNoteContent] = createSignal<string>();
+const [noteId$, setNoteId] = createSignal<NoteId | undefined>();
+export { setNoteId };
+export { setNoteContent };
+export { useNote };
 
-const note$ = noteId$.pipe(
-  switchMap((noteId) => notebookService.getNoteById(noteId)),
-  filter(Boolean)
+const [noteContent$, setNoteContent] = createSignal<string>();
+
+const remoteNote$ = noteId$.pipe(
+  filter(Boolean),
+  switchMap((noteId) => notebookService.getNoteById(noteId))
 );
 
-const noteContent$ = note$.pipe(
-  map(({ content }) => content),
-  mergeWith(noteContentChanges$)
-);
-
-combineLatest([note$, noteContent$])
-  .pipe(
-    debounceTime(500),
-    filter(([note, contentChange]) => note.content !== contentChange),
-    tap(([note, content]) => console.log("update", { note, content })),
-    switchMap(([note, content]) => updateNote(note, content))
+const [useNote, localNote$] = bind(
+  remoteNote$.pipe(
+    switchMap((note) =>
+      combineLatest([of(note), noteContent$.pipe(startWith(note.content))])
+    ),
+    map(([note, content]) => ({ ...note, content }))
   )
-  .subscribe({
-    next: () => console.log("note updated..."),
-  });
+);
 
-const updateNote = (note: Note, content: string): Observable<void> =>
-  notebookService.updateNote({ ...note, content });
-
-export const [useNoteContent] = bind(noteContent$);
+export const [useUpdateNote] = bind<void>(
+  combineLatest([remoteNote$, localNote$]).pipe(
+    debounceTime(500),
+    filter(
+      ([remoteNote, localNote]) =>
+        remoteNote && localNote && remoteNote.content !== localNote.content
+    ),
+    map(([, note]) => note),
+    switchMap(notebookService.updateNote),
+    startWith(undefined)
+  )
+);
 
 export const [createNoteSignal$, createNote] = createSignal<void>();
 
