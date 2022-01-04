@@ -9,7 +9,7 @@ import {
   setNoteId,
   useNote,
   useOpenNoteId,
-  useUpdateNote,
+  useUpdateNoteWitness,
 } from "./notebook-state";
 
 export const NoteEditor = () => {
@@ -31,7 +31,7 @@ export const NoteEditor = () => {
 };
 
 const NoteEditorInternal: VFC = () => {
-  useUpdateNote();
+  useUpdateNoteWitness();
 
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const note = useNote();

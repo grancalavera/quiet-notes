@@ -2,16 +2,18 @@ import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
 import { useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { combineLatest, of } from "rxjs";
+import { combineLatest, EMPTY, of } from "rxjs";
 import {
   catchError,
   debounceTime,
   filter,
   map,
+  share,
   startWith,
   switchMap,
   switchMapTo,
 } from "rxjs/operators";
+import { isFirebaseError } from "../app/app-error";
 import { notebookService } from "../services/notebook-service";
 import { NoteId } from "./notebook-model";
 import { NotebookSortType, sortNotes } from "./notebook-sort";
@@ -53,7 +55,15 @@ const [noteContent$, setNoteContent] = createSignal<string>();
 
 const remoteNote$ = noteId$.pipe(
   filter(Boolean),
-  switchMap((noteId) => notebookService.getNoteById(noteId))
+  switchMap((noteId) => notebookService.getNoteById(noteId)),
+  catchError((error) => {
+    if (isFirebaseError(error) && error.code === "permission-denied") {
+      // handle error
+      return EMPTY;
+    } else {
+      throw error;
+    }
+  })
 );
 
 const [useNote, localNote$] = bind(
@@ -65,7 +75,7 @@ const [useNote, localNote$] = bind(
   )
 );
 
-export const [useUpdateNote] = bind<void>(
+export const [useUpdateNoteWitness] = bind<void>(
   combineLatest([remoteNote$, localNote$]).pipe(
     debounceTime(500),
     filter(
@@ -88,5 +98,8 @@ export const [useCreatedNoteId] = bind<string | undefined>(
 export const [deleteNoteSignal$, deleteNote] = createSignal<NoteId>();
 
 deleteNoteSignal$
-  .pipe(switchMap((noteId) => notebookService.deleteNote(noteId)))
+  .pipe(
+    switchMap((noteId) => notebookService.deleteNote(noteId)),
+    share()
+  )
   .subscribe();
