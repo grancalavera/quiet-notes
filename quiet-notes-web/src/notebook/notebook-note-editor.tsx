@@ -1,5 +1,5 @@
-import { TextareaAutosize } from "@mui/material";
 import Box from "@mui/material/Box";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
 import { Suspense, useEffect, useRef, VFC } from "react";
 import { CenterLayout } from "../layout/center-layout";
 import { LoadingLayout } from "../layout/loading-layout";
@@ -37,12 +37,7 @@ const NoteEditorInternal: VFC = () => {
   const note = useNote();
 
   useEffect(() => inputRef.current?.focus(), []);
-
-  useEffect(() => {
-    return () => {
-      setNoteId(undefined);
-    };
-  }, []);
+  useEffect(() => () => setNoteId(undefined), []);
 
   return (
     <Box sx={{ overflow: "hidden", height: "100%", padding: "0.5rem" }}>
