@@ -1,5 +1,7 @@
+export type NoteId = string;
+
 export interface Note {
-  id: string;
+  id: NoteId;
   content: string;
   author: string;
   _version: number;

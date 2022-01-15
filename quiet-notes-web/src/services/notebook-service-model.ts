@@ -1,6 +1,14 @@
 import { nanoid } from "nanoid";
+import {
+  Timestamp,
+  FieldValue,
+  serverTimestamp,
+  increment,
+  DocumentData,
+  QueryDocumentSnapshot,
+  SnapshotOptions,
+} from "firebase/firestore";
 import { Note } from "../notebook/notebook-model";
-import { Timestamp, FieldValue, serverTimestamp, increment } from "firebase/firestore";
 
 export interface NoteReadModel {
   readonly id: string;
@@ -20,7 +28,7 @@ export interface NoteWriteModel {
   _createdAt?: FieldValue;
 }
 
-export const authorToWriteModel = (author: string): NoteWriteModel => ({
+export const noteFromUserUid = (author: string): NoteWriteModel => ({
   id: nanoid(),
   content: "",
   author,
@@ -47,3 +55,14 @@ export const noteToWriteModel = ({
   _version: increment(1),
   _updatedAt: serverTimestamp(),
 });
+
+export const noteConverter = {
+  toFirestore: (note: Note): DocumentData => noteToWriteModel(note),
+  fromFirestore: (
+    snapshot: QueryDocumentSnapshot<NoteReadModel>,
+    options?: SnapshotOptions
+  ): Note => {
+    const data = snapshot.data(options);
+    return noteFromReadModel(data);
+  },
+};

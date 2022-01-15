@@ -1,6 +1,6 @@
 import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
-import { formatDate } from "../date/format";
-import { usePrevious } from "../utils/use-previous";
+import { formatDate } from "../lib/date-format";
+import { usePrevious } from "../lib/use-previous";
 import { deriveTitle, Note } from "./notebook-model";
 
 export const tid = {

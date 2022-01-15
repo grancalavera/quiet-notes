@@ -1,4 +1,4 @@
-import { fireEvent, render, prettyDOM } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import {
   createdAt,
   NotesListItem,

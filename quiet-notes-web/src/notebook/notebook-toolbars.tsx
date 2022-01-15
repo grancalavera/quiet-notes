@@ -1,16 +1,17 @@
-import { ButtonGroup } from "@mui/material";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import { styled } from "@mui/material/styles";
-import { CreateNoteButton } from "../components/CreateNoteButton";
-import { DeleteNoteButton } from "../components/DeleteNoteButton";
-import { useSelectedNoteId } from "./notebook-state";
-import { SortMenu } from "./SortNotesMenu";
+import { CreateNoteButton } from "./create-note-button";
+import { DeleteNoteButton } from "./delete-note-button";
+import { SortMenu } from "./notebook-sort-menu";
+import { useOpenNoteId } from "./notebook-state";
 
 export const NoteEditorToolbar = () => {
-  const selectedNoteId = useSelectedNoteId();
+  const selectedNoteId = useOpenNoteId();
+
   return (
     <Layout>
       <ButtonGroup>
-        {selectedNoteId && <DeleteNoteButton noteId={selectedNoteId} isSelected={true} />}
+        {selectedNoteId && <DeleteNoteButton noteId={selectedNoteId} isOpen={true} />}
         <CreateNoteButton />
       </ButtonGroup>
     </Layout>

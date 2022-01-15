@@ -9,12 +9,11 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { signOut } from "firebase/auth";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useIsAdmin, useUser } from "../auth/user";
-import { ToggleThemeSwitch } from "../components/ToggleThemeSwitch";
-import { useAuth } from "../firebase/firebase-initialize";
+import { useIsAdmin, useUser } from "../auth/auth-state";
+import { authService } from "../services/auth-service";
+import { ToggleThemeSwitch } from "./toggle-theme-switch";
 import { useAppTheme, useToggleAppTheme } from "./use-app-theme";
 
 export const AppHeader = () => {
@@ -62,7 +61,6 @@ const UserAvatar = ({ size = 30 }: { size?: number }) => {
 
 const Profile = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const auth = useAuth();
   const user = useUser();
 
   const content = (
@@ -81,7 +79,7 @@ const Profile = () => {
         <em>{user?.uid}</em>
       </Typography>
 
-      <Button onClick={() => signOut(auth)} variant="contained">
+      <Button onClick={() => authService.signOut()} variant="contained">
         Sign Out
       </Button>
     </ProfileLayout>

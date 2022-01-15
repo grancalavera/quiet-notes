@@ -1,5 +1,5 @@
 import { FirebaseError } from "firebase/app";
-import { hasOwnProperty } from "../utils/has-own-property";
+import { hasOwnProperty } from "../lib/has-own-property";
 
 export type AppError = FirebaseError | QNError;
 
