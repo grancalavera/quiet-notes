@@ -12,8 +12,8 @@ import { styled } from "@mui/material/styles";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useIsAdmin, useUser } from "../auth/auth-state";
-import { ToggleThemeSwitch } from "./toggle-theme-switch";
 import { authService } from "../services/auth-service";
+import { ToggleThemeSwitch } from "./toggle-theme-switch";
 import { useAppTheme, useToggleAppTheme } from "./use-app-theme";
 
 export const AppHeader = () => {

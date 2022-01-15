@@ -14,6 +14,7 @@ import {
   switchMapTo,
 } from "rxjs/operators";
 import { isFirebaseError } from "../app/app-error";
+import { history } from "../app/app-history";
 import { notebookService } from "../services/notebook-service";
 import { NoteId } from "./notebook-model";
 import { NotebookSortType, sortNotes } from "./notebook-sort";
@@ -58,7 +59,7 @@ const remoteNote$ = noteId$.pipe(
   switchMap((noteId) => notebookService.getNoteById(noteId)),
   catchError((error) => {
     if (isFirebaseError(error) && error.code === "permission-denied") {
-      // handle error
+      history.replace("/notebook");
       return EMPTY;
     } else {
       throw error;
