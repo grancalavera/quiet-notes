@@ -1,28 +1,37 @@
-import create, { State } from "zustand";
+import create from "zustand";
 
 type QuietNotesTheme = "light" | "dark";
 
 interface ThemeState {
-  className?: string;
   theme: QuietNotesTheme;
   toggle: () => void;
 }
 
 const key = "quiet-notes-theme";
 
-const loadTheme = (): QuietNotesTheme =>
-  (localStorage.getItem(key) as QuietNotesTheme | null) ?? "light";
+const applyColorScheme = (mode: QuietNotesTheme) => {
+  const html = document.querySelector("html")!;
+  html.style.colorScheme = mode;
+};
 
-const saveTheme = (theme: QuietNotesTheme): void => localStorage.setItem(key, theme);
+const loadTheme = (): QuietNotesTheme => {
+  const theme = (localStorage.getItem(key) as QuietNotesTheme | null) ?? "light";
+  applyColorScheme(theme);
+  return theme;
+};
 
-const useTheme = create<ThemeState & State>((set, get) => ({
+const saveTheme = (theme: QuietNotesTheme): void => {
+  applyColorScheme(theme);
+  localStorage.setItem(key, theme);
+};
+
+const useTheme = create<ThemeState>((set, get) => ({
   theme: loadTheme(),
   toggle: () =>
     set(() => {
       const theme: QuietNotesTheme = get().theme === "light" ? "dark" : "light";
-      const className = theme === "dark" ? "bp3-dark" : undefined;
       saveTheme(theme);
-      return { theme, className };
+      return { theme };
     }),
 }));
 
