@@ -42,7 +42,7 @@ export const Admin: VFC = () => {
             {headerGroups.map((headerGroup) => (
               <TableRow {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
-                  <TableCell>{column.render("Header")}</TableCell>
+                  <TableCell key={column.id}>{column.render("Header")}</TableCell>
                 ))}
               </TableRow>
             ))}
