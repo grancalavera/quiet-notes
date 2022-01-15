@@ -19,6 +19,7 @@ export const NotebookLayout = (props: NotebookLayoutProps) => {
           borderRightStyle: "solid",
           borderRightColor: "divider",
           gridArea: "sidebar-toolbar",
+          overflow: "hidden",
         }}
       >
         {props.sidebarToolbar}
@@ -29,6 +30,7 @@ export const NotebookLayout = (props: NotebookLayoutProps) => {
           borderRightStyle: "solid",
           borderRightColor: "divider",
           gridArea: "sidebar",
+          overflow: "hidden",
         }}
       >
         {props.sidebar}
@@ -36,6 +38,7 @@ export const NotebookLayout = (props: NotebookLayoutProps) => {
       <Box
         sx={{
           gridArea: "editor-toolbar",
+          overflow: "hidden",
         }}
       >
         {props.editorToolbar}
@@ -43,6 +46,7 @@ export const NotebookLayout = (props: NotebookLayoutProps) => {
       <Box
         sx={{
           gridArea: "editor",
+          overflow: "hidden",
         }}
       >
         {props.editor}
