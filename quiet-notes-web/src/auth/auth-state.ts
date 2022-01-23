@@ -5,10 +5,10 @@ import { authService } from "../services/auth-service";
 
 export const [useAuthState] = bind(authService.authState$);
 export const [useUser] = bind(authService.user$);
-const [useUserRoles] = bind(authService.roles$);
+const [useRoles] = bind(authService.roles$);
 
 export const useHasRole = (roleName: QNRole): boolean => {
-  const roles = useUserRoles();
+  const roles = useRoles();
   return useMemo(() => roles.includes(roleName), [roleName, roles]);
 };
 

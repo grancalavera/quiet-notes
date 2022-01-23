@@ -28,6 +28,9 @@ export const authService: AuthServiceSchema = {
 
   roles$: user$.pipe(
     switchMap((user) => user.getIdTokenResult(true)),
-    map(({ claims }) => claims.roles as QNRole[])
+    map(({ claims }) => parseRoles(claims.roles))
   ),
 };
+
+const parseRoles = (maybeRoles: string | object | undefined) =>
+  Array.isArray(maybeRoles) ? (maybeRoles as QNRole[]) : [];
