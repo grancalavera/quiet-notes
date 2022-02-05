@@ -1,6 +1,8 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton, Tooltip } from "@mui/material";
-import { VFC } from "react";
+import { useEffect, VFC } from "react";
+import { isLoading, isLoadSuccess } from "../lib/load-result";
+import { withSubscribe } from "../lib/with-subscribe";
 import {
   deleteNote,
   useCloseNote,
@@ -12,21 +14,21 @@ interface DeleteNoteButtonProps {
   isOpen: boolean;
 }
 
-export const DeleteNoteButton: VFC<DeleteNoteButtonProps> = (props) => {
+const DeleteNoteButton_Unsubscribed: VFC<DeleteNoteButtonProps> = (props) => {
   const closeNote = useCloseNote();
   const result = useDeleteNoteResult();
 
+  useEffect(() => {
+    isLoadSuccess(result) && props.isOpen && closeNote();
+  }, [result, props.isOpen]);
+
   return (
     <Tooltip title="delete note">
-      <IconButton
-        onClick={(e) => {
-          e.stopPropagation();
-          props.isOpen && closeNote();
-          deleteNote(props.noteId);
-        }}
-      >
+      <IconButton onClick={() => deleteNote(props.noteId)} disabled={isLoading(result)}>
         <DeleteIcon color="primary" />
       </IconButton>
     </Tooltip>
   );
 };
+
+export const DeleteNoteButton = withSubscribe(DeleteNoteButton_Unsubscribed);

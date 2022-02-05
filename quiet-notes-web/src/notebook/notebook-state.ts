@@ -2,9 +2,9 @@ import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
 import { useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { combineLatest, of } from "rxjs";
-import { catchError, map, startWith, switchMap } from "rxjs/operators";
-import { failure, idle, loading, LoadResult, success } from "../lib/load-result";
+import { combineLatest } from "rxjs";
+import { map } from "rxjs/operators";
+import { createLoadResult } from "../lib/load-result-observable";
 import { notebookService } from "../services/notebook-service";
 import { NoteId } from "./notebook-model";
 import { NotebookSortType, sortNotes } from "./notebook-sort";
@@ -39,22 +39,18 @@ export const useCloseNote = () => {
 
 export const [createNoteSignal$, createNote] = createSignal<void>();
 
-export const [useCreateNoteResult] = bind<string | undefined>(
-  createNoteSignal$.pipe(switchMap(() => notebookService.createNote())),
-  undefined
-);
-
 export const [deleteNoteSignal$, deleteNote] = createSignal<NoteId>();
 
-export const [useDeleteNoteResult] = bind<LoadResult<void>>(
-  deleteNoteSignal$.pipe(
-    switchMap((noteId) =>
-      notebookService.deleteNote(noteId).pipe(
-        catchError((error) => of(failure<void>(error))),
-        map(() => success()),
-        startWith(loading())
-      )
-    ),
-    startWith(idle())
-  )
+export const [useDeleteNoteResult] = bind(
+  createLoadResult({
+    input$: deleteNoteSignal$,
+    loadResult: notebookService.deleteNote,
+  })
+);
+
+export const [useCreateNoteResult] = bind(
+  createLoadResult({
+    input$: createNoteSignal$,
+    loadResult: notebookService.createNote,
+  })
 );

@@ -1,5 +1,6 @@
-import { Result } from "./result";
-export * from "./result";
+import { Failure, Result, Success } from "./result";
+export type { Success, Failure } from "./result";
+export { success, failure } from "./result";
 
 export type LoadResult<T> = Idle | Loading | Result<T>;
 
@@ -22,3 +23,9 @@ export const isIdle = <T>(candidate: LoadResult<T>): candidate is Idle =>
 
 export const isLoading = <T>(candidate: LoadResult<T>): candidate is Loading =>
   candidate.kind === "Loading";
+
+export const isLoadSuccess = <T>(candidate: LoadResult<T>): candidate is Success<T> =>
+  candidate.kind === "Success";
+
+export const isLoadFailure = <T>(candidate: LoadResult<T>): candidate is Failure =>
+  candidate.kind === "Failure";
