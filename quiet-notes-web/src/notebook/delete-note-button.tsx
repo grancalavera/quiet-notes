@@ -1,7 +1,11 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton, Tooltip } from "@mui/material";
 import { VFC } from "react";
-import { deleteNote, useCloseNote } from "../notebook/notebook-state";
+import {
+  deleteNote,
+  useCloseNote,
+  useDeleteNoteResult,
+} from "../notebook/notebook-state";
 
 interface DeleteNoteButtonProps {
   noteId: string;
@@ -10,6 +14,8 @@ interface DeleteNoteButtonProps {
 
 export const DeleteNoteButton: VFC<DeleteNoteButtonProps> = (props) => {
   const closeNote = useCloseNote();
+  const result = useDeleteNoteResult();
+
   return (
     <Tooltip title="delete note">
       <IconButton

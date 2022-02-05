@@ -3,10 +3,10 @@ import { styled } from "@mui/material/styles";
 import { CreateNoteButton } from "./create-note-button";
 import { DeleteNoteButton } from "./delete-note-button";
 import { SortMenu } from "./notebook-sort-menu";
-import { useOpenNoteId } from "./notebook-state";
+import { useSelectedNoteId } from "./notebook-state";
 
-export const NoteEditorToolbar = () => {
-  const selectedNoteId = useOpenNoteId();
+export const NotebookEditorToolbar = () => {
+  const selectedNoteId = useSelectedNoteId();
 
   return (
     <Layout>
@@ -18,7 +18,7 @@ export const NoteEditorToolbar = () => {
   );
 };
 
-export const SidebarToolbar = () => (
+export const NotebookSidebarToolbar = () => (
   <Layout>
     <SortMenu />
   </Layout>

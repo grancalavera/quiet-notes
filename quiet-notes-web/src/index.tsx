@@ -13,11 +13,13 @@ import { Application } from "./app/application";
 import { AdminRoute, AuthorRoute, LoginPage, PrivateRoute } from "./auth/auth";
 import { HeaderLayout } from "./layout/header-layout";
 import { Lobby } from "./lobby/lobby";
-import { CreatedNoteHandler } from "./notebook/notebook-create-note-handlers";
-import { NotebookLayout } from "./notebook/notebook-layout";
-import { NoteEditor } from "./notebook/notebook-note-editor";
+import { NoteEditor } from "./note/note-editor";
+import { Notebook } from "./notebook/notebook";
 import { NotesList } from "./notebook/notebook-notes-list";
-import { NoteEditorToolbar, SidebarToolbar } from "./notebook/notebook-toolbars";
+import {
+  NotebookEditorToolbar,
+  NotebookSidebarToolbar,
+} from "./notebook/notebook-toolbars";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
@@ -40,15 +42,12 @@ ReactDOM.render(
                 </Route>
 
                 <AuthorRoute path="/notebook/:noteId?">
-                  <>
-                    <NotebookLayout
-                      sidebarToolbar={<SidebarToolbar />}
-                      sidebar={<NotesList />}
-                      editorToolbar={<NoteEditorToolbar />}
-                      editor={<NoteEditor />}
-                    />
-                    <CreatedNoteHandler />
-                  </>
+                  <Notebook
+                    sidebarToolbar={<NotebookSidebarToolbar />}
+                    sidebar={<NotesList />}
+                    editorToolbar={<NotebookEditorToolbar />}
+                    editor={<NoteEditor />}
+                  />
                 </AuthorRoute>
 
                 <AdminRoute path="/admin">
