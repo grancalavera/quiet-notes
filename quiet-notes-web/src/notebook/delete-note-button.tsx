@@ -3,11 +3,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import { useEffect, VFC } from "react";
 import { isLoading, isLoadSuccess } from "../lib/load-result";
 import { withSubscribe } from "../lib/with-subscribe";
-import {
-  deleteNote,
-  useCloseNote,
-  useDeleteNoteResult,
-} from "../notebook/notebook-state";
+import { closeNote, deleteNote, useDeleteNoteResult } from "../notebook/notebook-state";
 
 interface DeleteNoteButtonProps {
   noteId: string;
@@ -15,7 +11,6 @@ interface DeleteNoteButtonProps {
 }
 
 const DeleteNoteButton_Unsubscribed: VFC<DeleteNoteButtonProps> = (props) => {
-  const closeNote = useCloseNote();
   const result = useDeleteNoteResult();
 
   useEffect(() => {
@@ -24,7 +19,12 @@ const DeleteNoteButton_Unsubscribed: VFC<DeleteNoteButtonProps> = (props) => {
 
   return (
     <Tooltip title="delete note">
-      <IconButton onClick={() => deleteNote(props.noteId)} disabled={isLoading(result)}>
+      <IconButton
+        onClick={() => {
+          deleteNote(props.noteId);
+        }}
+        disabled={isLoading(result)}
+      >
         <DeleteIcon color="primary" />
       </IconButton>
     </Tooltip>

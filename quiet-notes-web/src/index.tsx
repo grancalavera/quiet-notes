@@ -8,7 +8,7 @@ import { Router } from "react-router";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { Admin } from "./admin/admin";
 import { AppHeader } from "./app/app-header";
-import { history } from "./app/app-history";
+import { globalHistory } from "./app/app-history";
 import { Application } from "./app/application";
 import { AdminRoute, AuthorRoute, LoginPage, PrivateRoute } from "./auth/auth";
 import { HeaderLayout } from "./layout/header-layout";
@@ -24,7 +24,7 @@ import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <Application>
-    <Router history={history}>
+    <Router history={globalHistory}>
       <Switch>
         <Route exact path="/">
           <Redirect to="/notebook" />

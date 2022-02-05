@@ -2,14 +2,11 @@ import { createBrowserHistory } from "history";
 import { Observable } from "rxjs";
 import { shareReplay } from "rxjs/operators";
 
-export const history = createBrowserHistory();
+export const globalHistory = createBrowserHistory();
 
-export const location$ = new Observable<typeof history["location"]>((observer) => {
-  observer.next(history.location);
-
-  const subscription = history.listen(() => {
-    observer.next(history.location);
+export const location$ = new Observable<typeof globalHistory["location"]>((observer) => {
+  observer.next(globalHistory.location);
+  return globalHistory.listen(() => {
+    observer.next(globalHistory.location);
   });
-
-  return subscription;
-}).pipe(shareReplay(1));
+}).pipe(shareReplay({ bufferSize: 1, refCount: true }));
