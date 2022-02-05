@@ -4,15 +4,17 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { VFC } from "react";
 import { Redirect } from "react-router";
+import { isLoadSuccess } from "../lib/load-result";
+import { withSubscribe } from "../lib/with-subscribe";
 import { createNote, useCreateNoteResult } from "./notebook-state";
 
-export const CreateNoteButton: VFC<{ showLabel?: boolean }> = (props) => {
+const CreateNoteButton_Unsubscribed: VFC<{ showLabel?: boolean }> = (props) => {
   const label = "create note";
-  const noteId = useCreateNoteResult();
+  const result = useCreateNoteResult();
 
   return (
     <>
-      {noteId && <Redirect to={`/notebook/${noteId}`} />}
+      {isLoadSuccess(result) && <Redirect to={`/notebook/${result.value}`} />}
       <Tooltip title={label}>
         {props.showLabel ? (
           <Button
@@ -32,3 +34,5 @@ export const CreateNoteButton: VFC<{ showLabel?: boolean }> = (props) => {
     </>
   );
 };
+
+export const CreateNoteButton = withSubscribe(CreateNoteButton_Unsubscribed);

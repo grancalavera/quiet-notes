@@ -9,6 +9,8 @@ export interface Note {
   _updatedAt?: Date;
 }
 
+export type DatedNote = Required<Note>;
+
 export type MergeNote = MergeNoteConflict | MergeNoteSuccess;
 
 interface MergeNoteSuccess {
@@ -58,3 +60,6 @@ export const resolveMergeConflict = (
 export const deriveTitle = (note: Note): string => {
   return note.content.trimStart().split("\n")[0] ?? "";
 };
+
+export const isDatedNote = (candidate: Note): candidate is DatedNote =>
+  candidate._createdAt !== undefined && candidate._updatedAt !== undefined;

@@ -18,18 +18,13 @@ export function ofFailure<T = void>(error?: any): LoadResultObservable<T> {
   return of(result);
 }
 
-export interface CreateLoadResultOptions<TInput, TResult> {
-  input$: Observable<TInput>;
-  loadResult: (input: TInput) => Observable<TResult>;
-}
-
-export const createLoadResult = <TInput, TResult>({
-  input$,
-  loadResult: computeResult,
-}: CreateLoadResultOptions<TInput, TResult>): LoadResultObservable<TResult> =>
+export const createLoadResult = <TInput, TResult>(
+  input$: Observable<TInput>,
+  loadResult: (input: TInput) => Observable<TResult>
+): LoadResultObservable<TResult> =>
   input$.pipe(
     switchMap((input) =>
-      computeResult(input).pipe(
+      loadResult(input).pipe(
         map((result) => success<TResult>(result)),
         catchError((error) => ofFailure<TResult>(error)),
         startWith(loading<TResult>())
