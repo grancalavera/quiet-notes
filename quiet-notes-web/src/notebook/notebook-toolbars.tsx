@@ -11,7 +11,7 @@ export const NotebookEditorToolbar = () => {
   return (
     <Layout>
       <ButtonGroup>
-        {selectedNoteId && <DeleteNoteButton noteId={selectedNoteId} isOpen={true} />}
+        <DeleteNoteButton noteId={selectedNoteId} isOpen={true} />
         <CreateNoteButton />
       </ButtonGroup>
     </Layout>
