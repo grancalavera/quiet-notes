@@ -7,64 +7,53 @@ import { createLoadResult } from "../lib/load-result-observable";
 import { notebookService } from "../services/notebook-service";
 import { isNoteWithDates, NotebookSortType, NoteId, sortNotes } from "./notebook-model";
 
-const [sortTypeSignal$, changeSortType] = createSignal<NotebookSortType>();
+export const [sortTypeSignal$, changeSortType] = createSignal<NotebookSortType>();
 
-const [useSortType, sortTypeWithDefault$] = bind(sortTypeSignal$, "ByDateDesc");
+export const [useSortType, sortTypeWithDefault$] = bind(sortTypeSignal$, "ByDateDesc");
 
-const [useNotesCollection] = bind(
+export const [useNotesCollection] = bind(
   combineLatest([sortTypeWithDefault$, notebookService.getNotesCollection()]).pipe(
     map(([sortType, notes]) => sortNotes(sortType, notes).filter(isNoteWithDates))
   )
 );
 
 const [changeSelectedNoteSignal$, changeSelectedNote] = createSignal<
-  string | undefined
+  NoteId | undefined
 >();
 
-const selectedNoteFromDeepLink$ = location$.pipe(
+const noteDeepLink$ = location$.pipe(
   map(({ pathname }) => pathname.match(/^\/notebook\/(.+)\/?$/)?.[1])
 );
 
-const selectedNoteFromUser$ = changeSelectedNoteSignal$.pipe(
-  tap((noteId) => globalHistory.push(`/notebook/${noteId ?? ""}`))
+const userNoteSelection$ = changeSelectedNoteSignal$.pipe(
+  tap((noteId) => {
+    if (noteId) {
+      globalHistory.push(`/notebook/${noteId ?? ""}`);
+    } else {
+      globalHistory.replace(`/notebook`);
+    }
+  })
 );
 
-const [useSelectedNoteId] = bind(
-  merge(selectedNoteFromDeepLink$, selectedNoteFromUser$).pipe(
+export const [useSelectedNoteId] = bind(
+  merge(noteDeepLink$, userNoteSelection$).pipe(
     distinctUntilChanged(),
     startWith(undefined)
   )
 );
 
-const [createNoteSignal$, createNote] = createSignal<void>();
+export const [createNoteSignal$, createNote] = createSignal<void>();
 
-const [useCreateNoteResult] = bind(
+export const [useCreateNoteResult] = bind(
   createLoadResult(createNoteSignal$, notebookService.createNote)
 );
 
-const [deleteNoteSignal$, deleteNote] = createSignal<NoteId>();
+export const [deleteNoteSignal$, deleteNote] = createSignal<NoteId>();
 
-const [, deleteNoteResult$] = bind(
+export const [useDeleteNoteResult, deleteNoteResult$] = bind(
   createLoadResult(deleteNoteSignal$, notebookService.deleteNote)
 );
 
-const openNote = (noteId: string) => changeSelectedNote(noteId);
+export const openNote = (noteId: NoteId) => changeSelectedNote(noteId);
 
-const closeNote = () => changeSelectedNote(undefined);
-
-// public API
-export {
-  changeSortType,
-  useSortType,
-  useNotesCollection,
-  //
-  openNote,
-  closeNote,
-  useSelectedNoteId,
-  //
-  createNote,
-  useCreateNoteResult,
-  //
-  deleteNote,
-  deleteNoteResult$,
-};
+export const closeNote = () => changeSelectedNote(undefined);

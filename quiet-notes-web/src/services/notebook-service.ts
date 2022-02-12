@@ -1,5 +1,5 @@
 import { combineLatest } from "rxjs";
-import { delay, switchMap, take } from "rxjs/operators";
+import { switchMap, take, tap } from "rxjs/operators";
 import { authService } from "./auth-service";
 import { firestore$ } from "./firebase";
 import {

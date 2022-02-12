@@ -41,5 +41,5 @@ export const getNotesCollectionInternal = (db: Firestore, user: User) => {
 
 export const getNoteByIdInternal = (db: Firestore, noteId: NoteId): Observable<Note> => {
   const noteDocRef = getNoteDocRef(db, noteId).withConverter(noteConverter);
-  return docData(noteDocRef, { idField: "id" });
+  return docData(noteDocRef, { idField: " id" });
 };
