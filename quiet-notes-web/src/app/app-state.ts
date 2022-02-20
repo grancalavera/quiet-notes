@@ -1,22 +1,31 @@
+import { bind } from "@react-rxjs/core";
+import { createSignal } from "@react-rxjs/utils";
 import { useCallback } from "react";
-import create, { State } from "zustand";
 import { AppError, errorFromUnknown, QNError } from "./app-error";
 
-interface AppState extends State {
-  errors: AppError[];
-  handleError: (error: AppError) => void;
-  dismissError: () => void;
-}
+const [dispatchErrorsSignal$, dispatchErrors] = createSignal<AppError[]>();
 
-export const useAppState = create<AppState>((set) => ({
-  errors: [],
-  handleError: (error) => set(({ errors }) => ({ errors: [...errors, error] })),
-  dismissError: () => set(({ errors }) => ({ errors: errors.slice(1) })),
-}));
+export const [useAppErrors] = bind(dispatchErrorsSignal$, []);
 
-const selectHandleError = (s: AppState) => s.handleError;
+export const useErrorHandler = () => {
+  const errors = useAppErrors();
+  return useCallback(
+    (error: AppError) => {
+      const handled = [...errors, error];
+      dispatchErrors(handled);
+    },
+    [errors]
+  );
+};
 
-export const useErrorHandler = () => useAppState(selectHandleError);
+export const useDismissError = () => {
+  const errors = useAppErrors();
+
+  return useCallback(() => {
+    const handled = errors.slice(1);
+    dispatchErrors(handled);
+  }, [errors]);
+};
 
 export const useUnknownErrorHandler = () => {
   const handleError = useErrorHandler();
