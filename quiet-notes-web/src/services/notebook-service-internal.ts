@@ -18,6 +18,7 @@ import {
 } from "./notebook-service-model";
 
 const getNoteDocRef = (db: Firestore, id: string) => doc(db, "notes", id);
+const documentOptions = { idField: "id" };
 
 export const updateNoteInternal = (db: Firestore, note: Note): Promise<void> => {
   const { id, ...data } = noteToWriteModel(note);
@@ -36,10 +37,10 @@ export const deleteNoteInternal = async (db: Firestore, noteId: NoteId): Promise
 export const getNotesCollectionInternal = (db: Firestore, user: User) => {
   const collectionRef = collection(db, "notes").withConverter(noteConverter);
   const q = query(collectionRef, where("author", "==", user.uid));
-  return collectionData(q, { idField: "id" });
+  return collectionData(q, documentOptions);
 };
 
 export const getNoteByIdInternal = (db: Firestore, noteId: NoteId): Observable<Note> => {
   const noteDocRef = getNoteDocRef(db, noteId).withConverter(noteConverter);
-  return docData(noteDocRef, { idField: " id" });
+  return docData(noteDocRef, documentOptions);
 };

@@ -5,7 +5,7 @@ export interface NotebookServiceSchema {
   getNotesCollection: () => Observable<Note[]>;
   getNoteById: (id: NoteId) => Observable<Note>;
 
-  createNote: () => Observable<NoteId>;
-  updateNote: (note: Note) => Observable<void>;
-  deleteNote: (id: NoteId) => Observable<void>;
+  createNote: () => Promise<NoteId>;
+  updateNote: (note: Note) => Promise<void>;
+  deleteNote: (id: NoteId) => Promise<void>;
 }

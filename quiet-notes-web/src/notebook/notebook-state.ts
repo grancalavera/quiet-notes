@@ -1,9 +1,10 @@
 import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
-import { combineLatest, merge } from "rxjs";
-import { distinctUntilChanged, map, startWith, tap } from "rxjs/operators";
-import { globalHistory, location$ } from "../app/app-history";
-import { createLoadResult } from "../lib/load-result-observable";
+import { useParams } from "react-router";
+import { combineLatest } from "rxjs";
+import { map } from "rxjs/operators";
+import { globalHistory } from "../app/app-history";
+import { useMutation } from "../lib/use-mutation";
 import { notebookService } from "../services/notebook-service";
 import { isNoteWithDates, NotebookSortType, NoteId, sortNotes } from "./notebook-model";
 
@@ -17,43 +18,8 @@ export const [useNotesCollection] = bind(
   )
 );
 
-const [changeSelectedNoteSignal$, changeSelectedNote] = createSignal<
-  NoteId | undefined
->();
-
-const noteDeepLink$ = location$.pipe(
-  map(({ pathname }) => pathname.match(/^\/notebook\/(.+)\/?$/)?.[1])
-);
-
-const userNoteSelection$ = changeSelectedNoteSignal$.pipe(
-  tap((noteId) => {
-    if (noteId) {
-      globalHistory.push(`/notebook/${noteId ?? ""}`);
-    } else {
-      globalHistory.replace(`/notebook`);
-    }
-  })
-);
-
-export const [useSelectedNoteId] = bind(
-  merge(noteDeepLink$, userNoteSelection$).pipe(
-    distinctUntilChanged(),
-    startWith(undefined)
-  )
-);
-
-export const [createNoteSignal$, createNote] = createSignal<void>();
-
-export const [useCreateNoteResult] = bind(
-  createLoadResult(createNoteSignal$, notebookService.createNote)
-);
-
-export const [deleteNoteSignal$, deleteNote] = createSignal<NoteId>();
-
-export const [useDeleteNoteResult, deleteNoteResult$] = bind(
-  createLoadResult(deleteNoteSignal$, notebookService.deleteNote)
-);
-
-export const openNote = (noteId: NoteId) => changeSelectedNote(noteId);
-
-export const closeNote = () => changeSelectedNote(undefined);
+export const selectNote = (noteId: NoteId) => globalHistory.push(`/notebook/${noteId}`);
+export const deselectNote = () => globalHistory.push(`/notebook`);
+export const useSelectedNoteId = () => useParams<{ noteId?: string }>().noteId;
+export const useCreateNote = () => useMutation(notebookService.createNote);
+export const useDeleteNote = () => useMutation(notebookService.deleteNote);

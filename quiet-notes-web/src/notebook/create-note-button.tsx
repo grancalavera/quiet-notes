@@ -3,16 +3,19 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { useEffect, VFC } from "react";
-import { isLoadSuccess } from "../lib/load-result";
-import { withSubscribe } from "../lib/with-subscribe";
-import { createNote, useCreateNoteResult, openNote } from "./notebook-state";
+import { useErrorHandler } from "../app/app-state";
+import { isLoadFailure, isLoadSuccess } from "../lib/load-result";
+import { selectNote, useCreateNote } from "./notebook-state";
 
-const CreateNoteButton_Unsubscribed: VFC<{ showLabel?: boolean }> = (props) => {
+export const CreateNoteButton: VFC<{ showLabel?: boolean }> = (props) => {
   const label = "create note";
-  const result = useCreateNoteResult();
+  const { mutate: createNote, reset, result } = useCreateNote();
+  const handleError = useErrorHandler();
 
   useEffect(() => {
-    isLoadSuccess(result) && openNote(result.value);
+    isLoadSuccess(result) && selectNote(result.value);
+    isLoadFailure(result) && handleError(result.error);
+    (isLoadSuccess(result) || isLoadFailure(result)) && reset();
   }, [result]);
 
   return (
@@ -34,5 +37,3 @@ const CreateNoteButton_Unsubscribed: VFC<{ showLabel?: boolean }> = (props) => {
     </Tooltip>
   );
 };
-
-export const CreateNoteButton = withSubscribe(CreateNoteButton_Unsubscribed);

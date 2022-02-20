@@ -77,12 +77,13 @@ const ErrorAlert = ({ error, ...props }: ErrorAlertProps) => {
             <>
               <DialogTitle id="error-alert-title">{error.name}</DialogTitle>
               <DialogContent>
-                <DialogContentText id="error-alert-description">
-                  <Typography variant="body1">{error.code}</Typography>
+                <DialogContentText
+                  id="error-alert-description"
+                  sx={{ whiteSpace: "pre-wrap" }}
+                >
+                  {error.code}{" "}
+                  {process.env.NODE_ENV === "development" && `\n\n${error.message}`}
                 </DialogContentText>
-                {process.env.NODE_ENV === "development" && (
-                  <Typography variant="body1">{error.message}</Typography>
-                )}
               </DialogContent>
             </>
           );
@@ -94,14 +95,6 @@ const ErrorAlert = ({ error, ...props }: ErrorAlertProps) => {
                 <DialogContentText id="error-alert-description">
                   {error.message}
                 </DialogContentText>
-                {process.env.NODE_ENV === "development" && (
-                  <>
-                    <Typography variant="body1">
-                      Come back soon to check if it has been approved.
-                    </Typography>
-                    <pre>{JSON.stringify(error.data ?? {}, null, 2)}</pre>
-                  </>
-                )}
               </DialogContent>
             </>
           );

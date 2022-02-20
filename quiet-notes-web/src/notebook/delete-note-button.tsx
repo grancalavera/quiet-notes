@@ -1,28 +1,25 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton, Tooltip } from "@mui/material";
-import { VFC } from "react";
-import { withSubscribe } from "../lib/with-subscribe";
-import { closeNote, deleteNote, deleteNoteResult$ } from "../notebook/notebook-state";
+import { useEffect, VFC } from "react";
+import { useErrorHandler } from "../app/app-state";
+import { isLoadFailure, isLoadSuccess } from "../lib/load-result";
+import { useDeleteNote, useSelectedNoteId } from "../notebook/notebook-state";
 
-interface DeleteNoteButtonProps {
-  noteId?: string;
-  isOpen: boolean;
-}
+export const DeleteNoteButton: VFC = () => {
+  const noteId = useSelectedNoteId();
+  const { mutate: deleteNote, result, reset } = useDeleteNote();
+  const handleError = useErrorHandler();
 
-const DeleteNoteButton_Unsubscribed: VFC<DeleteNoteButtonProps> = ({ noteId, isOpen }) =>
-  noteId ? (
+  useEffect(() => {
+    isLoadFailure(result) && handleError(result.error);
+    (isLoadSuccess(result) || isLoadFailure(result)) && reset();
+  }, [result]);
+
+  return noteId ? (
     <Tooltip title="delete note">
-      <IconButton
-        onClick={() => {
-          deleteNote(noteId);
-          isOpen && closeNote();
-        }}
-      >
+      <IconButton onClick={() => deleteNote(noteId)}>
         <DeleteIcon color="primary" />
       </IconButton>
     </Tooltip>
   ) : null;
-
-export const DeleteNoteButton = withSubscribe(DeleteNoteButton_Unsubscribed, {
-  source$: deleteNoteResult$,
-});
+};

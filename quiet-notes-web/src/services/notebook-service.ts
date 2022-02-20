@@ -1,5 +1,5 @@
-import { combineLatest } from "rxjs";
-import { switchMap, take, tap } from "rxjs/operators";
+import { combineLatest, firstValueFrom } from "rxjs";
+import { switchMap } from "rxjs/operators";
 import { authService } from "./auth-service";
 import { firestore$ } from "./firebase";
 import {
@@ -20,21 +20,18 @@ export const notebookService: NotebookServiceSchema = {
   getNoteById: (noteId) =>
     serviceContext$.pipe(switchMap(([db]) => getNoteByIdInternal(db, noteId))),
 
-  createNote: () =>
-    serviceContext$.pipe(
-      switchMap(([db, user]) => createNoteInternal(db, user)),
-      take(1)
-    ),
+  createNote: async () => {
+    const [db, user] = await firstValueFrom(serviceContext$);
+    return createNoteInternal(db, user);
+  },
 
-  updateNote: (note) =>
-    serviceContext$.pipe(
-      switchMap(([db]) => updateNoteInternal(db, note)),
-      take(1)
-    ),
+  updateNote: async (note) => {
+    const [db] = await firstValueFrom(serviceContext$);
+    await updateNoteInternal(db, note);
+  },
 
-  deleteNote: (noteId) =>
-    serviceContext$.pipe(
-      switchMap(([db]) => deleteNoteInternal(db, noteId)),
-      take(1)
-    ),
+  deleteNote: async (noteId) => {
+    const [db] = await firstValueFrom(serviceContext$);
+    await deleteNoteInternal(db, noteId);
+  },
 };

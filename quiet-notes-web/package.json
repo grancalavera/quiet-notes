@@ -53,6 +53,7 @@
     "zustand": "3.5.2"
   },
   "scripts": {
+    "typecheck": "tsc -w",
     "start": "vite",
     "start:emulated": "VITE_FIREBASE_USE_EMULATORS=true vite",
     "build": "tsc && vite build",

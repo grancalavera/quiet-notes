@@ -3,15 +3,12 @@ import { styled } from "@mui/material/styles";
 import { CreateNoteButton } from "./create-note-button";
 import { DeleteNoteButton } from "./delete-note-button";
 import { SortMenu } from "./notebook-sort-menu";
-import { useSelectedNoteId } from "./notebook-state";
 
 export const NotebookEditorToolbar = () => {
-  const selectedNoteId = useSelectedNoteId();
-
   return (
     <Layout>
       <ButtonGroup>
-        <DeleteNoteButton noteId={selectedNoteId} isOpen={true} />
+        <DeleteNoteButton />
         <CreateNoteButton />
       </ButtonGroup>
     </Layout>

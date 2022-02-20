@@ -1,9 +1,9 @@
 import Box from "@mui/material/Box";
 import { Subscribe } from "@react-rxjs/core";
-import { useEffect, VFC } from "react";
+import { VFC } from "react";
 import { LoadingLayout } from "../layout/loading-layout";
 import { NotesListItem } from "./notebook-notes-list-item";
-import { openNote, useNotesCollection, useSelectedNoteId } from "./notebook-state";
+import { selectNote, useNotesCollection, useSelectedNoteId } from "./notebook-state";
 
 export const testId = "notes-list";
 
@@ -31,7 +31,7 @@ const NotesListInternal: VFC = () => {
           note={note}
           key={note.id}
           isSelected={note.id === selectedNoteId}
-          onSelect={() => openNote(note.id)}
+          onSelect={() => selectNote(note.id)}
         />
       ))}
     </>

@@ -4,7 +4,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import { useCallback, useState, VFC } from "react";
-import { NotebookSortType } from "./notebook-sort";
+import { NotebookSortType } from "./notebook-model";
 import { changeSortType, useSortType } from "./notebook-state";
 
 export const SortMenu: VFC = () => {
