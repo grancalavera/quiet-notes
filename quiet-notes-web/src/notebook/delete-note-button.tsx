@@ -1,7 +1,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton, Tooltip } from "@mui/material";
 import { useEffect, VFC } from "react";
-import { useErrorHandler } from "../app/app-state";
+import { useErrorHandler } from "../app/app-error-state";
 import { isLoadFailure, isLoadSuccess } from "../lib/load-result";
 import { useDeleteNote, useSelectedNoteId } from "../notebook/notebook-state";
 

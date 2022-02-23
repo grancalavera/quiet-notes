@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { isFirebaseError, isQnError } from "./app-error";
-import { useAppErrors, useDismissError } from "./app-state";
+import { useAppErrors, useDismissError } from "./app-error-state";
 
 export class AppErrorBoundary extends React.Component<{}, { hasError: boolean; error?: unknown }> {
   constructor(props: {}) {

@@ -1,26 +1,27 @@
 import { bind } from "@react-rxjs/core";
-import { EMPTY, NEVER } from "rxjs";
-import { catchError, distinctUntilChanged } from "rxjs/operators";
-import { isFirebaseError } from "../app/app-error";
+import { createSignal } from "@react-rxjs/utils";
+import { merge, Observable, of } from "rxjs";
+import { catchError, filter } from "rxjs/operators";
+import { isPermissionDeniedError } from "../app/app-error";
+import { peek } from "../lib/peek";
 import { Note } from "../notebook/notebook-model";
-import { deselectNote } from "../notebook/notebook-state";
 import { notebookService } from "../services/notebook-service";
 
-export const [useNoteById] = bind((noteId: string | undefined) => {
-  return noteId
-    ? notebookService.getNoteById(noteId).pipe(
-        catchError((error) => {
-          if (isFirebaseError(error) && error.code === "permission-denied") {
-            deselectNote();
-            return EMPTY;
-          } else {
-            throw error;
-          }
-        }),
-        distinctUntilChanged(isSameNoteAndVersion)
-      )
-    : NEVER;
-});
+const [updateNoteSignal$, updateNote] = createSignal<Note>();
+export { updateNote };
 
-const isSameNoteAndVersion = (left: Note, right: Note): boolean =>
-  left.id === right.id && left._version === right._version;
+const createStreamingNote = (noteId: string): Observable<Note | undefined> =>
+  notebookService.getNoteById(noteId).pipe(
+    peek("getNoteById"),
+    catchError((error) => {
+      if (isPermissionDeniedError(error)) {
+        return of(undefined);
+      } else {
+        throw error;
+      }
+    })
+  );
+
+export const [useNote] = bind<[noteId: string], Note | undefined>((noteId: string) =>
+  merge(createStreamingNote(noteId), updateNoteSignal$.pipe(filter((note) => note.id === noteId)))
+);
