@@ -14,12 +14,10 @@ import { AdminRoute, AuthorRoute, LoginPage, PrivateRoute } from "./auth/auth";
 import { HeaderLayout } from "./layout/header-layout";
 import { Lobby } from "./lobby/lobby";
 import { NoteEditor } from "./note/note-editor";
+import { NotebookEditorToolbar } from "./notebook-toolbars/notebook-editor-toolbar";
+import { NotebookSidebarToolbar } from "./notebook-toolbars/notebook-sidebar-toolbar";
 import { Notebook } from "./notebook/notebook";
 import { NotesList } from "./notebook/notebook-notes-list";
-import {
-  NotebookEditorToolbar,
-  NotebookSidebarToolbar,
-} from "./notebook/notebook-toolbars";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(

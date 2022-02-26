@@ -6,7 +6,7 @@ import { map } from "rxjs/operators";
 import { globalHistory } from "../app/app-history";
 import { useMutation } from "../lib/use-mutation";
 import { notebookService } from "../services/notebook-service";
-import { isNoteWithDates, NotebookSortType, NoteId, sortNotes } from "./notebook-model";
+import { hasCreatedDate, NotebookSortType, NoteId, sortNotes } from "./notebook-model";
 
 export const [sortTypeSignal$, changeSortType] = createSignal<NotebookSortType>();
 
@@ -14,7 +14,7 @@ export const [useSortType, sortTypeWithDefault$] = bind(sortTypeSignal$, "ByDate
 
 export const [useNotesCollection] = bind(
   combineLatest([sortTypeWithDefault$, notebookService.getNotesCollection()]).pipe(
-    map(([sortType, notes]) => sortNotes(sortType, notes).filter(isNoteWithDates))
+    map(([sortType, notes]) => sortNotes(sortType, notes).filter(hasCreatedDate))
   )
 );
 

@@ -1,10 +1,5 @@
-import {
-  Note,
-  mergeNote,
-  MergeNote,
-  mergeNoteSuccess,
-  mergeNoteConflict,
-} from "./notebook-model";
+import { Note } from "../notebook/notebook-model";
+import { mergeNote, MergeNote, mergeNoteConflict, mergeNoteSuccess } from "./note-model";
 
 interface Scenario {
   name: string;

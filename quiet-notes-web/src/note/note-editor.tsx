@@ -3,9 +3,11 @@ import Box from "@mui/material/Box";
 import { Subscribe } from "@react-rxjs/core";
 import { useEffect, useRef, VFC } from "react";
 import { Redirect } from "react-router";
+import { useErrorHandler } from "../app/app-error-state";
 import { LoadingLayout } from "../layout/loading-layout";
+import { isLoadFailure } from "../lib/load-result";
 import { useSelectedNoteId } from "../notebook/notebook-state";
-import { updateNote, useNote } from "./note-state";
+import { updateNote, useNoteById, useUpdateNoteResult } from "./note-state";
 
 export const NoteEditor = () => {
   const noteId = useSelectedNoteId();
@@ -18,10 +20,14 @@ export const NoteEditor = () => {
 };
 
 const NoteEditorInternal: VFC<{ noteId: string }> = ({ noteId }) => {
-  const note = useNote(noteId);
+  const note = useNoteById(noteId);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const result = useUpdateNoteResult();
+  const handleError = useErrorHandler();
 
-  useEffect(() => () => console.log("unmount"), []);
+  useEffect(() => {
+    isLoadFailure(result) && handleError(result.error);
+  }, [result]);
 
   return note === undefined ? (
     <Redirect to="/notebook" />
@@ -31,7 +37,9 @@ const NoteEditorInternal: VFC<{ noteId: string }> = ({ noteId }) => {
         aria-label="a quiet note"
         ref={inputRef}
         value={note.content}
-        onChange={(e) => updateNote({ ...note, content: e.target.value })}
+        onChange={(e) => {
+          updateNote({ ...note, content: e.target.value });
+        }}
         style={{
           resize: "none",
           width: "100%",

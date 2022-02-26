@@ -10,7 +10,6 @@
     "@mui/icons-material": "5.3.1",
     "@mui/lab": "5.0.0-alpha.67",
     "@mui/material": "5.4.0",
-    "@react-hook/debounce": "4.0.0",
     "@react-rxjs/core": "0.8.4",
     "@react-rxjs/utils": "0.9.3",
     "@testing-library/dom": "8.5.0",
