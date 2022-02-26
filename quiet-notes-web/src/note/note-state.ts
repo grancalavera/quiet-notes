@@ -1,7 +1,7 @@
 import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
-import { merge, Observable, of } from "rxjs";
-import { catchError, filter } from "rxjs/operators";
+import { merge, NEVER, Observable, of } from "rxjs";
+import { catchError, filter, mergeWith, share } from "rxjs/operators";
 import { isPermissionDeniedError } from "../app/app-error";
 import { peek } from "../lib/peek";
 import { Note } from "../notebook/notebook-model";
@@ -22,6 +22,6 @@ const createStreamingNote = (noteId: string): Observable<Note | undefined> =>
     })
   );
 
-export const [useNote] = bind<[noteId: string], Note | undefined>((noteId: string) =>
-  merge(createStreamingNote(noteId), updateNoteSignal$.pipe(filter((note) => note.id === noteId)))
+export const [useNote] = bind((noteId: string) =>
+  createStreamingNote(noteId).pipe(mergeWith(updateNoteSignal$))
 );

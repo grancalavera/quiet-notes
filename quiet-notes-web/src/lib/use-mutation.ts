@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { failure, idle, loading, LoadResult, success } from "./load-result";
 
 type MutationFunction<TData = unknown, TVariables = unknown> = (
@@ -15,7 +15,18 @@ interface UseMutationResult<TData = unknown, TVariables = unknown> {
 export function useMutation<TData = unknown, TVariables = void>(
   mutationFn: MutationFunction<TData, TVariables>
 ): UseMutationResult<TData, TVariables> {
-  const [result, setResult] = useState<LoadResult<TData>>(idle());
+  const isMounted = useRef(false);
+  const [result, unsafeSetResult] = useState<LoadResult<TData>>(idle());
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  const setResult = useCallback((value: LoadResult<TData>) => {
+    isMounted.current && unsafeSetResult(value);
+  }, []);
 
   const mutate = useCallback(
     (variables: TVariables) => {

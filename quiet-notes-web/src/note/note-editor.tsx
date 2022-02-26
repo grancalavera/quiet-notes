@@ -1,6 +1,7 @@
 import { TextareaAutosize } from "@mui/material";
 import Box from "@mui/material/Box";
-import { Suspense, useEffect, useRef, VFC } from "react";
+import { Subscribe } from "@react-rxjs/core";
+import { useEffect, useRef, VFC } from "react";
 import { Redirect } from "react-router";
 import { LoadingLayout } from "../layout/loading-layout";
 import { useSelectedNoteId } from "../notebook/notebook-state";
@@ -10,9 +11,9 @@ export const NoteEditor = () => {
   const noteId = useSelectedNoteId();
 
   return noteId ? (
-    <Suspense fallback={<LoadingLayout />} key={noteId}>
+    <Subscribe fallback={<LoadingLayout />} key={noteId}>
       <NoteEditorInternal noteId={noteId} />
-    </Suspense>
+    </Subscribe>
   ) : null;
 };
 
