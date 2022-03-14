@@ -1,12 +1,21 @@
 export type Clock = Record<Node, Time | undefined>;
 type Node = string;
 type Time = number;
+type ClockOrder = "LT" | "LTE" | "EQ" | "CNC";
+type TimeOrder = "LT" | "EQ" | "CNC";
 
-export type ClockOrder = "LT" | "LTE" | "EQ" | "CNC";
-export type TimeOrder = "LT" | "EQ" | "CNC";
+const isClockOrder =
+  (order: ClockOrder) =>
+  (a: Clock, b: Clock): boolean =>
+    orderClocks_internal(a, b) === order;
 
-export const orderClocks = (a: Clock, b: Clock): ClockOrder => {
-  const [head, ...tail] = compareClocks(a, b);
+export const isEQ = isClockOrder("EQ");
+export const isLT = isClockOrder("LT");
+export const isLTE = isClockOrder("LTE");
+export const isCNC = isClockOrder("CNC");
+
+const orderClocks_internal = (a: Clock, b: Clock): ClockOrder => {
+  const [head, ...tail] = compareClocks_internal(a, b);
 
   return head === undefined
     ? "EQ"
@@ -23,10 +32,12 @@ export const orderClocks = (a: Clock, b: Clock): ClockOrder => {
       }, head as ClockOrder);
 };
 
-export const compareClocks = (a: Clock, b: Clock): TimeOrder[] =>
-  [...new Set([...Object.keys(a), ...Object.keys(b)])].sort().map((n) => orderTimes(a, b, n));
+export const compareClocks_internal = (a: Clock, b: Clock): TimeOrder[] =>
+  [...new Set([...Object.keys(a), ...Object.keys(b)])]
+    .sort()
+    .map((n) => orderTimes_internal(a, b, n));
 
-export const orderTimes = (a: Clock, b: Clock, n: Node): TimeOrder => {
+export const orderTimes_internal = (a: Clock, b: Clock, n: Node): TimeOrder => {
   const ta = a[n] ?? Number.NEGATIVE_INFINITY;
   const tb = b[n] ?? Number.NEGATIVE_INFINITY;
 
