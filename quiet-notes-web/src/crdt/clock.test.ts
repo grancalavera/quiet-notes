@@ -1,30 +1,18 @@
-import {
-  clockOrderDeclarative,
-  clockOrderImperative,
-  IsClockOrder,
-  clockOrderImperativeInlined,
-  clockOrderImperativeForEach,
-  clockOrderZ,
-} from "./clock";
+import { isConcurrent, isEqual, isLessThan, isLessThanOrEqual } from "./clock";
 
-interface Scenario {
-  name: string;
-  compare: IsClockOrder;
-}
-
-const scenarios: Scenario[] = [
-  { name: "declarative", compare: clockOrderDeclarative },
-  { name: "imperative", compare: clockOrderImperative },
-  { name: "imperative inlined", compare: clockOrderImperativeInlined },
-  { name: "imperative for each", compare: clockOrderImperativeForEach },
-  { name: "z", compare: clockOrderZ },
-];
-
-describe.each(scenarios)("Public API: $name", ({ compare }) => {
-  const { isConcurrent, isEqual, isLessThan, isLessThanOrEqual } = compare;
-
+describe("Clock Order", () => {
   it("empty clocks", () => {
     const actual = isEqual({}, {});
+    expect(actual).toBe(true);
+  });
+
+  it("right empty", () => {
+    const actual = isLessThan({ x: 0 }, {});
+    expect(actual).toBe(false);
+  });
+
+  it("left empty", () => {
+    const actual = isLessThan({}, { x: 0 });
     expect(actual).toBe(true);
   });
 
