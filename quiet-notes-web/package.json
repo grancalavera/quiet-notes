@@ -59,7 +59,8 @@
     "build:ci": "yarn install --frozen-lockfile && yarn test:ci && yarn build",
     "test": "jest",
     "test:ci": "jest --watchAll=false --verbose",
-    "unimported": "unimported"
+    "unimported": "unimported",
+    "script": "nodemon --config nodemon.json"
   },
   "eslintConfig": {
     "extends": [
@@ -78,5 +79,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@swc/core": "1.2.163",
+    "@swc/helpers": "0.3.8",
+    "benny": "3.7.1",
+    "nodemon": "2.0.15",
+    "ts-node": "10.7.0"
   }
 }
