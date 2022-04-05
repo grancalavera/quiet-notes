@@ -19,7 +19,7 @@ type TimeStamp = number;
 const orderClocks = (a: Clock, b: Clock): ClockOrder => {
   let result: ClockOrder | undefined;
 
-  for (let n of new Set(Object.keys(a).concat(Object.keys(b)))) {
+  for (let n of nodeSet(a, b)) {
     const order = orderNodes(a, b, n);
 
     if (result === undefined) {
@@ -53,6 +53,7 @@ const orderNodes = (a: Clock, b: Clock, n: NodeId): NodeOrder => {
 };
 
 const getTime = (node: NodeId, clock: Clock): number => clock[node] ?? Number.NEGATIVE_INFINITY;
+const nodeSet = (a: Clock, b: Clock): Set<NodeId> => new Set(Object.keys(a).concat(Object.keys(b)));
 
 const isClockOrder =
   (o: ClockOrder) =>
@@ -63,3 +64,21 @@ export const isEqual = isClockOrder(EQ);
 export const isLessThan = isClockOrder(LT);
 export const isLessThanOrEqual = isClockOrder(LTE);
 export const isConcurrent = isClockOrder(CNC);
+
+export const initialize = (nodeId: NodeId): Clock => ({ [nodeId]: 0 });
+
+export const increment = (nodeId: NodeId, clock: Clock) => {
+  const time = clock[nodeId];
+  return time === undefined ? clock : { ...clock, [nodeId]: time + 1 };
+};
+
+export const merge = (a: Clock, b: Clock): Clock => {
+  const clock: Clock = {};
+  for (let n of nodeSet(a, b)) {
+    clock[n] = Math.max(getTime(n, a), getTime(n, b));
+  }
+  return clock;
+};
+
+export const receive = (nodeId: NodeId, clock: Clock, incoming: Clock): Clock =>
+  increment(nodeId, merge(clock, incoming));
