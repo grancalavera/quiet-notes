@@ -31,7 +31,7 @@ const scenarios: Scenario[] = [
   {
     name: "local newly created note, not selected, no title",
     props: {
-      note: { author: "mock", content: "", id: "1", _version: 0 },
+      note: { author: "mock", content: "", id: "1", _version: 0, clock: {} },
       onSelect: spyOnSelect,
       isSelected: false,
     },
@@ -44,7 +44,7 @@ const scenarios: Scenario[] = [
   {
     name: "newly created note, not selected",
     props: {
-      note: { author: "mock", content: "", id: "1", _version: 0, _createdAt },
+      note: { author: "mock", content: "", id: "1", _version: 0, _createdAt, clock: {} },
       onSelect: spyOnSelect,
       isSelected: false,
     },
@@ -57,7 +57,7 @@ const scenarios: Scenario[] = [
   {
     name: "newly created note, selected",
     props: {
-      note: { author: "mock", content: "", id: "1", _version: 0, _createdAt },
+      note: { author: "mock", content: "", id: "1", _version: 0, _createdAt, clock: {} },
       onSelect: spyOnSelect,
       isSelected: true,
     },
@@ -70,7 +70,15 @@ const scenarios: Scenario[] = [
   {
     name: "updated note",
     props: {
-      note: { author: "mock", content: "", id: "1", _version: 0, _createdAt, _updatedAt },
+      note: {
+        author: "mock",
+        content: "",
+        id: "1",
+        _version: 0,
+        _createdAt,
+        _updatedAt,
+        clock: {},
+      },
       onSelect: spyOnSelect,
       isSelected: true,
     },

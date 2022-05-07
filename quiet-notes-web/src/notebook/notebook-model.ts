@@ -1,9 +1,12 @@
+import { Clock } from "../crdt/clock";
+
 export type NoteId = string;
 
 export interface Note {
   id: NoteId;
   content: string;
   author: string;
+  clock: Clock;
   _version: number;
   _createdAt?: Date;
   _updatedAt?: Date;

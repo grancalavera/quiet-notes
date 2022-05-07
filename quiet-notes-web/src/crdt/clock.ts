@@ -66,6 +66,7 @@ export const isLessThanOrEqual = isClockOrder(LTE);
 export const isConcurrent = isClockOrder(CNC);
 
 export const initialize = (nodeId: NodeId): Clock => ({ [nodeId]: 0 });
+export const empty = (): Clock => ({});
 
 export const increment = (nodeId: NodeId, clock: Clock) => {
   const time = clock[nodeId];

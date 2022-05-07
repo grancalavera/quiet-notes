@@ -12,6 +12,7 @@ const note = (content: string, _version: number): Note => ({
   author: "",
   id: "",
   content,
+  clock: {},
   _version,
   _createdAt: new Date(0),
   _updatedAt: new Date(_version),
