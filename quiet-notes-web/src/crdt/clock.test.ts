@@ -76,7 +76,7 @@ describe("vector clock algorithm", () => {
 
   it("increment: when node is not in the clock", () => {
     const actual = increment("x", {});
-    expect(actual).toEqual({});
+    expect(actual).toEqual({ x: 1 });
   });
 
   it("increment: when node is in the clock", () => {

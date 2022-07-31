@@ -1,16 +1,16 @@
-import { nanoid } from "nanoid";
 import {
-  Timestamp,
-  FieldValue,
-  serverTimestamp,
-  increment,
   DocumentData,
+  FieldValue,
+  increment,
   QueryDocumentSnapshot,
+  serverTimestamp,
   SnapshotOptions,
+  Timestamp,
 } from "firebase/firestore";
-import { Note } from "../notebook/notebook-model";
-import { Clock, empty, initialize } from "../crdt/clock";
+import { nanoid } from "nanoid";
 import { clientId } from "../app/app-model";
+import { Clock, initialize } from "../crdt/clock";
+import { Note } from "../notebook/notebook-model";
 
 export interface NoteReadModel {
   readonly id: string;

@@ -1,6 +1,6 @@
 import { collection, deleteDoc, doc, Firestore, query, setDoc, where } from "firebase/firestore";
 import { collectionData, docData } from "rxfire/firestore";
-import { combineLatest, firstValueFrom, NEVER, Observable } from "rxjs";
+import { combineLatest, firstValueFrom } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 import { authService } from "./auth-service";
 import { firestore$ } from "./firebase";
@@ -41,7 +41,7 @@ export const notebookService: NotebookServiceSchema = {
     return id;
   },
 
-  updateNote: async (note) => {
+  saveNote: async (note) => {
     const { firestore } = await firstValueFrom(serviceContext$);
     const { id, ...data } = noteToWriteModel(note);
     return setDoc(getNoteDocRef(firestore, id), data, { merge: true });

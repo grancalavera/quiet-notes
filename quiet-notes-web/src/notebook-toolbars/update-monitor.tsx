@@ -2,10 +2,10 @@ import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import { VFC } from "react";
 import { isLoading } from "../lib/load-result";
-import { useUpdateNoteResult } from "../note/note-state";
+import { useSaveNoteResult } from "../note/note-state";
 
 export const UpdateMonitor: VFC = () => {
-  const result = useUpdateNoteResult();
+  const result = useSaveNoteResult();
 
   return (
     <Box

@@ -16,7 +16,7 @@ type CNC = "CNC";
 type NodeId = string;
 type TimeStamp = number;
 
-const orderClocks = (a: Clock, b: Clock): ClockOrder => {
+export const orderClocks = (a: Clock, b: Clock): ClockOrder => {
   let result: ClockOrder | undefined;
 
   for (let n of nodeSet(a, b)) {
@@ -70,7 +70,7 @@ export const empty = (): Clock => ({});
 
 export const increment = (nodeId: NodeId, clock: Clock) => {
   const time = clock[nodeId];
-  return time === undefined ? clock : { ...clock, [nodeId]: time + 1 };
+  return time === undefined ? { ...clock, [nodeId]: 1 } : { ...clock, [nodeId]: time + 1 };
 };
 
 export const merge = (a: Clock, b: Clock): Clock => {

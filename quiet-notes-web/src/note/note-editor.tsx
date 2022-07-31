@@ -2,12 +2,12 @@ import { TextareaAutosize } from "@mui/material";
 import Box from "@mui/material/Box";
 import { Subscribe } from "@react-rxjs/core";
 import { useEffect, useRef, VFC } from "react";
-import { Redirect } from "react-router";
+import { Redirect, useLocation } from "react-router";
 import { useErrorHandler } from "../app/app-error-state";
 import { LoadingLayout } from "../layout/loading-layout";
 import { isLoadFailure } from "../lib/load-result";
 import { useSelectedNoteId } from "../notebook/notebook-state";
-import { updateNote, useNoteById, useUpdateNoteResult } from "./note-state";
+import { saveNote, updateNote, useNoteById, useSaveNoteResult } from "./note-state";
 
 export const NoteEditor = () => {
   const noteId = useSelectedNoteId();
@@ -22,12 +22,20 @@ export const NoteEditor = () => {
 const NoteEditorInternal: VFC<{ noteId: string }> = ({ noteId }) => {
   const note = useNoteById(noteId);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
-  const result = useUpdateNoteResult();
+  const result = useSaveNoteResult();
   const handleError = useErrorHandler();
 
   useEffect(() => {
     isLoadFailure(result) && handleError(result.error);
   }, [result]);
+
+  useEffect(() => {
+    if (note !== undefined) {
+      saveNote(note);
+    } else {
+      console.log("should navigate away");
+    }
+  }, [note]);
 
   return note === undefined ? (
     <Redirect to="/notebook" />
