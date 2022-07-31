@@ -8,13 +8,9 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { isFirebaseError, isQnError } from "./app-error";
-import { useAppState } from "./app-state";
-import Typography from "@mui/material/Typography";
+import { useAppErrors, useDismissError } from "./app-error-state";
 
-export class AppErrorBoundary extends React.Component<
-  {},
-  { hasError: boolean; error?: unknown }
-> {
+export class AppErrorBoundary extends React.Component<{}, { hasError: boolean; error?: unknown }> {
   constructor(props: {}) {
     super(props);
     this.state = { hasError: false };
@@ -52,8 +48,8 @@ const GlobalErrorHandler = ({ error }: GlobalErrorHandlerProps) => {
 };
 
 const AppErrorHandler = () => {
-  const [nextError] = useAppState((s) => s.errors);
-  const dismissError = useAppState((s) => s.dismissError);
+  const [nextError] = useAppErrors();
+  const dismissError = useDismissError();
   return <ErrorAlert error={nextError} onClose={dismissError} isOpen={!!nextError} />;
 };
 
@@ -77,12 +73,9 @@ const ErrorAlert = ({ error, ...props }: ErrorAlertProps) => {
             <>
               <DialogTitle id="error-alert-title">{error.name}</DialogTitle>
               <DialogContent>
-                <DialogContentText id="error-alert-description">
-                  <Typography variant="body1">{error.code}</Typography>
+                <DialogContentText id="error-alert-description" sx={{ whiteSpace: "pre-wrap" }}>
+                  {error.code} {process.env.NODE_ENV === "development" && `\n\n${error.message}`}
                 </DialogContentText>
-                {process.env.NODE_ENV === "development" && (
-                  <Typography variant="body1">{error.message}</Typography>
-                )}
               </DialogContent>
             </>
           );
@@ -91,17 +84,7 @@ const ErrorAlert = ({ error, ...props }: ErrorAlertProps) => {
             <>
               <DialogTitle id="error-alert-title">{error.name}</DialogTitle>
               <DialogContent>
-                <DialogContentText id="error-alert-description">
-                  {error.message}
-                </DialogContentText>
-                {process.env.NODE_ENV === "development" && (
-                  <>
-                    <Typography variant="body1">
-                      Come back soon to check if it has been approved.
-                    </Typography>
-                    <pre>{JSON.stringify(error.data ?? {}, null, 2)}</pre>
-                  </>
-                )}
+                <DialogContentText id="error-alert-description">{error.message}</DialogContentText>
               </DialogContent>
             </>
           );

@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import { ReactNode } from "react";
 
-interface NotebookLayoutProps {
+interface NotebookProps {
   className?: string;
   sidebarToolbar?: ReactNode;
   sidebar?: ReactNode;
@@ -10,7 +10,7 @@ interface NotebookLayoutProps {
   editor?: ReactNode;
 }
 
-export const NotebookLayout = (props: NotebookLayoutProps) => {
+export const Notebook = (props: NotebookProps) => {
   return (
     <Layout>
       <Box

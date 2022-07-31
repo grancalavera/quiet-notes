@@ -1,20 +1,12 @@
 import SettingsIcon from "@mui/icons-material/Settings";
-import {
-  Avatar,
-  Box,
-  Button,
-  IconButton,
-  Popover,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Button, IconButton, Popover, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useIsAdmin, useUser } from "../auth/auth-state";
 import { authService } from "../services/auth-service";
 import { ToggleThemeSwitch } from "./toggle-theme-switch";
-import { useAppTheme, useToggleAppTheme } from "./use-app-theme";
+import { useAppTheme, useToggleAppTheme } from "./app-theme-state";
 
 export const AppHeader = () => {
   const history = useHistory();

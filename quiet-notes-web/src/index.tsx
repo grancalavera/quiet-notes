@@ -8,21 +8,21 @@ import { Router } from "react-router";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { Admin } from "./admin/admin";
 import { AppHeader } from "./app/app-header";
-import { history } from "./app/app-history";
+import { globalHistory } from "./app/app-history";
 import { Application } from "./app/application";
 import { AdminRoute, AuthorRoute, LoginPage, PrivateRoute } from "./auth/auth";
 import { HeaderLayout } from "./layout/header-layout";
 import { Lobby } from "./lobby/lobby";
-import { CreatedNoteHandler } from "./notebook/notebook-create-note-handlers";
-import { NotebookLayout } from "./notebook/notebook-layout";
-import { NoteEditor } from "./notebook/notebook-note-editor";
+import { NoteEditor } from "./note/note-editor";
+import { NotebookEditorToolbar } from "./notebook-toolbars/notebook-editor-toolbar";
+import { NotebookSidebarToolbar } from "./notebook-toolbars/notebook-sidebar-toolbar";
+import { Notebook } from "./notebook/notebook";
 import { NotesList } from "./notebook/notebook-notes-list";
-import { NoteEditorToolbar, SidebarToolbar } from "./notebook/notebook-toolbars";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <Application>
-    <Router history={history}>
+    <Router history={globalHistory}>
       <Switch>
         <Route exact path="/">
           <Redirect to="/notebook" />
@@ -40,15 +40,12 @@ ReactDOM.render(
                 </Route>
 
                 <AuthorRoute path="/notebook/:noteId?">
-                  <>
-                    <NotebookLayout
-                      sidebarToolbar={<SidebarToolbar />}
-                      sidebar={<NotesList />}
-                      editorToolbar={<NoteEditorToolbar />}
-                      editor={<NoteEditor />}
-                    />
-                    <CreatedNoteHandler />
-                  </>
+                  <Notebook
+                    sidebarToolbar={<NotebookSidebarToolbar />}
+                    sidebar={<NotesList />}
+                    editorToolbar={<NotebookEditorToolbar />}
+                    editor={<NoteEditor />}
+                  />
                 </AuthorRoute>
 
                 <AdminRoute path="/admin">

@@ -1,10 +1,5 @@
-import {
-  Note,
-  mergeNote,
-  MergeNote,
-  mergeNoteSuccess,
-  mergeNoteConflict,
-} from "./notebook-model";
+import { Note } from "../notebook/notebook-model";
+import { mergeNote, MergeNote, mergeNoteConflict, mergeNoteSuccess } from "./note-model";
 
 interface Scenario {
   name: string;
@@ -17,6 +12,7 @@ const note = (content: string, _version: number): Note => ({
   author: "",
   id: "",
   content,
+  clock: {},
   _version,
   _createdAt: new Date(0),
   _updatedAt: new Date(_version),
