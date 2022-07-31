@@ -42,7 +42,7 @@
     "rxfire": "6.0.3",
     "rxjs": "7.4.0",
     "ts-jest": "27.0.7",
-    "typescript": "4.4.2",
+    "typescript": "4.7.4",
     "unimported": "1.11.0",
     "vite": "2.6.14",
     "vite-plugin-pwa": "0.11.9",
@@ -51,7 +51,7 @@
     "workbox-window": "6.4.2"
   },
   "scripts": {
-    "typecheck": "tsc -w",
+    "typecheck": "tsc",
     "start": "vite",
     "start:emulated": "VITE_FIREBASE_USE_EMULATORS=true vite",
     "build": "tsc && vite build",

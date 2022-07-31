@@ -7,18 +7,10 @@ import {
   DocumentData,
   QueryDocumentSnapshot,
   SnapshotOptions,
-  Firestore,
 } from "firebase/firestore";
 import { Note } from "../notebook/notebook-model";
-import { User } from "firebase/auth";
-import { Clock } from "../crdt/clock";
-import * as vClock from "../crdt/clock";
-
-export interface NotebookServiceContext {
-  firestore: Firestore;
-  user: User;
-  clientId: string;
-}
+import { Clock, empty, initialize } from "../crdt/clock";
+import { clientId } from "../app/app-model";
 
 export interface NoteReadModel {
   readonly id: string;
@@ -34,75 +26,44 @@ export interface NoteWriteModel {
   id: string;
   content: string;
   author: string;
-  clock: Clock;
   _version: FieldValue;
   _updatedAt: FieldValue;
   _createdAt?: FieldValue;
 }
 
-export const noteFromUserUid = (author: string, clientId: string): NoteWriteModel => ({
+export const noteFromUserUid = (author: string): NoteWriteModel => ({
   id: nanoid(),
   content: "",
   author,
-  clock: vClock.initialize(clientId),
   _version: increment(1),
   _updatedAt: serverTimestamp(),
   _createdAt: serverTimestamp(),
 });
 
-const readClock = (clientId: string, clock: Clock | undefined): Clock => {
-  // The received clock. For backwards compatibility we accept undefined clocks, and
-  // replace them by the empty clock.
-  const received: Clock = clock ?? vClock.empty();
-
-  // The initial clock is always required, to cover the scenario in which the current
-  // client doesn't exist in the received clock.
-  const initial = vClock.initialize(clientId);
-
-  // The current clock is a calculation that ensures the latest time is always preserved
-  // for the current client. If the current client didn't exist in the received clock,
-  // the time from the initial clock, 0, is going to be preserved.
-  const current = vClock.merge(received, initial);
-
-  // The final clock is the current clock with the time for the current client incremented,
-  // which accounts for the client acknowledging the event for reading the note.
-  const final = vClock.increment(clientId, current);
-
-  return final;
-};
-
-export const noteFromReadModel = (documentData: NoteReadModel, clientId: string): Note => {
-  const { _createdAt, _updatedAt, ...note } = documentData;
-
-  const clock = readClock(clientId, note.clock);
-
-  console.log({ clock });
+export const noteFromReadModel = (documentData: NoteReadModel): Note => {
+  const { _createdAt, _updatedAt, clock, ...note } = documentData;
 
   return {
-    ...note,
-    clock,
     _createdAt: _createdAt?.toDate(),
     _updatedAt: _updatedAt?.toDate(),
+    clock: clock ?? initialize(clientId),
+    ...note,
   };
 };
 
-export const noteToWriteModel = (
-  { _createdAt, _updatedAt, clock, ...note }: Note,
-  clientId: string
-): NoteWriteModel => ({
+export const noteToWriteModel = ({ _createdAt, _updatedAt, ...note }: Note): NoteWriteModel => ({
   ...note,
-  clock: vClock.increment(clientId, clock),
   _version: increment(1),
   _updatedAt: serverTimestamp(),
 });
 
-export const noteConverter = (context: NotebookServiceContext) => ({
-  toFirestore: (note: Note): DocumentData => noteToWriteModel(note, context.clientId),
+export const noteConverter = {
+  toFirestore: (note: Note): DocumentData => noteToWriteModel(note),
   fromFirestore: (
     snapshot: QueryDocumentSnapshot<NoteReadModel>,
     options?: SnapshotOptions
   ): Note => {
     const data = snapshot.data(options);
-    return noteFromReadModel(data, context.clientId);
+    return noteFromReadModel(data);
   },
-});
+};

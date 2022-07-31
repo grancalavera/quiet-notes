@@ -1,4 +1,4 @@
-export type Clock = Record<NodeId, TimeStamp | undefined>;
+export type Clock = Record<NodeId, TimeStamp>;
 
 type ClockOrder = LT | LTE | EQ | CNC;
 type NodeOrder = LT | EQ | CNC;
@@ -52,7 +52,7 @@ const orderNodes = (a: Clock, b: Clock, n: NodeId): NodeOrder => {
   }
 };
 
-const getTime = (node: NodeId, clock: Clock): number => clock[node] ?? Number.NEGATIVE_INFINITY;
+const getTime = (n: NodeId, c: Clock): number => c[n] ?? Number.NEGATIVE_INFINITY;
 const nodeSet = (a: Clock, b: Clock): Set<NodeId> => new Set(Object.keys(a).concat(Object.keys(b)));
 
 const isClockOrder =
