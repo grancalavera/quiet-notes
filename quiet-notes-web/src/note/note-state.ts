@@ -1,17 +1,18 @@
 import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
-import { merge, MonoTypeOperatorFunction, Observable, of } from "rxjs";
+import { merge, Observable } from "rxjs";
 import { catchError, debounceTime, distinctUntilKeyChanged, map, scan } from "rxjs/operators";
 import { isPermissionDeniedError } from "../app/app-error";
 import { clientId } from "../app/app-model";
 import * as crdt from "../crdt/clock";
-import { increment } from "../crdt/clock";
+import { isNone, none, Option, orUndefined, some } from "../lib/option";
+import { mapOption$, ofNone } from "../lib/option-observable";
 import { peek, peekEnd, peekStart } from "../lib/peek";
 import { Note } from "../notebook/notebook-model";
 import { notebookService } from "../services/notebook-service";
 import { createMutation$ } from "./mutation-observable";
 
-type NoteEnvelope = LocalNote | RemoteNote | MergedNote | undefined;
+type NoteEnvelope = Option<LocalNote | RemoteNote | MergedNote>;
 
 interface MergedNote {
   kind: "MergedNote";
@@ -28,36 +29,23 @@ interface RemoteNote {
   note: Note;
 }
 
-const remoteNote = (note: Note | undefined): NoteEnvelope =>
-  note === undefined ? undefined : { kind: "RemoteNote", note };
-
-const localNote = (note: Note): NoteEnvelope => ({ kind: "LocalNote", note });
-const mergedNote = (note: Note): NoteEnvelope => ({ kind: "MergedNote", note });
+const remoteNote = (note: Note): NoteEnvelope => some({ kind: "RemoteNote", note });
+const localNote = (note: Note): NoteEnvelope => some({ kind: "LocalNote", note });
+const mergedNote = (note: Note): NoteEnvelope => some({ kind: "MergedNote", note });
 
 const [noteUpdates$, updateNote] = createSignal<Note>();
 const [saveNote$, saveNote] = createSignal<Note>();
 export { saveNote };
 export { updateNote };
 
-const incrementNoteClock = <T extends Note | undefined>(): MonoTypeOperatorFunction<T> =>
-  map((note) => (note ? { ...note, clock: increment(clientId, note.clock) } : note));
+const incrementClock = (note: Note) => ({
+  ...note,
+  clock: crdt.increment(clientId, note.clock),
+});
 
 const remoteNote$ = (noteId: string): Observable<NoteEnvelope> =>
   notebookService.getNoteById(noteId).pipe(
     peekStart(`remoteNote$`, (note) => ({ note, clientId })),
-    catchError((error) => {
-      // Permission denied can be a red herring, which happens when a note is deleted and
-      // Firebase returns an opaque error telling the user can't see the requested object,
-      // but in reality the object doesn't exit.
-
-      // But this error should also be raised when users try to read a note that exist but
-      // doesn't belong to them.
-      if (isPermissionDeniedError(error)) {
-        return of(undefined);
-      } else {
-        throw error;
-      }
-    }),
     // I don't think I need to do this, since this stream is my only source of remote notes,
     // and I can just take any clock that originates from a different node (client) as it
     // comes in here... I think...
@@ -66,16 +54,27 @@ const remoteNote$ = (noteId: string): Observable<NoteEnvelope> =>
     // > the vector timestamp in the message with its local timestamp
     // > by taking the element-wise maximum of the two vectors, and
     // > then the recipient increments its own entry.
-    //
-    // unless I interpret a stream as a node...
-    incrementNoteClock(),
-    map(remoteNote),
+    map((note) => remoteNote(incrementClock(note))),
+    catchError((error) => {
+      // Permission denied can be a red herring, which happens when a note is deleted and
+      // Firebase returns an opaque error telling the user can't see the requested object,
+      // but in reality the object doesn't exit.
+
+      // But this error should also be raised when users try to read a note that exist but
+      // doesn't belong to them.
+      if (isPermissionDeniedError(error)) {
+        return ofNone();
+      } else {
+        throw error;
+      }
+    }),
+
     peekEnd()
   );
 
 const localNote$ = noteUpdates$.pipe(
   peekStart("localNote$"),
-  incrementNoteClock(),
+  map(incrementClock),
   map(localNote),
   peekEnd()
 );
@@ -84,9 +83,9 @@ interface MergeNotesArgs {
   incoming: Note;
   current: Note;
 }
+
 const mergeNotes = ({ incoming, current }: MergeNotesArgs): Note => {
   const clock = crdt.receive(clientId, current.clock, incoming.clock);
-
   if (crdt.isLessThanOrEqual(incoming.clock, current.clock)) {
     return { ...current, clock };
   } else {
@@ -98,10 +97,13 @@ const mergedNotes$ = (noteId: string) =>
   merge(remoteNote$(noteId), localNote$).pipe(
     peekStart("mergedNotes$"),
     scan((previous, current) => {
-      if (previous === undefined || current === undefined) {
-        return undefined;
-      } else if (current.kind === "RemoteNote") {
-        const note = mergeNotes({ incoming: current.note, current: previous.note });
+      if (isNone(previous) || isNone(current)) {
+        return none();
+      } else if (current.value.kind === "RemoteNote") {
+        const note = mergeNotes({
+          incoming: current.value.note,
+          current: previous.value.note,
+        });
         return mergedNote(note);
       } else {
         return current;
@@ -114,7 +116,8 @@ export const [useNoteById] = bind(
   (noteId: string): Observable<Note | undefined> =>
     mergedNotes$(noteId).pipe(
       peekStart("useNoteById"),
-      map((x) => (x === undefined ? undefined : x.note)),
+      mapOption$((x) => x.note),
+      map(orUndefined),
       peekEnd()
     )
 );
@@ -126,7 +129,7 @@ export const [useSaveNoteResult] = bind(
       peekStart("saveNote"),
       distinctUntilKeyChanged("content"),
       peek("save"),
-      incrementNoteClock(),
+      map(incrementClock),
       peekEnd()
     ),
     notebookService.saveNote

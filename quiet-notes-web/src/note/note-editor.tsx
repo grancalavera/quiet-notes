@@ -30,11 +30,7 @@ const NoteEditorInternal: VFC<{ noteId: string }> = ({ noteId }) => {
   }, [result]);
 
   useEffect(() => {
-    if (note !== undefined) {
-      saveNote(note);
-    } else {
-      console.log("should navigate away");
-    }
+    note && saveNote(note);
   }, [note]);
 
   return note === undefined ? (

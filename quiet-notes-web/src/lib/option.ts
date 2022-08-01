@@ -20,11 +20,11 @@ export const mapOption =
   (x: Option<T>): Option<U> =>
     isSome(x) ? some(f(x.value)) : x;
 
-export const mapOption2 =
-  <T, U, V>(f: (x: T, y: U) => V) =>
-  (x: Option<T>, y: Option<U>): Option<V> => {
-    return isSome(x) && isSome(y) ? some(f(x.value, y.value)) : none();
-  };
-
 export const fromNullable = <T>(candidate: T | null | undefined): Option<T> =>
   candidate === undefined || candidate === null ? none() : some(candidate);
+
+export const orUndefined = <T>(candidate: Option<T>): T | undefined =>
+  isSome(candidate) ? candidate.value : undefined;
+
+export const orNull = <T>(candidate: Option<T>): T | null =>
+  isSome(candidate) ? candidate.value : null;
