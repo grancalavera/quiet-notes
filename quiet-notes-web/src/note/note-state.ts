@@ -1,15 +1,24 @@
 import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
-import { merge, MonoTypeOperatorFunction, Observable, of } from "rxjs";
-import { catchError, debounceTime, distinctUntilKeyChanged, map, scan } from "rxjs/operators";
+import { from, merge, MonoTypeOperatorFunction, Observable, of } from "rxjs";
+import {
+  catchError,
+  debounceTime,
+  distinctUntilKeyChanged,
+  finalize,
+  map,
+  scan,
+  startWith,
+  switchMap,
+} from "rxjs/operators";
 import { isPermissionDeniedError } from "../app/app-error";
 import { clientId } from "../app/app-model";
 import * as crdt from "../crdt/clock";
 import { increment } from "../crdt/clock";
+import { failure, idle, loading, LoadResult, success } from "../lib/load-result";
 import { peek, peekEnd, peekStart } from "../lib/peek";
 import { Note } from "../notebook/notebook-model";
 import { notebookService } from "../services/notebook-service";
-import { createMutation$ } from "./mutation-observable";
 
 type NoteEnvelope = LocalNote | RemoteNote | MergedNote | undefined;
 
@@ -30,14 +39,16 @@ interface RemoteNote {
 
 const remoteNote = (note: Note | undefined): NoteEnvelope =>
   note === undefined ? undefined : { kind: "RemoteNote", note };
-
 const localNote = (note: Note): NoteEnvelope => ({ kind: "LocalNote", note });
 const mergedNote = (note: Note): NoteEnvelope => ({ kind: "MergedNote", note });
 
-const [noteUpdates$, updateNote] = createSignal<Note>();
-const [saveNote$, saveNote] = createSignal<Note>();
-export { saveNote };
+const [openNoteId$, setOpenNoteId] = createSignal<string | undefined>();
+export { setOpenNoteId };
 export { updateNote };
+
+const [noteUpdates$, updateNote] = createSignal<Note>();
+
+const [saveNote$] = createSignal<Note>();
 
 const incrementNoteClock = <T extends Note | undefined>(): MonoTypeOperatorFunction<T> =>
   map((note) => (note ? { ...note, clock: increment(clientId, note.clock) } : note));
@@ -84,6 +95,7 @@ interface MergeNotesArgs {
   incoming: Note;
   current: Note;
 }
+
 const mergeNotes = ({ incoming, current }: MergeNotesArgs): Note => {
   const clock = crdt.receive(clientId, current.clock, incoming.clock);
 
@@ -98,6 +110,7 @@ const mergedNotes$ = (noteId: string) =>
   merge(remoteNote$(noteId), localNote$).pipe(
     peekStart("mergedNotes$"),
     scan((previous, current) => {
+      console.log("[scan]", { previous, current });
       if (previous === undefined || current === undefined) {
         return undefined;
       } else if (current.kind === "RemoteNote") {
@@ -113,22 +126,30 @@ const mergedNotes$ = (noteId: string) =>
 export const [useNoteById] = bind(
   (noteId: string): Observable<Note | undefined> =>
     mergedNotes$(noteId).pipe(
-      peekStart("useNoteById"),
+      peekStart("useNoteById", (noteEnvelope) => ({ noteId, noteEnvelope })),
       map((x) => (x === undefined ? undefined : x.note)),
+      finalize(() => {
+        console.log("[finalize]", { noteId });
+      }),
       peekEnd()
     )
 );
 
-export const [useSaveNoteResult] = bind(
-  createMutation$(
-    saveNote$.pipe(
-      debounceTime(1000),
-      peekStart("saveNote"),
-      distinctUntilKeyChanged("content"),
-      peek("save"),
-      incrementNoteClock(),
-      peekEnd()
+const [useSaveNoteResult] = bind(
+  saveNote$.pipe(
+    debounceTime(1000),
+    peekStart("saveNote"),
+    distinctUntilKeyChanged("content"),
+    peek("save"),
+    incrementNoteClock(),
+    switchMap((note) =>
+      from(notebookService.saveNote(note)).pipe(
+        map(() => success()),
+        catchError((error) => of(failure(error) as LoadResult<void>)),
+        startWith(loading())
+      )
     ),
-    notebookService.saveNote
+    startWith(idle()),
+    peekEnd()
   )
 );
