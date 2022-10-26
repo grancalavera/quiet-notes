@@ -5,29 +5,27 @@ import { useEffect, useRef, VFC } from "react";
 import { Redirect } from "react-router";
 import { LoadingLayout } from "../layout/loading-layout";
 import { useSelectedNoteId } from "../notebook/notebook-state";
-import { setOpenNoteId, updateNote, useNoteById } from "./note-state";
+import { note$, openNote, updateNote, useNote } from "./note-state";
 
 export const NoteEditor = () => {
   const noteId = useSelectedNoteId();
 
   useEffect(() => {
-    setOpenNoteId(noteId);
+    noteId && openNote(noteId);
   }, [noteId]);
 
   return noteId ? (
-    <Subscribe fallback={<LoadingLayout />} key={noteId}>
-      <NoteEditorInternal noteId={noteId} />
+    <Subscribe fallback={<LoadingLayout />} key={noteId} source$={note$}>
+      <NoteEditorInternal />
     </Subscribe>
   ) : null;
 };
 
-const NoteEditorInternal: VFC<{ noteId: string }> = ({ noteId }) => {
-  const note = useNoteById(noteId);
+const NoteEditorInternal: VFC = () => {
+  const note = useNote();
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
-  return note === undefined ? (
-    <Redirect to="/notebook" />
-  ) : (
+  return note ? (
     <Box sx={{ overflow: "hidden", height: "100%", padding: "0.5rem" }}>
       <TextareaAutosize
         aria-label="a quiet note"
@@ -45,5 +43,7 @@ const NoteEditorInternal: VFC<{ noteId: string }> = ({ noteId }) => {
         }}
       />
     </Box>
+  ) : (
+    <Redirect to="/notebook" />
   );
 };
