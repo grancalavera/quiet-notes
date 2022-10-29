@@ -1,6 +1,6 @@
 import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { combineLatest } from "rxjs";
 import { map } from "rxjs/operators";
 import { globalHistory } from "../app/app-history";
