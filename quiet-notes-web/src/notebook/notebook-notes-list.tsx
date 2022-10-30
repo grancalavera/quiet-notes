@@ -1,9 +1,10 @@
 import Box from "@mui/material/Box";
 import { Subscribe } from "@react-rxjs/core";
 import { VFC } from "react";
+import { useNavigate } from "react-router-dom";
 import { LoadingLayout } from "../layout/loading-layout";
 import { NotesListItem } from "./notebook-notes-list-item";
-import { selectNote, useNotesCollection, useSelectedNoteId } from "./notebook-state";
+import { useNotesCollection, useSelectedNoteId } from "./notebook-state";
 
 export const testId = "notes-list";
 
@@ -23,6 +24,7 @@ export const NotesList = () => {
 const NotesListInternal: VFC = () => {
   const selectedNoteId = useSelectedNoteId();
   const notes = useNotesCollection();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -31,7 +33,7 @@ const NotesListInternal: VFC = () => {
           note={note}
           key={note.id}
           isSelected={note.id === selectedNoteId}
-          onSelect={() => selectNote(note.id)}
+          onSelect={() => navigate(`/notebook/${note.id}`)}
         />
       ))}
     </>

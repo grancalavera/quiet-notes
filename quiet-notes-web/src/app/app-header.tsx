@@ -2,20 +2,20 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { Avatar, Box, Button, IconButton, Popover, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useIsAdmin, useUser } from "../auth/auth-state";
 import { authService } from "../services/auth-service";
-import { ToggleThemeSwitch } from "./toggle-theme-switch";
 import { useAppTheme, useToggleAppTheme } from "./app-theme-state";
+import { ToggleThemeSwitch } from "./toggle-theme-switch";
 
 export const AppHeader = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <HeaderLayout sx={{ backgroundColor: "divider" }}>
       <Typography
         variant="h4"
-        onClick={() => history.push("/")}
+        onClick={() => navigate("/")}
         sx={{ userSelect: "none", cursor: "pointer" }}
       >
         Quiet Notes
@@ -30,13 +30,13 @@ export const AppHeader = () => {
 };
 
 const AdminLink = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const isAdmin = useIsAdmin();
 
   return (
     <>
       {isAdmin && (
-        <IconButton onClick={() => history.push("/admin")}>
+        <IconButton onClick={() => navigate("/admin")}>
           <SettingsIcon />
         </IconButton>
       )}
