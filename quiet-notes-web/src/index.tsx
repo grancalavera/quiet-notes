@@ -4,12 +4,11 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "normalize.css";
 import ReactDOM from "react-dom";
-import { Redirect, Route, Switch, Router } from "react-router-dom";
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useParams } from "react-router-dom";
 import { Admin } from "./admin/admin";
 import { AppHeader } from "./app/app-header";
-import { globalHistory } from "./app/app-history";
 import { Application } from "./app/application";
-import { AdminRoute, AuthorRoute, LoginPage, PrivateRoute } from "./auth/auth";
+import { LoginPage, RequireAuth, RequireRole } from "./auth/auth";
 import { HeaderLayout } from "./layout/header-layout";
 import { Lobby } from "./lobby/lobby";
 import { NoteEditor } from "./note/note-editor";
@@ -21,45 +20,49 @@ import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <Application>
-    <Router history={globalHistory}>
-      <Switch>
-        <Route exact path="/">
-          <Redirect to="/notebook" />
-        </Route>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/notebook" />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/*"
+          element={
+            <RequireAuth>
+              <HeaderLayout header={<AppHeader />} body={<Outlet />} />
+            </RequireAuth>
+          }
+        >
+          <Route path="lobby" element={<Lobby />} />
 
-        <Route exact path="/login" component={LoginPage} />
+          <Route
+            path="notebook/*"
+            element={
+              <RequireRole role="author" fallback="/lobby">
+                <Notebook
+                  sidebarToolbar={<NotebookSidebarToolbar />}
+                  sidebar={<NotesList />}
+                  editorToolbar={<NotebookEditorToolbar />}
+                  editor={<Outlet />}
+                />
+              </RequireRole>
+            }
+          >
+            <Route path=":noteId" element={<NoteEditor />} />
+          </Route>
 
-        <PrivateRoute>
-          <HeaderLayout
-            header={<AppHeader />}
-            body={
-              <Switch>
-                <Route exact path="/lobby">
-                  <Lobby />
-                </Route>
-
-                <AuthorRoute path="/notebook/:noteId?">
-                  <Notebook
-                    sidebarToolbar={<NotebookSidebarToolbar />}
-                    sidebar={<NotesList />}
-                    editorToolbar={<NotebookEditorToolbar />}
-                    editor={<NoteEditor />}
-                  />
-                </AuthorRoute>
-
-                <AdminRoute path="/admin">
-                  <Admin />
-                </AdminRoute>
-
-                <Route>
-                  <Redirect to="/" />
-                </Route>
-              </Switch>
+          <Route
+            path="admin"
+            element={
+              <RequireRole role="admin" fallback="/">
+                <Admin />
+              </RequireRole>
             }
           />
-        </PrivateRoute>
-      </Switch>
-    </Router>
+        </Route>
+
+        <Route element={<Navigate to="/" />} />
+      </Routes>
+    </BrowserRouter>
   </Application>,
   document.getElementById("root")
 );

@@ -17,6 +17,8 @@ import { peek } from "../lib/peek";
 import { Note } from "../notebook/notebook-model";
 import { notebookService } from "../services/notebook-service";
 
+const bounciness = 1000;
+
 const incrementNoteClock = <T extends Note | undefined>(): MonoTypeOperatorFunction<T> =>
   map((note) => (note ? { ...note, clock: increment(clientId, note.clock) } : note));
 
@@ -66,7 +68,12 @@ const [useNote, note$] = bind(
 );
 
 localNote$
-  .pipe(debounceTime(200), peek("[enter] saveNote"), incrementNoteClock(), peek("[exit] saveNote$"))
+  .pipe(
+    debounceTime(bounciness),
+    peek("[enter] saveNote"),
+    incrementNoteClock(),
+    peek("[exit] saveNote$")
+  )
   .subscribe(notebookService.saveNote);
 
 export { openNote, updateNote, useNote, note$ };

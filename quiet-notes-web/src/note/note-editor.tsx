@@ -2,14 +2,14 @@ import { TextareaAutosize } from "@mui/material";
 import Box from "@mui/material/Box";
 import { Subscribe } from "@react-rxjs/core";
 import { useEffect, useRef, VFC } from "react";
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { LoadingLayout } from "../layout/loading-layout";
 import { useSelectedNoteId } from "../notebook/notebook-state";
 import { note$, openNote, updateNote, useNote } from "./note-state";
 
 export const NoteEditor = () => {
   const noteId = useSelectedNoteId();
-
+  console.log({ noteId });
   useEffect(() => {
     noteId && openNote(noteId);
   }, [noteId]);
@@ -44,6 +44,6 @@ const NoteEditorInternal: VFC = () => {
       />
     </Box>
   ) : (
-    <Redirect to="/notebook" />
+    <Navigate to="/notebook" />
   );
 };

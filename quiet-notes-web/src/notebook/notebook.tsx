@@ -10,50 +10,48 @@ interface NotebookProps {
   editor?: ReactNode;
 }
 
-export const Notebook = (props: NotebookProps) => {
-  return (
-    <Layout>
-      <Box
-        sx={{
-          borderRightWidth: 1,
-          borderRightStyle: "solid",
-          borderRightColor: "divider",
-          gridArea: "sidebar-toolbar",
-          overflow: "hidden",
-        }}
-      >
-        {props.sidebarToolbar}
-      </Box>
-      <Box
-        sx={{
-          borderRightWidth: 1,
-          borderRightStyle: "solid",
-          borderRightColor: "divider",
-          gridArea: "sidebar",
-          overflow: "hidden",
-        }}
-      >
-        {props.sidebar}
-      </Box>
-      <Box
-        sx={{
-          gridArea: "editor-toolbar",
-          overflow: "hidden",
-        }}
-      >
-        {props.editorToolbar}
-      </Box>
-      <Box
-        sx={{
-          gridArea: "editor",
-          overflow: "hidden",
-        }}
-      >
-        {props.editor}
-      </Box>
-    </Layout>
-  );
-};
+export const Notebook = (props: NotebookProps) => (
+  <Layout>
+    <Box
+      sx={{
+        borderRightWidth: 1,
+        borderRightStyle: "solid",
+        borderRightColor: "divider",
+        gridArea: "sidebar-toolbar",
+        overflow: "hidden",
+      }}
+    >
+      {props.sidebarToolbar}
+    </Box>
+    <Box
+      sx={{
+        borderRightWidth: 1,
+        borderRightStyle: "solid",
+        borderRightColor: "divider",
+        gridArea: "sidebar",
+        overflow: "hidden",
+      }}
+    >
+      {props.sidebar}
+    </Box>
+    <Box
+      sx={{
+        gridArea: "editor-toolbar",
+        overflow: "hidden",
+      }}
+    >
+      {props.editorToolbar}
+    </Box>
+    <Box
+      sx={{
+        gridArea: "editor",
+        overflow: "hidden",
+      }}
+    >
+      {props.editor}
+    </Box>
+  </Layout>
+);
 
 const Layout = styled("div")`
   display: grid;

@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { from, Observable, of } from "rxjs";
-import { catchError, map, startWith } from "rxjs/operators";
 import { failure, idle, loading, LoadResult, success } from "./load-result";
 
 type MutationFunction<TData = unknown, TVariables = unknown> = (
