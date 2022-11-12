@@ -11,15 +11,24 @@ interface RoleProps {
   fallback: string;
 }
 
-export const RequireRole = ({ children, role, fallback }: PropsWithChildren<RoleProps>) =>
-  useHasRole(role) ? <>{children}</> : <Navigate to={fallback} />;
+export const RequireRole = ({ children, role, fallback }: PropsWithChildren<RoleProps>) => {
+  const hasRole = useHasRole(role);
+  return hasRole ? <>{children}</> : <Navigate to={fallback} />;
+};
 
-export const RequireAuth = ({ children }: PropsWithChildren<{}>) =>
-  useAuthState() ? <>{children}</> : <Navigate to="/login" state={{ from: useLocation() }} />;
+export const RequireAuth = ({ children }: PropsWithChildren<{}>) => {
+  const authState = useAuthState();
+  const location = useLocation();
 
-export const LoginPage = () =>
-  useAuthState() ? (
-    <Navigate to={useLocation().state?.from?.pathname ?? "/"} />
+  return authState ? <>{children}</> : <Navigate to="/login" state={{ from: location }} />;
+};
+
+export const LoginPage = () => {
+  const authState = useAuthState();
+  const location = useLocation();
+
+  return authState ? (
+    <Navigate to={location.state?.from?.pathname ?? "/"} />
   ) : (
     <CenterLayout>
       <Button variant="contained" onClick={() => authService.signIn()}>
@@ -27,3 +36,4 @@ export const LoginPage = () =>
       </Button>
     </CenterLayout>
   );
+};
