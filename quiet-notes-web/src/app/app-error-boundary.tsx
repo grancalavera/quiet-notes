@@ -7,8 +7,9 @@ import {
   DialogTitle,
 } from "@mui/material";
 import React, { useState } from "react";
+import { withSubscribe } from "../lib/with-subscribe";
 import { isFirebaseError, isQnError } from "./app-error";
-import { useAppErrors, useDismissError } from "./app-error-state";
+import { dismissError, useAppErrors } from "./app-error-state";
 
 export class AppErrorBoundary extends React.Component<{}, { hasError: boolean; error?: unknown }> {
   constructor(props: {}) {
@@ -47,11 +48,10 @@ const GlobalErrorHandler = ({ error }: GlobalErrorHandlerProps) => {
   return <ErrorAlert error={error} onClose={() => setIsOpen(false)} isOpen={isOpen} />;
 };
 
-const AppErrorHandler = () => {
+const AppErrorHandler = withSubscribe(() => {
   const [nextError] = useAppErrors();
-  const dismissError = useDismissError();
   return <ErrorAlert error={nextError} onClose={dismissError} isOpen={!!nextError} />;
-};
+});
 
 interface ErrorAlertProps {
   error: unknown;

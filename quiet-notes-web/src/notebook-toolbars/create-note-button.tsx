@@ -1,13 +1,12 @@
 import { useEffect, VFC } from "react";
 import { useNavigate } from "react-router-dom";
-import { useErrorHandler } from "../app/app-error-state";
+import { handleError } from "../app/app-error-state";
 import { isLoadFailure, isLoading, isLoadSuccess } from "../lib/load-result";
 import { useCreateNote } from "../notebook/notebook-state";
 import { NotebookToolbarButton } from "./notebook-toolbar-button";
 
 export const CreateNoteButton: VFC = () => {
   const { mutate: createNote, reset, result } = useCreateNote();
-  const handleError = useErrorHandler();
   const navigate = useNavigate();
 
   useEffect(() => {
