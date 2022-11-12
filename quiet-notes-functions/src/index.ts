@@ -36,22 +36,23 @@ const toUserRecord = ({
   metadata: { lastSignInTime, lastRefreshTime, creationTime },
 });
 
-export const listUsers = functions.https.onCall(async (data, context) => {
-  assertIsAdmin(context);
+export const listUsers = functions.https.onCall(async (_, context) => {
+  await assertIsAdmin(context);
 
   try {
     const result = await admin.auth().listUsers();
     const response: QNListUsersResponse = { users: result.users.map(toUserRecord) };
     return response;
   } catch (error) {
-    throw opaqueFailure("list users failed", error);
+    throw notAuthorized("listUsers", error);
   }
 });
 
 export const toggleRole = functions.https.onCall(async (data: QNToggleRole, context) => {
-  assertIsAdmin(context);
+  await assertIsAdmin(context);
   try {
     const user = await admin.auth().getUserByEmail(data.email);
+
     if (data.enabled) {
       await addRoles(user, [data.role]);
     } else {
@@ -59,12 +60,12 @@ export const toggleRole = functions.https.onCall(async (data: QNToggleRole, cont
     }
     return true;
   } catch (error) {
-    throw opaqueFailure("failed to get user by email", error);
+    throw notAuthorized("toggleRole", error);
   }
 });
 
 const addRoles = async (user: UserRecord, roles: QNRole[]): Promise<void> => {
-  const existingRoles: QNRole[] = user.customClaims?.roles ?? [];
+  const existingRoles = getRolesFromUser(user);
   const updatedRoles = [...new Set([...existingRoles, ...roles])];
 
   console.log("addRoles", {
@@ -77,7 +78,7 @@ const addRoles = async (user: UserRecord, roles: QNRole[]): Promise<void> => {
 };
 
 const revokeRole = async (user: UserRecord, role: QNRole): Promise<void> => {
-  const existingRoles: QNRole[] = user.customClaims?.roles ?? [];
+  const existingRoles = getRolesFromUser(user);
   const updatedRoles = existingRoles.filter((candidate) => candidate !== role);
 
   console.log("revokeRole", {
@@ -100,20 +101,24 @@ const setRoles = async (user: UserRecord, roles: QNRole[]) => {
   }
 };
 
-const assertIsAdmin = (context: functions.https.CallableContext): void => {
+const assertIsAdmin = async (context: functions.https.CallableContext): Promise<void> => {
   if (!context.auth) {
-    throw new functions.https.HttpsError("unauthenticated", "User not authenticated");
+    throw new functions.https.HttpsError("unauthenticated", "Not authenticated.");
   }
 
-  if (!(context.auth.token.roles ?? []).includes("admin")) {
-    throw new functions.https.HttpsError(
-      "permission-denied",
-      "User not authorized to list all users"
-    );
+  const user = await admin.auth().getUserByEmail(context.auth?.token.email ?? "");
+  const roles = getRolesFromUser(user);
+
+  if (!roles.includes("admin")) {
+    throw notAuthorized("assertIsAdmin", { roles, user });
   }
 };
 
-const opaqueFailure = (hint: string, error: unknown): functions.https.HttpsError => {
-  console.error(hint, { error });
-  return new functions.https.HttpsError("permission-denied", "permission-denied");
+const notAuthorized = (message: string, error: unknown): functions.https.HttpsError => {
+  console.error("unauthorized access", { message, error });
+  return new functions.https.HttpsError("permission-denied", "Not authorized.");
+};
+
+const getRolesFromUser = (user: UserRecord): QNRole[] => {
+  return user.customClaims?.roles ?? [];
 };
