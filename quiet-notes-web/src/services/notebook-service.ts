@@ -29,8 +29,8 @@ export const notebookService: NotebookServiceSchema = {
     serviceContext$.pipe(
       switchMap((context) => {
         const { firestore } = context;
-        const noteDocRef = getNoteDocRef(firestore, noteId).withConverter(noteConverter);
-        return docData(noteDocRef, documentOptions);
+        const docRef = getNoteDocRef(firestore, noteId).withConverter(noteConverter);
+        return docData(docRef, documentOptions);
       })
     ),
 

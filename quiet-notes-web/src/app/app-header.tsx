@@ -3,7 +3,7 @@ import { Avatar, Box, Button, IconButton, Popover, Stack, Typography } from "@mu
 import { styled } from "@mui/material/styles";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useHasRole, useUser } from "../auth/auth-state";
+import { useIsAdmin, useUser } from "../auth/auth-state";
 import { authService } from "../services/auth-service";
 import { useAppTheme, useToggleAppTheme } from "./app-theme-state";
 import { ToggleThemeSwitch } from "./toggle-theme-switch";
@@ -31,7 +31,7 @@ export const AppHeader = () => {
 
 const AdminLink = () => {
   const navigate = useNavigate();
-  const isAdmin = useHasRole("admin");
+  const isAdmin = useIsAdmin();
 
   return (
     <>

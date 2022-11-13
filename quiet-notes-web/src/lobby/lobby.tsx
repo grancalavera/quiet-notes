@@ -1,11 +1,11 @@
 import Typography from "@mui/material/Typography";
 import { Navigate } from "react-router-dom";
-import { useHasRole } from "../auth/auth-state";
+import { useIsAdmin, useIsAuthor } from "../auth/auth-state";
 import { CenterLayout } from "../layout/center-layout";
 
 export const Lobby = () => {
-  const isAdmin = useHasRole("admin", true);
-  const isAuthor = useHasRole("author", true);
+  const isAdmin = useIsAdmin();
+  const isAuthor = useIsAuthor();
 
   if (isAuthor) {
     return <Navigate to="/notebook" />;
