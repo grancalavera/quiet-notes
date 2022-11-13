@@ -14,15 +14,23 @@ import { styled } from "@mui/material/styles";
 import { QNRole, QNToggleRole, QNUserRecord } from "quiet-notes-lib";
 import { useEffect, useState, VFC } from "react";
 import { Column, useTable } from "react-table";
+import { useAnyRoleUpdated } from "../auth/auth-state";
 import { useToggleRole, useUserList } from "../services/admin-service";
 
 export const Admin: VFC = () => {
   const { data, refetch, isLoading } = useUserList();
+
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data: data?.users ?? [],
     getRowId: (x) => x.uid,
   });
+
+  const someRoleUpdated = useAnyRoleUpdated();
+
+  useEffect(() => {
+    refetch();
+  }, [someRoleUpdated]);
 
   return (
     <AdminLayout>

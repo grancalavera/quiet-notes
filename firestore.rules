@@ -9,6 +9,10 @@ service cloud.firestore {
     return loggedIn() && request.auth.uid == resource.data.author;
   }
 
+  function isAdmin() {
+    return loggedIn() && request.auth.token.roles != null && "admin" in request.auth.token.roles;
+  }
+
   match /databases/{database}/documents {
 
     match /notes/{note} {
@@ -18,8 +22,13 @@ service cloud.firestore {
       allow delete: if isAuthor();
     }
 
+    match /roles-updates/ANY_ROLE_UPDATED {
+      allow read: if isAdmin()
+    }
+
     match /roles-updates/{uid} {
       allow read: if loggedIn() && request.auth.uid == uid
     }
+
   }
 }

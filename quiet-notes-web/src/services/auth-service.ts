@@ -2,6 +2,7 @@ import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import {
   doc,
   DocumentData,
+  Firestore,
   QueryDocumentSnapshot,
   SnapshotOptions,
   Timestamp,
@@ -45,17 +46,27 @@ export const authService: AuthServiceSchema = {
         return NEVER;
       }
 
-      const docRef = doc(firestore, "roles-updates", maybeUser.uid).withConverter(
-        timestampConverter
-      );
+      return rolesUpdates(firestore, maybeUser.uid);
+    })
+  ),
 
-      return docData(docRef);
+  anyRoleUpdated$: combineLatest([firestore$, authState$]).pipe(
+    switchMap(([firestore, maybeUser]) => {
+      if (!maybeUser) {
+        return NEVER;
+      }
+      return rolesUpdates(firestore, "ANY_ROLE_UPDATED");
     })
   ),
 };
 
 const parseRoles = (maybeRoles: string | object | undefined) =>
   Array.isArray(maybeRoles) ? (maybeRoles as QNRole[]) : [];
+
+const rolesUpdates = (firestore: Firestore, id: string) => {
+  const docRef = doc(firestore, "roles-updates", id).withConverter(timestampConverter);
+  return docData(docRef);
+};
 
 export const timestampConverter = {
   toFirestore: (): DocumentData => ({}),

@@ -33,3 +33,5 @@ export interface QNListUsersResponse {
 }
 
 export type QNToggleRoleResponse = true;
+
+export const ANY_ROLE_UPDATED = "ANY_ROLE_UPDATED" as const;
