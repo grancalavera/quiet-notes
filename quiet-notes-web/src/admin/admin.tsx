@@ -54,11 +54,7 @@ export const Admin: VFC = () => {
               return (
                 <TableRow {...row.getRowProps()}>
                   {row.cells.map((cell) => {
-                    return (
-                      <TableCell {...cell.getCellProps()}>
-                        {cell.render("Cell")}
-                      </TableCell>
-                    );
+                    return <TableCell {...cell.getCellProps()}>{cell.render("Cell")}</TableCell>;
                   })}
                 </TableRow>
               );
