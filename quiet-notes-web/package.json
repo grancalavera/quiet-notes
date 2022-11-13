@@ -53,7 +53,7 @@
     "workbox-window": "6.5.4"
   },
   "scripts": {
-    "typecheck": "tsc",
+    "t": "tsc",
     "start": "vite",
     "start:emulated": "VITE_FIREBASE_USE_EMULATORS=true vite",
     "build": "tsc && vite build",
