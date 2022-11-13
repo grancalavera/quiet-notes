@@ -4,7 +4,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "normalize.css";
 import ReactDOM from "react-dom";
-import { BrowserRouter, Navigate, Outlet, Route, Routes, useParams } from "react-router-dom";
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Admin } from "./admin/admin";
 import { AppHeader } from "./app/app-header";
 import { Application } from "./app/application";

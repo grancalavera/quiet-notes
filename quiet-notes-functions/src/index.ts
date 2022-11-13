@@ -13,6 +13,7 @@ export const onboardUser = functions.auth.user().onCreate(async (user) => {
   console.log({ config: functions.config() });
 
   const roles: QNRole[] = ["user"];
+
   if (user.email === functions.config().quiet_notes.default_admin) {
     roles.push("admin");
   }
@@ -93,6 +94,7 @@ const revokeRole = async (user: UserRecord, role: QNRole): Promise<void> => {
 const setRoles = async (user: UserRecord, roles: QNRole[]) => {
   try {
     await admin.auth().setCustomUserClaims(user.uid, { roles });
+    await logRolesUpdate(user);
   } catch (error) {
     console.error("failed to set custom claims", { error });
   } finally {
@@ -121,4 +123,15 @@ const notAuthorized = (message: string, error: unknown): functions.https.HttpsEr
 
 const getRolesFromUser = (user: UserRecord): QNRole[] => {
   return user.customClaims?.roles ?? [];
+};
+
+const logRolesUpdate = async (user: UserRecord): Promise<void> => {
+  const db = admin.firestore();
+  const roleUpdates = db.collection("roles-updates");
+  try {
+    await roleUpdates.doc(user.uid).set({ timestamp: admin.firestore.Timestamp.now() });
+    console.log("roles updated", { uid: user.uid });
+  } catch (e) {
+    console.error("failed to log roles update", { e });
+  }
 };

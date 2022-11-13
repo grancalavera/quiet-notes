@@ -1,8 +1,12 @@
 rules_version = '2';
 service cloud.firestore {
 
+  function loggedIn() {
+    return request.auth != null
+  }
+
   function isAuthor() {
-    return request.auth != null && request.auth.uid == resource.data.author;
+    return loggedIn() && request.auth.uid == resource.data.author;
   }
 
   match /databases/{database}/documents {
@@ -12,6 +16,10 @@ service cloud.firestore {
       allow read: if isAuthor();
       allow update: if isAuthor();
       allow delete: if isAuthor();
+    }
+
+    match /roles-updates/{uid} {
+      allow read: if loggedIn() && request.auth.uid == uid
     }
   }
 }
