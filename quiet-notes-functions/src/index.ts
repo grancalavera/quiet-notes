@@ -1,7 +1,13 @@
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
 import { UserRecord } from "firebase-functions/lib/providers/auth";
-import { QNListUsersResponse, QNRole, QNToggleRole, QNUserRecord } from "quiet-notes-lib";
+import {
+  ANY_ROLE_UPDATED,
+  QNListUsersResponse,
+  QNRole,
+  QNToggleRole,
+  QNUserRecord,
+} from "quiet-notes-lib";
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
@@ -129,9 +135,12 @@ const logRolesUpdate = async (user: UserRecord): Promise<void> => {
   const db = admin.firestore();
   const roleUpdates = db.collection("roles-updates");
   try {
-    await roleUpdates.doc(user.uid).set({ timestamp: admin.firestore.Timestamp.now() });
+    await Promise.all([
+      roleUpdates.doc(user.uid).set({ timestamp: admin.firestore.Timestamp.now() }),
+      roleUpdates.doc(ANY_ROLE_UPDATED).set({ timestamp: admin.firestore.Timestamp.now() }),
+    ]);
     console.log("roles updated", { uid: user.uid });
-  } catch (e) {
-    console.error("failed to log roles update", { e });
+  } catch (error) {
+    console.error("failed to log roles update", { error });
   }
 };

@@ -23,11 +23,11 @@ export const useUserList = () => {
         setIsLoading(false);
       }
     })();
-  }, [handleUnknownError]);
+  }, []);
 
   useEffect(() => {
     doFetch();
-  }, [handleUnknownError, doFetch]);
+  }, [doFetch]);
 
   return { data, isLoading, refetch: doFetch };
 };
@@ -40,23 +40,20 @@ export const useToggleRole = () => {
   const [isLoading, setIsLoading] = useState(false);
   const fns = useFunctions();
 
-  const run = useCallback(
-    (toggle: QNToggleRole) => {
-      setIsLoading(true);
-      async function run() {
-        try {
-          const result = await toggleRole(fns, toggle);
-          setData(result.data);
-        } catch (error) {
-          handleUnknownError(error);
-        } finally {
-          setIsLoading(false);
-        }
+  const run = useCallback((toggle: QNToggleRole) => {
+    setIsLoading(true);
+    async function run() {
+      try {
+        const result = await toggleRole(fns, toggle);
+        setData(result.data);
+      } catch (error) {
+        handleUnknownError(error);
+      } finally {
+        setIsLoading(false);
       }
-      run();
-    },
-    [handleUnknownError]
-  );
+    }
+    run();
+  }, []);
 
   return { data, isLoading, mutate: run };
 };

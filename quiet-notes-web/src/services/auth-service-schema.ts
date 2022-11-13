@@ -10,4 +10,5 @@ export interface AuthServiceSchema {
   user$: Observable<User>;
   roles$: Observable<QNRole[]>;
   rolesUpdated$: Observable<Date>;
+  anyRoleUpdated$: Observable<Date>;
 }

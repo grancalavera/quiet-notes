@@ -16,10 +16,10 @@ interface DismissError {
   kind: "DismissError";
 }
 
-const [errorSignal$, sendErrorSignal] = createSignal<ErrorSignal>();
+const [signal$, send] = createSignal<ErrorSignal>();
 
 export const handleError = (error: AppError): void => {
-  sendErrorSignal({ kind: "HandleError", error });
+  send({ kind: "HandleError", error });
 };
 
 export const handleUnknownError = (error: unknown): void => {
@@ -27,21 +27,21 @@ export const handleUnknownError = (error: unknown): void => {
 };
 
 export const dismissError = (): void => {
-  sendErrorSignal({ kind: "DismissError" });
+  send({ kind: "DismissError" });
 };
 
 const defaultState: ErrorState = [];
 
 export const [useAppErrors, appErrors$] = bind<ErrorState>(
-  errorSignal$.pipe(
-    scan((errors, signal) => {
+  signal$.pipe(
+    scan((state, signal) => {
       switch (signal.kind) {
         case "HandleError":
-          return [...errors, signal.error];
+          return [...state, signal.error];
         case "DismissError":
-          return errors.slice(1);
+          return state.slice(1);
         default:
-          return assertNever(signal);
+          assertNever(signal);
       }
     }, defaultState),
     startWith(defaultState)
