@@ -18,9 +18,9 @@ interface DismissError {
 
 const [errorSignal$, sendErrorSignal] = createSignal<ErrorSignal>();
 
-export const handleError = (error: AppError) => sendErrorSignal({ kind: "HandleError", error });
-export const handleUnknownError = (error: unknown) => handleError(errorFromUnknown(error));
-export const dismissError = () => sendErrorSignal({ kind: "DismissError" });
+export const handleError = (error: AppError):ErrorSignal => sendErrorSignal({ kind: "HandleError", error });
+export const handleUnknownError = (error: unknown):ErrorSignal => handleError(errorFromUnknown(error));
+export const dismissError = ():ErrorSignal => sendErrorSignal({ kind: "DismissError" });
 
 const defaultState:ErrorState = [];
 
