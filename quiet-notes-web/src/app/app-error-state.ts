@@ -4,6 +4,7 @@ import { scan, startWith } from "rxjs";
 import { assertNever } from "../lib/assert-never";
 import { AppError, errorFromUnknown } from "./app-error";
 
+type ErrorState = AppError[];
 type ErrorSignal = HandleError | DismissError;
 
 interface HandleError {
@@ -21,7 +22,9 @@ export const handleError = (error: AppError) => sendErrorSignal({ kind: "HandleE
 export const handleUnknownError = (error: unknown) => handleError(errorFromUnknown(error));
 export const dismissError = () => sendErrorSignal({ kind: "DismissError" });
 
-export const [useAppErrors, appErrors$] = bind<AppError[]>(
+const defaultState:ErrorState = [];
+
+export const [useAppErrors, appErrors$] = bind<ErrorState>(
   errorSignal$.pipe(
     scan((errors, signal) => {
       switch (signal.kind) {
@@ -32,7 +35,7 @@ export const [useAppErrors, appErrors$] = bind<AppError[]>(
         default:
           return assertNever(signal);
       }
-    }, [] as AppError[]),
-    startWith([])
+    }, defaultState),
+    startWith(defaultState)
   )
 );
