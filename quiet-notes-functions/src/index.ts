@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
+import { UserRecord } from "firebase-admin/auth";
 import * as functions from "firebase-functions";
-import { UserRecord } from "firebase-functions/lib/providers/auth";
 import {
   ANY_ROLE_UPDATED,
   QNListUsersResponse,
