@@ -3,7 +3,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "normalize.css";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Admin } from "./admin/admin";
 import { AppHeader } from "./app/app-header";
@@ -18,7 +18,9 @@ import { Notebook } from "./notebook/notebook";
 import { NotesList } from "./notebook/notebook-notes-list";
 import reportWebVitals from "./reportWebVitals";
 
-ReactDOM.render(
+const root = createRoot(document.getElementById("root")!);
+
+root.render(
   <Application>
     <BrowserRouter>
       <Routes>
@@ -63,8 +65,7 @@ ReactDOM.render(
         <Route element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
-  </Application>,
-  document.getElementById("root")
+  </Application>
 );
 
 // If you want to start measuring performance in your app, pass a function

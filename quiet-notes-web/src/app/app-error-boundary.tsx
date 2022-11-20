@@ -6,12 +6,15 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { PropsWithChildren, useState } from "react";
 import { withSubscribe } from "../lib/with-subscribe";
 import { isFirebaseError, isQnError } from "./app-error";
 import { dismissError, useAppErrors } from "./app-error-state";
 
-export class AppErrorBoundary extends React.Component<{}, { hasError: boolean; error?: unknown }> {
+export class AppErrorBoundary extends React.Component<
+  PropsWithChildren<{}>,
+  { hasError: boolean; error?: unknown }
+> {
   constructor(props: {}) {
     super(props);
     this.state = { hasError: false };
