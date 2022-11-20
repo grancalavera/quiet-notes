@@ -1,7 +1,8 @@
 import { Functions, httpsCallable } from "firebase/functions";
 import { QNListUsersResponse, QNToggleRole, QNToggleRoleResponse } from "quiet-notes-lib";
 import { useCallback, useEffect, useState } from "react";
-import { handleUnknownError } from "../app/app-error-state";
+import { QNError } from "../app/app-error";
+import { handleError, handleUnknownError } from "../app/app-error-state";
 import { useFunctions } from "./firebase";
 
 const listUsers = (fns: Functions) => httpsCallable<void, QNListUsersResponse>(fns, "listUsers")();
@@ -10,7 +11,6 @@ export const useUserList = () => {
   const [data, setData] = useState<QNListUsersResponse>();
   const [isLoading, setIsLoading] = useState(false);
   const fns = useFunctions();
-
   const doFetch = useCallback(() => {
     setIsLoading(true);
     (async function () {
@@ -18,7 +18,7 @@ export const useUserList = () => {
         const result = await listUsers(fns);
         setData(result.data);
       } catch (error) {
-        handleUnknownError(error);
+        handleError(new QNError("Failed to list users", error));
       } finally {
         setIsLoading(false);
       }
