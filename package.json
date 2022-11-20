@@ -10,6 +10,7 @@
     "start:emulated": "yarn build:lib && yarn build:functions && run-p emulate:*",
     "build": "yarn install --frozen-lockfile && yarn build:lib && yarn build:web",
     "env-local": "yarn workspace quiet-notes-tools env-local",
+    "setup-dev": "yarn workspace quiet-notes-tools setup-dev",
     "build:web": "yarn workspace quiet-notes-web build:ci",
     "build:lib": "yarn workspace quiet-notes-lib build:ci",
     "build:functions": "yarn workspace quiet-notes-functions build",
