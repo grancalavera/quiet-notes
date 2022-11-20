@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "forceConsistentCasingInFileNames": true,
@@ -8,14 +10,16 @@
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "target": "es2017",
     "declaration": true,
-    "noEmit": true
+    "noEmit": true,
+    "resolveJsonModule": true
   },
   "include": ["src"],
   "exclude": ["node_modules"],
   "ts-node": {
     "transpileOnly": true,
-    "transpiler": "ts-node/transpilers/swc-experimental"
+    "transpiler": "ts-node/transpilers/swc-experimental",
+    // https://typestrong.org/ts-node/docs/imports/#native-ecmascript-modules
+    "esm": true
   }
 }
