@@ -1,5 +1,6 @@
 import * as admin from "firebase-admin";
 import { UserRecord } from "firebase-admin/auth";
+import { Timestamp } from "firebase-admin/firestore";
 import * as functions from "firebase-functions";
 import {
   ANY_ROLE_UPDATED,
@@ -134,10 +135,11 @@ const getRolesFromUser = (user: UserRecord): QNRole[] => {
 const logRolesUpdate = async (user: UserRecord): Promise<void> => {
   const db = admin.firestore();
   const roleUpdates = db.collection("roles-updates");
+
   try {
     await Promise.all([
-      roleUpdates.doc(user.uid).set({ timestamp: admin.firestore.Timestamp.now() }),
-      roleUpdates.doc(ANY_ROLE_UPDATED).set({ timestamp: admin.firestore.Timestamp.now() }),
+      roleUpdates.doc(user.uid).set({ timestamp: Timestamp.now() }),
+      roleUpdates.doc(ANY_ROLE_UPDATED).set({ timestamp: Timestamp.now() }),
     ]);
     console.log("roles updated", { uid: user.uid });
   } catch (error) {

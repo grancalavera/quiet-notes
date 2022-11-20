@@ -2,6 +2,7 @@ import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
 import { scan, startWith } from "rxjs";
 import { assertNever } from "../lib/assert-never";
+import { peek } from "../lib/peek";
 import { AppError, errorFromUnknown } from "./app-error";
 
 type ErrorState = AppError[];
@@ -23,6 +24,7 @@ export const handleError = (error: AppError): void => {
 };
 
 export const handleUnknownError = (error: unknown): void => {
+  console.log("unknown error", { error });
   handleError(errorFromUnknown(error));
 };
 
@@ -44,6 +46,7 @@ export const [useAppErrors, appErrors$] = bind<ErrorState>(
           assertNever(signal);
       }
     }, defaultState),
-    startWith(defaultState)
+    startWith(defaultState),
+    peek("errors")
   )
 );
