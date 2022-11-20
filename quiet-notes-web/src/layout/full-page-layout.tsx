@@ -1,8 +1,10 @@
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
-import { FC } from "react";
+import { FC, PropsWithChildren } from "react";
 
-export const FullPageLayout: FC = ({ children }) => <Layout square>{children}</Layout>;
+export const FullPageLayout: FC<PropsWithChildren<{}>> = ({ children }) => (
+  <Layout square>{children}</Layout>
+);
 
 const Layout = styled(Paper)`
   box-sizing: border-box;

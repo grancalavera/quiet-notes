@@ -12,12 +12,12 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { QNRole, QNToggleRole, QNUserRecord } from "quiet-notes-lib";
-import { useEffect, useState, VFC } from "react";
+import { FC, useEffect, useState, VFC } from "react";
 import { Column, useTable } from "react-table";
 import { useAnyRoleUpdated } from "../auth/auth-state";
 import { useToggleRole, useUserList } from "../services/admin-service";
 
-export const Admin: VFC = () => {
+export const Admin: FC = () => {
   const { data, refetch, isLoading } = useUserList();
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
@@ -50,7 +50,7 @@ export const Admin: VFC = () => {
             {headerGroups.map((headerGroup) => (
               <TableRow {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
-                  <TableCell key={column.id}>{column.render("Header")}</TableCell>
+                  <TableCell key={column.id}>{column.render("Header") as any}</TableCell>
                 ))}
               </TableRow>
             ))}
@@ -62,7 +62,9 @@ export const Admin: VFC = () => {
               return (
                 <TableRow {...row.getRowProps()}>
                   {row.cells.map((cell) => {
-                    return <TableCell {...cell.getCellProps()}>{cell.render("Cell")}</TableCell>;
+                    return (
+                      <TableCell {...cell.getCellProps()}>{cell.render("Cell") as any}</TableCell>
+                    );
                   })}
                 </TableRow>
               );
