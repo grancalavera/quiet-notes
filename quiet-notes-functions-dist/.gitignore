@@ -1,0 +1,5 @@
+de.js dependency directory
+node_modules/
+.env
+.runtimeconfig.json
+dist

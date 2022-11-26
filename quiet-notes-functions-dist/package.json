@@ -1,0 +1,17 @@
+{
+  "name": "quiet-notes-functions-dist",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "dist/quiet-notes-functions.js",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "dependencies": {
+    "firebase-admin": "11.3.0",
+    "firebase-functions": "4.1.0"
+  }
+}
