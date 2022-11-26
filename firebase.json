@@ -8,12 +8,8 @@
   },
   "functions": {
     "runtime": "nodejs16",
-    "predeploy": [
-      "npm run build:lib",
-      "npm --prefix \"$RESOURCE_DIR\" run lint",
-      "npm --prefix \"$RESOURCE_DIR\" run build"
-    ],
-    "source": "quiet-notes-functions"
+    "predeploy": ["pnpm --filter quiet-notes-functions... build"],
+    "source": "quiet-notes-functions-dist"
   },
   "hosting": {
     "public": "quiet-notes-web/dist",
