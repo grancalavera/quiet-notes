@@ -11,12 +11,12 @@ import { QNRole } from "quiet-notes-lib";
 import { authState } from "rxfire/auth";
 import { docData } from "rxfire/firestore";
 import { combineLatest, firstValueFrom, NEVER } from "rxjs";
-import { filter, map, switchMap } from "rxjs/operators";
+import { filter, map, shareReplay, switchMap } from "rxjs/operators";
 import { AuthServiceSchema } from "./auth-service-schema";
 import { auth$, firestore$ } from "./firebase";
 
 const authState$ = auth$.pipe(switchMap((auth) => authState(auth)));
-const user$ = authState$.pipe(filter(Boolean));
+const user$ = authState$.pipe(filter(Boolean), shareReplay(1));
 
 export const authService: AuthServiceSchema = {
   signIn: () => {
@@ -64,7 +64,9 @@ const parseRoles = (maybeRoles: string | object | undefined) =>
   Array.isArray(maybeRoles) ? (maybeRoles as QNRole[]) : [];
 
 const rolesUpdates = (firestore: Firestore, id: string) => {
-  const docRef = doc(firestore, "roles-updates", id).withConverter(timestampConverter);
+  const docRef = doc(firestore, "roles-updates", id).withConverter(
+    timestampConverter
+  );
   return docData(docRef);
 };
 
