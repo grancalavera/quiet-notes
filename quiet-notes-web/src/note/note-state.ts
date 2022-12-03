@@ -1,14 +1,7 @@
 import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
 import { filter, merge, MonoTypeOperatorFunction, of, switchMap, throwError } from "rxjs";
-import {
-  catchError,
-  debounceTime,
-  distinctUntilKeyChanged,
-  map,
-  scan,
-  share,
-} from "rxjs/operators";
+import { catchError, distinctUntilKeyChanged, map, sampleTime, scan, share } from "rxjs/operators";
 import { isPermissionDeniedError } from "../app/app-error";
 import { clientId } from "../app/app-model";
 import * as crdt from "../crdt/clock";
@@ -17,14 +10,14 @@ import { peek } from "../lib/peek";
 import { Note } from "../notebook/notebook-model";
 import { notebookService } from "../services/notebook-service";
 
-const bounciness = 1000;
+const frequency = 2000;
 
 const incrementNoteClock = <T extends Note | undefined>(): MonoTypeOperatorFunction<T> =>
   map((note) => (note ? { ...note, clock: increment(clientId, note.clock) } : note));
 
 const mergeNotes = (previous: Note, next: Note): Note => {
   const clock = crdt.receive(clientId, previous.clock, next.clock);
-  const note = crdt.isLessThanOrEqual(next.clock, previous.clock) ? previous : next;
+  const note = crdt.isLessThan(previous.clock, next.clock) ? next : previous;
   return { ...note, clock };
 };
 
@@ -69,7 +62,7 @@ const [useNote, note$] = bind(
 
 localNote$
   .pipe(
-    debounceTime(bounciness),
+    sampleTime(frequency),
     peek("[enter] saveNote"),
     incrementNoteClock(),
     peek("[exit] saveNote$")
