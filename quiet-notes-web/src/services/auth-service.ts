@@ -11,12 +11,12 @@ import { QNRole } from "quiet-notes-lib";
 import { authState } from "rxfire/auth";
 import { docData } from "rxfire/firestore";
 import { combineLatest, firstValueFrom, NEVER } from "rxjs";
-import { filter, map, shareReplay, switchMap } from "rxjs/operators";
+import { filter, map, switchMap } from "rxjs/operators";
 import { AuthServiceSchema } from "./auth-service-schema";
 import { auth$, firestore$ } from "./firebase";
 
 const authState$ = auth$.pipe(switchMap((auth) => authState(auth)));
-const user$ = authState$.pipe(filter(Boolean), shareReplay(1));
+const user$ = authState$.pipe(filter(Boolean));
 
 export const authService: AuthServiceSchema = {
   signIn: () => {

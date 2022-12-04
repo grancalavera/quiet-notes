@@ -1,28 +1,24 @@
 import { TextareaAutosize } from "@mui/material";
 import Box from "@mui/material/Box";
 import { Subscribe } from "@react-rxjs/core";
-import { useEffect, useRef, VFC } from "react";
+import { FC, useRef } from "react";
 import { Navigate } from "react-router-dom";
 import { LoadingLayout } from "../layout/loading-layout";
 import { useSelectedNoteId } from "../notebook/notebook-state";
-import { note$, openNote, updateNote, useNote } from "./note-state";
+import { updateNote, useNote } from "./note-state";
 
 export const NoteEditor = () => {
   const noteId = useSelectedNoteId();
-  console.log({ noteId });
-  useEffect(() => {
-    noteId && openNote(noteId);
-  }, [noteId]);
 
   return noteId ? (
-    <Subscribe fallback={<LoadingLayout />} key={noteId} source$={note$}>
-      <NoteEditorInternal />
+    <Subscribe fallback={<LoadingLayout />} key={noteId}>
+      <NoteEditorInternal noteId={noteId} />
     </Subscribe>
   ) : null;
 };
 
-const NoteEditorInternal: VFC = () => {
-  const note = useNote();
+const NoteEditorInternal: FC<{ noteId: string }> = ({ noteId }) => {
+  const note = useNote(noteId);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   return note ? (
