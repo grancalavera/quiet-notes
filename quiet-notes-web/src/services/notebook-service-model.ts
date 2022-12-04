@@ -1,6 +1,7 @@
 import {
   DocumentData,
   FieldValue,
+  FirestoreDataConverter,
   increment,
   QueryDocumentSnapshot,
   serverTimestamp,
@@ -51,19 +52,23 @@ export const noteFromReadModel = (documentData: NoteReadModel): Note => {
   };
 };
 
-export const noteToWriteModel = ({ _createdAt, _updatedAt, ...note }: Note): NoteWriteModel => ({
+export const noteToWriteModel = ({
+  _createdAt,
+  _updatedAt,
+  ...note
+}: Note): NoteWriteModel => ({
   ...note,
   _version: increment(1),
   _updatedAt: serverTimestamp(),
 });
 
-export const noteConverter = {
+export const noteConverter: FirestoreDataConverter<Note> = {
   toFirestore: (note: Note): DocumentData => noteToWriteModel(note),
   fromFirestore: (
     snapshot: QueryDocumentSnapshot<NoteReadModel>,
     options?: SnapshotOptions
   ): Note => {
     const data = snapshot.data(options);
-    return noteFromReadModel(data);
+    return noteFromReadModel({ ...data, id: snapshot.id });
   },
 };

@@ -4,6 +4,7 @@ import {
   filter,
   merge,
   MonoTypeOperatorFunction,
+  Observable,
   of,
   switchMap,
   throwError,
@@ -33,34 +34,31 @@ const incrementNoteClock = <
     note ? { ...note, clock: increment(clientId, note.clock) } : note
   );
 
-const mergeNotes = (previous: Note, next: Note): Note => {
-  const clock = crdt.receive(clientId, previous.clock, next.clock);
-  const note = crdt.isLessThan(previous.clock, next.clock) ? next : previous;
+const mergeNotes = (left: Note, right: Note): Note => {
+  const clock = crdt.receive(clientId, left.clock, right.clock);
+  const note = crdt.isLessThan(left.clock, right.clock) ? right : left;
   return { ...note, clock };
 };
 
-const [remoteNoteId$, setOpenNote] = createSignal<string | undefined>();
 const [noteUpdates$, updateNote] = createSignal<Note>();
 
-const openNote = (id: string) => setOpenNote(id);
-
-const remoteNote$ = remoteNoteId$.pipe(
-  peek("[enter] remoteNote$", (noteId) => ({ noteId, clientId })),
-  filter(Boolean),
-  switchMap((id) => notebookService.getNoteById(id)),
-  catchError((error) => {
-    // Permission denied can be a red herring, which happens when a note is deleted and
-    // Firebase returns an opaque error telling the user can't see the requested object,
-    // but in reality the object doesn't exit. This error should also be raised when users
-    // try to read a note that exist but doesn't belong to them.
-    return isPermissionDeniedError(error)
-      ? of(undefined)
-      : throwError(() => error);
-  }),
-  incrementNoteClock(),
-  share(),
-  peek("[exit] remoteNote$")
-);
+const remoteNote$ = (noteId: string) =>
+  of(noteId).pipe(
+    peek("[enter] remoteNote$", (noteId) => ({ noteId, clientId })),
+    filter(Boolean),
+    switchMap((id) => notebookService.getNoteById(id)),
+    catchError((error) => {
+      // Permission denied can be a red herring, which happens when a note is deleted and
+      // Firebase returns an opaque error telling the user can't see the requested object,
+      // but in reality the object doesn't exit. This error should also be raised when users
+      // try to read a note that exist but doesn't belong to them.
+      return isPermissionDeniedError(error)
+        ? of(undefined)
+        : throwError(() => error);
+    }),
+    incrementNoteClock(),
+    peek("[exit] remoteNote$")
+  );
 
 const localNote$ = noteUpdates$.pipe(
   peek("[enter] localNote$"),
@@ -113,7 +111,10 @@ const merged = wrap("Merged");
 const isEmpty = (candidate: Envelope): candidate is Empty =>
   candidate.kind === "Empty";
 
-const isFilled = (candidate: Envelope): candidate is Filled =>
+const isMerged = (candidate: Envelope): candidate is Merged =>
+  candidate.kind === "Merged";
+
+const hasChanges = (candidate: Envelope): candidate is Filled =>
   ["Local", "Remote", "Merged"].includes(candidate.kind);
 
 const sameOrigin = (a: Envelope, b: Envelope): boolean => a.kind === b.kind;
@@ -122,22 +123,30 @@ const unWrap = (envelope: Envelope): Note | undefined =>
   isEmpty(envelope) ? undefined : envelope.note;
 
 const [useNote, note$] = bind(
-  merge(
-    localNote$.pipe(map(wrap("Local"))),
-    remoteNote$.pipe(map(wrap("Remote")))
-  ).pipe(
-    peek("[enter] note$"),
-    scan((previous, next) => {
-      if (!sameOrigin(previous, next) && isFilled(previous) && isFilled(next)) {
-        const note = mergeNotes(previous.note, next.note);
-        return merged(note);
-      }
+  (noteId: string): Observable<Note | undefined> =>
+    merge(
+      localNote$.pipe(map(wrap("Local"))),
+      remoteNote$(noteId).pipe(map(wrap("Remote")))
+    ).pipe(
+      peek("[enter] note$"),
+      scan((previous, next) => {
+        if (
+          !sameOrigin(previous, next) &&
+          hasChanges(previous) &&
+          hasChanges(next)
+        ) {
+          const note = isMerged(previous)
+            ? mergeNotes(next.note, previous.note)
+            : mergeNotes(previous.note, next.note);
 
-      return next;
-    }, empty as Envelope),
-    map(unWrap),
-    peek("[exit] note$")
-  )
+          return merged(note);
+        }
+
+        return next;
+      }, empty as Envelope),
+      map(unWrap),
+      peek("[exit] note$")
+    )
 );
 
-export { openNote, updateNote, useNote, note$ };
+export { updateNote, useNote, note$ };

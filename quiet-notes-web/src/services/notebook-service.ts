@@ -1,13 +1,29 @@
-import { collection, deleteDoc, doc, Firestore, query, setDoc, where } from "firebase/firestore";
-import { collectionData, docData } from "rxfire/firestore";
-import { combineLatest, firstValueFrom } from "rxjs";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  Firestore,
+  onSnapshot,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
+import { collectionData } from "rxfire/firestore";
+import { combineLatest, firstValueFrom, Observable } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
+import { Note } from "../notebook/notebook-model";
 import { authService } from "./auth-service";
 import { firestore$ } from "./firebase";
-import { noteConverter, noteFromUserUid, noteToWriteModel } from "./notebook-service-model";
+import {
+  noteConverter,
+  noteFromUserUid,
+  noteToWriteModel,
+} from "./notebook-service-model";
 import { NotebookServiceSchema } from "./notebook-service-schema";
 
-const getNoteDocRef = (firestore: Firestore, id: string) => doc(firestore, "notes", id);
+const getNoteDocRef = (firestore: Firestore, id: string) =>
+  doc(firestore, "notes", id);
+
 const documentOptions = { idField: "id" };
 
 const serviceContext$ = combineLatest([firestore$, authService.user$]).pipe(
@@ -19,19 +35,26 @@ export const notebookService: NotebookServiceSchema = {
     serviceContext$.pipe(
       switchMap((context) => {
         const { firestore, user } = context;
-        const collectionRef = collection(firestore, "notes").withConverter(noteConverter);
+        const collectionRef = collection(firestore, "notes").withConverter(
+          noteConverter
+        );
         const q = query(collectionRef, where("author", "==", user.uid));
         return collectionData(q, documentOptions);
       })
     ),
-
   getNoteById: (noteId) =>
-    serviceContext$.pipe(
-      switchMap((context) => {
-        const { firestore } = context;
-        const docRef = getNoteDocRef(firestore, noteId).withConverter(noteConverter);
-        return docData(docRef, documentOptions);
-      })
+    firestore$.pipe(
+      switchMap(
+        (firestore) =>
+          new Observable<Note>((subscriber) => {
+            const unsubscribe = onSnapshot(
+              getNoteDocRef(firestore, noteId).withConverter(noteConverter),
+              (snap) => snap.exists() && subscriber.next(snap.data()),
+              (error) => subscriber.error(error)
+            );
+            return unsubscribe;
+          })
+      )
     ),
 
   createNote: async () => {
