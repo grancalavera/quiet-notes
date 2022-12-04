@@ -1,27 +1,44 @@
-import { Clock } from "../crdt/clock";
+import { nanoid } from "nanoid";
+import { clientId } from "../app/app-model";
+import { Clock, initialize } from "../crdt/clock";
 
 export type NoteId = string;
 
 export interface Note {
-  id: NoteId;
-  content: string;
-  author: string;
-  clock: Clock;
-  _version: number;
-  _createdAt?: Date;
-  _updatedAt?: Date;
+  readonly id: NoteId;
+  readonly content: string;
+  readonly author: string;
+  readonly clock: Clock;
+  readonly _version: number;
+  readonly _createdAt?: Date;
+  readonly _updatedAt?: Date;
 }
+
+export const createNote = (author: string): Note => ({
+  id: nanoid(),
+  content: "",
+  author,
+  clock: initialize(clientId),
+  _version: 0,
+});
 
 export const deriveTitle = (note: Note): string => {
   return note.content.trimStart().split("\n")[0] ?? "";
 };
 
-export const hasCreatedDate = (candidate: Note): boolean => candidate._createdAt !== undefined;
+export const hasCreatedDate = (candidate: Note): boolean =>
+  candidate._createdAt !== undefined;
 
-export type NotebookSortType = "ByTitleAsc" | "ByTitleDesc" | "ByDateAsc" | "ByDateDesc";
+export type NotebookSortType =
+  | "ByTitleAsc"
+  | "ByTitleDesc"
+  | "ByDateAsc"
+  | "ByDateDesc";
 
-export const sortNotes = (sortType: NotebookSortType, [...notes]: Note[]): Note[] =>
-  notes.sort(sort[sortType]);
+export const sortNotes = (
+  sortType: NotebookSortType,
+  [...notes]: Note[]
+): Note[] => notes.sort(sort[sortType]);
 
 const sort: Record<NotebookSortType, (a: Note, b: Note) => number> = {
   ByDateAsc: (a, b) => {
