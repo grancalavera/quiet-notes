@@ -1,14 +1,6 @@
 import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
-import {
-  filter,
-  merge,
-  MonoTypeOperatorFunction,
-  Observable,
-  of,
-  switchMap,
-  throwError,
-} from "rxjs";
+import { filter, merge, Observable, of, switchMap, throwError } from "rxjs";
 import {
   catchError,
   distinctUntilKeyChanged,
@@ -19,26 +11,18 @@ import {
 } from "rxjs/operators";
 import { isPermissionDeniedError } from "../app/app-error";
 import { clientId } from "../app/app-model";
-import * as crdt from "../crdt/clock";
-import { increment } from "../crdt/clock";
 import { peek } from "../lib/peek";
+import {
+  empty,
+  incrementClock,
+  mergeNotes,
+  unWrap,
+  wrap,
+} from "../notebook/note-model";
 import { Note } from "../notebook/notebook-model";
 import { notebookService } from "../services/notebook-service";
 
 const frequency = 2000;
-
-const incrementNoteClock = <
-  T extends Note | undefined
->(): MonoTypeOperatorFunction<T> =>
-  map((note) =>
-    note ? { ...note, clock: increment(clientId, note.clock) } : note
-  );
-
-const mergeNotes = (left: Note, right: Note): Note => {
-  const clock = crdt.receive(clientId, left.clock, right.clock);
-  const note = crdt.isLessThan(left.clock, right.clock) ? right : left;
-  return { ...note, clock };
-};
 
 const [noteUpdates$, updateNote] = createSignal<Note>();
 
@@ -56,97 +40,38 @@ const remoteNote$ = (noteId: string) =>
         ? of(undefined)
         : throwError(() => error);
     }),
-    incrementNoteClock(),
+    map(incrementClock(clientId)),
     peek("[exit] remoteNote$")
   );
 
 const localNote$ = noteUpdates$.pipe(
   peek("[enter] localNote$"),
   distinctUntilKeyChanged("content"),
-  incrementNoteClock(),
+  map(incrementClock(clientId)),
   share(),
   peek("[exit] note$")
 );
 
-localNote$
-  .pipe(
-    sampleTime(frequency),
-    peek("[enter] saveNote"),
-    incrementNoteClock(),
-    peek("[exit] saveNote$")
-  )
-  .subscribe(notebookService.saveNote);
-
-type Envelope = Empty | Filled;
-type Filled = Local | Remote | Merged;
-
-interface Empty {
-  kind: "Empty";
-}
-
-interface Local {
-  kind: "Local";
-  note: Note;
-}
-
-interface Remote {
-  kind: "Remote";
-  note: Note;
-}
-
-interface Merged {
-  kind: "Merged";
-  note: Note;
-}
-
-const empty: Envelope = { kind: "Empty" };
-
-const wrap =
-  (kind: Filled["kind"]) =>
-  (note: Note | undefined): Envelope =>
-    note ? { kind, note } : empty;
-
-const merged = wrap("Merged");
-
-const isEmpty = (candidate: Envelope): candidate is Empty =>
-  candidate.kind === "Empty";
-
-const isMerged = (candidate: Envelope): candidate is Merged =>
-  candidate.kind === "Merged";
-
-const hasChanges = (candidate: Envelope): candidate is Filled =>
-  ["Local", "Remote", "Merged"].includes(candidate.kind);
-
-const sameOrigin = (a: Envelope, b: Envelope): boolean => a.kind === b.kind;
-
-const unWrap = (envelope: Envelope): Note | undefined =>
-  isEmpty(envelope) ? undefined : envelope.note;
-
-const [useNote, note$] = bind(
+const [useNote] = bind(
   (noteId: string): Observable<Note | undefined> =>
     merge(
       localNote$.pipe(map(wrap("Local"))),
       remoteNote$(noteId).pipe(map(wrap("Remote")))
     ).pipe(
       peek("[enter] note$"),
-      scan((previous, next) => {
-        if (
-          !sameOrigin(previous, next) &&
-          hasChanges(previous) &&
-          hasChanges(next)
-        ) {
-          const note = isMerged(previous)
-            ? mergeNotes(next.note, previous.note)
-            : mergeNotes(previous.note, next.note);
-
-          return merged(note);
-        }
-
-        return next;
-      }, empty as Envelope),
+      scan(mergeNotes(clientId), empty),
       map(unWrap),
       peek("[exit] note$")
     )
 );
 
-export { updateNote, useNote, note$ };
+export { updateNote, useNote };
+
+localNote$
+  .pipe(
+    sampleTime(frequency),
+    peek("[enter] saveNote"),
+    map(incrementClock(clientId)),
+    peek("[exit] saveNote$")
+  )
+  .subscribe(notebookService.saveNote);

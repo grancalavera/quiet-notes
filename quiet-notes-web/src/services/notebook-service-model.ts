@@ -8,7 +8,6 @@ import {
   SnapshotOptions,
   Timestamp,
 } from "firebase/firestore";
-import { nanoid } from "nanoid";
 import { clientId } from "../app/app-model";
 import { Clock, initialize } from "../crdt/clock";
 import { Note } from "../notebook/notebook-model";
@@ -24,35 +23,27 @@ export interface NoteReadModel {
 }
 
 export interface NoteWriteModel {
-  id: string;
-  content: string;
-  author: string;
-  _version: FieldValue;
-  _updatedAt: FieldValue;
-  _createdAt?: FieldValue;
+  readonly content: string;
+  readonly author: string;
+  readonly _version: FieldValue;
+  readonly _updatedAt: FieldValue;
+  readonly _createdAt?: FieldValue;
 }
 
-export const noteFromUserUid = (author: string): NoteWriteModel => ({
-  id: nanoid(),
-  content: "",
-  author,
-  _version: increment(1),
-  _updatedAt: serverTimestamp(),
-  _createdAt: serverTimestamp(),
+const noteFromReadModel = ({
+  _createdAt,
+  _updatedAt,
+  clock,
+  ...note
+}: NoteReadModel): Note => ({
+  ...note,
+  _createdAt: _createdAt?.toDate(),
+  _updatedAt: _updatedAt?.toDate(),
+  // because really old notes don't have a clock
+  clock: clock ?? initialize(clientId),
 });
 
-export const noteFromReadModel = (documentData: NoteReadModel): Note => {
-  const { _createdAt, _updatedAt, clock, ...note } = documentData;
-
-  return {
-    _createdAt: _createdAt?.toDate(),
-    _updatedAt: _updatedAt?.toDate(),
-    clock: clock ?? initialize(clientId),
-    ...note,
-  };
-};
-
-export const noteToWriteModel = ({
+const noteToWriteModel = ({
   _createdAt,
   _updatedAt,
   ...note
@@ -60,6 +51,7 @@ export const noteToWriteModel = ({
   ...note,
   _version: increment(1),
   _updatedAt: serverTimestamp(),
+  ...(note._version === 0 && { _createdAt: serverTimestamp() }),
 });
 
 export const noteConverter: FirestoreDataConverter<Note> = {
@@ -67,8 +59,5 @@ export const noteConverter: FirestoreDataConverter<Note> = {
   fromFirestore: (
     snapshot: QueryDocumentSnapshot<NoteReadModel>,
     options?: SnapshotOptions
-  ): Note => {
-    const data = snapshot.data(options);
-    return noteFromReadModel({ ...data, id: snapshot.id });
-  },
+  ): Note => noteFromReadModel({ ...snapshot.data(options), id: snapshot.id }),
 };

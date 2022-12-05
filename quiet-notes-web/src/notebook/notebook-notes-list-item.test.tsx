@@ -44,7 +44,14 @@ const scenarios: Scenario[] = [
   {
     name: "newly created note, not selected",
     props: {
-      note: { author: "mock", content: "", id: "1", _version: 0, _createdAt, clock: {} },
+      note: {
+        author: "mock",
+        content: "",
+        id: "1",
+        _version: 0,
+        _createdAt,
+        clock: {},
+      },
       onSelect: spyOnSelect,
       isSelected: false,
     },
@@ -57,7 +64,14 @@ const scenarios: Scenario[] = [
   {
     name: "newly created note, selected",
     props: {
-      note: { author: "mock", content: "", id: "1", _version: 0, _createdAt, clock: {} },
+      note: {
+        author: "mock",
+        content: "",
+        id: "1",
+        _version: 0,
+        _createdAt,
+        clock: {},
+      },
       onSelect: spyOnSelect,
       isSelected: true,
     },
@@ -106,14 +120,18 @@ describe.each(scenarios)("<NotesListItem />", (scenario) => {
       expect(spyOnSelect).toBeCalledWith(props.note.id);
     });
 
-    it(`${shouldOrNot(expected.hasCreatedDate)} match formatted created date`, () => {
+    it(`${shouldOrNot(
+      expected.hasCreatedDate
+    )} match formatted created date`, () => {
       const { queryAllByText } = render(<NotesListItem {...props} />);
       const actual = queryAllByText(createdAtWithFormat).length;
       const expectedCount = zeroOrOne(expected.hasCreatedDate);
       expect(actual).toEqual(expectedCount);
     });
 
-    it(`${shouldOrNot(expected.hasUpdatedDate)} match formatted updated date`, () => {
+    it(`${shouldOrNot(
+      expected.hasUpdatedDate
+    )} match formatted updated date`, () => {
       const { queryAllByText } = render(<NotesListItem {...props} />);
       const actual = queryAllByText(updatedAtWithFormat).length;
       const expectedCount = zeroOrOne(expected.hasUpdatedDate);
