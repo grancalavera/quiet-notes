@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
+    "build:watch": "tsc -w & vite build -w",
     "shell": "pnpm build && firebase functions:shell"
   },
   "peerDependencies": {
