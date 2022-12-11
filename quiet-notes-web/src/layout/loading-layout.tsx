@@ -1,8 +1,8 @@
 import CircularProgress from "@mui/material/CircularProgress";
-import { VFC } from "react";
+import { FC } from "react";
 import { CenterLayout } from "./center-layout";
 
-export const LoadingLayout: VFC = () => (
+export const LoadingLayout: FC = () => (
   <CenterLayout>
     <CircularProgress />
   </CenterLayout>
