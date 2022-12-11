@@ -3,7 +3,7 @@ import { createSignal } from "@react-rxjs/utils";
 import { filter, merge, Observable, of, switchMap, throwError } from "rxjs";
 import {
   catchError,
-  distinctUntilKeyChanged,
+  distinctUntilChanged,
   map,
   sampleTime,
   scan,
@@ -12,9 +12,16 @@ import {
 import { isPermissionDeniedError } from "../app/app-error";
 import { clientId } from "../app/app-model";
 import { peek } from "../lib/peek";
-import { empty, incrementClock, mergeNotes, unWrap, wrap } from "./note-model";
 import { Note } from "../notebook/notebook-model";
 import { notebookService } from "../services/notebook-service";
+import {
+  empty,
+  incrementClock,
+  mergeNotes,
+  noteChanged,
+  unWrap,
+  wrap,
+} from "./note-model";
 
 const frequency = 2000;
 
@@ -40,10 +47,10 @@ const remoteNote$ = (noteId: string) =>
 
 const localNote$ = noteUpdates$.pipe(
   peek("[enter] localNote$"),
-  distinctUntilKeyChanged("content"),
+  distinctUntilChanged(noteChanged),
   map(incrementClock(clientId)),
   share(),
-  peek("[exit] note$")
+  peek("[exit] localNote$")
 );
 
 const [useNote] = bind(

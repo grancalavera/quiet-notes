@@ -65,3 +65,6 @@ export const wrap =
 
 export const unWrap = (envelope: Envelope): Note | undefined =>
   isEmpty(envelope) ? undefined : envelope.note;
+
+export const noteChanged = (left: Note, right: Note): boolean =>
+  left.id === right.id && left.content === right.content;
