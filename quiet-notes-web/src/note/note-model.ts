@@ -1,5 +1,5 @@
 import * as crdt from "../crdt/clock";
-import { Note } from "./notebook-model";
+import { Note } from "../notebook/notebook-model";
 
 type Envelope = Empty | NotEmpty;
 type NotEmpty = Local | Remote | Merged;
@@ -65,3 +65,6 @@ export const wrap =
 
 export const unWrap = (envelope: Envelope): Note | undefined =>
   isEmpty(envelope) ? undefined : envelope.note;
+
+export const noteChanged = (left: Note, right: Note): boolean =>
+  left.id === right.id && left.content === right.content;
