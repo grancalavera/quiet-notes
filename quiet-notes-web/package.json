@@ -58,6 +58,7 @@
     "start": "vite",
     "start:emulated": "VITE_FIREBASE_USE_EMULATORS=true vite",
     "build": "tsc && vite build",
+    "build:w": "tsc -w & vite build -w",
     "serve": "vite preview",
     "test": "jest",
     "test:ci": "jest --watchAll=false --verbose",

@@ -3,18 +3,18 @@ import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 const emulated = process.env.REACT_APP_FIREBASE_USE_EMULATORS === "true";
-const target = emulated ? "http://localhost:5000" : "https://quiet-notes-e83fb.web.app";
+const target = emulated
+  ? "http://localhost:5000"
+  : "https://quiet-notes-e83fb.web.app";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     ViteReact(),
     VitePWA({
-      strategies: "injectManifest",
-      srcDir: "src",
-      filename: "sw.ts",
-      outDir: "dist",
-
+      registerType: "prompt",
+      devOptions: { enabled: true },
+      workbox: { sourcemap: true },
       includeAssets: [
         "apple-touch-icon-114x114.png",
         "apple-touch-icon-120x120.png",
