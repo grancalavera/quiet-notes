@@ -27,7 +27,7 @@ export const AppHeader = () => {
         onClick={() => navigate("/")}
         sx={{ userSelect: "none", cursor: "pointer" }}
       >
-        Quiet Notes (Taco Soul)
+        Quiet Notes
       </Typography>
       <ToolbarLayout direction="row" spacing={1}>
         <ToggleThemeButton />
