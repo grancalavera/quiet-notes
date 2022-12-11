@@ -1,5 +1,13 @@
 import SettingsIcon from "@mui/icons-material/Settings";
-import { Avatar, Box, Button, IconButton, Popover, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  Popover,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +15,7 @@ import { useIsAdmin, useUser } from "../auth/auth-state";
 import { authService } from "../services/auth-service";
 import { useAppTheme, useToggleAppTheme } from "./app-theme-state";
 import { ToggleThemeSwitch } from "./toggle-theme-switch";
+import GitHubIcon from "@mui/icons-material/GitHub";
 
 export const AppHeader = () => {
   const navigate = useNavigate();
@@ -18,11 +27,12 @@ export const AppHeader = () => {
         onClick={() => navigate("/")}
         sx={{ userSelect: "none", cursor: "pointer" }}
       >
-        Quiet Notes
+        Quiet Notes (Taco Soul)
       </Typography>
       <ToolbarLayout direction="row" spacing={1}>
-        <AdminLink />
         <ToggleThemeButton />
+        <AdminLink />
+        <ForkMeOnGithub />
         <Profile />
       </ToolbarLayout>
     </HeaderLayout>
@@ -48,7 +58,9 @@ const UserAvatar = ({ size = 30 }: { size?: number }) => {
   const user = useUser();
   const photoURL = user.photoURL ?? undefined;
   const username = user.displayName ?? user.email ?? "";
-  return <Avatar alt={username} src={photoURL} sx={{ width: size, height: size }} />;
+  return (
+    <Avatar alt={username} src={photoURL} sx={{ width: size, height: size }} />
+  );
 };
 
 const Profile = () => {
@@ -82,7 +94,10 @@ const Profile = () => {
 
   return (
     <>
-      <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} aria-describedby={id}>
+      <IconButton
+        onClick={(e) => setAnchorEl(e.currentTarget)}
+        aria-describedby={id}
+      >
         <UserAvatar />
       </IconButton>
       <Popover
@@ -101,8 +116,22 @@ const Profile = () => {
 const ToggleThemeButton = () => {
   const theme = useAppTheme();
   const toggleTheme = useToggleAppTheme();
-  return <ToggleThemeSwitch checked={theme === "dark"} onChange={() => toggleTheme()} />;
+  return (
+    <ToggleThemeSwitch
+      checked={theme === "dark"}
+      onChange={() => toggleTheme()}
+    />
+  );
 };
+
+const ForkMeOnGithub = () => (
+  <IconButton
+    href="https://github.com/grancalavera/quiet-notes"
+    target="_blank"
+  >
+    <GitHubIcon />
+  </IconButton>
+);
 
 const HeaderLayout = styled(Box)`
   padding: 0.5rem;

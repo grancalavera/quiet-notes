@@ -1,13 +1,13 @@
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import { ReactNode, VFC } from "react";
+import { FC, ReactNode } from "react";
 
 interface HeaderLayoutProps {
   header?: ReactNode;
   body?: ReactNode;
 }
 
-export const HeaderLayout: VFC<HeaderLayoutProps> = (props) => {
+export const HeaderLayout: FC<HeaderLayoutProps> = (props) => {
   return (
     <Layout>
       <Box sx={{ gridArea: "header" }}>{props.header}</Box>
