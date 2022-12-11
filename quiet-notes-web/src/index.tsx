@@ -4,10 +4,17 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "normalize.css";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+} from "react-router-dom";
 import { Admin } from "./admin/admin";
 import { AppHeader } from "./app/app-header";
 import { Application } from "./app/application";
+import { ReloadPrompt } from "./app/reload-prompt";
 import { LoginPage, RequireAuth, RequireRole } from "./auth/auth";
 import { HeaderLayout } from "./layout/header-layout";
 import { Lobby } from "./lobby/lobby";
@@ -22,6 +29,7 @@ const root = createRoot(document.getElementById("root")!);
 
 root.render(
   <Application>
+    <ReloadPrompt />
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/notebook" />} />
