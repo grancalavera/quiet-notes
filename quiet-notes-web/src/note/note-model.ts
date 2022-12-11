@@ -1,5 +1,5 @@
 import * as crdt from "../crdt/clock";
-import { Note } from "./notebook-model";
+import { Note } from "../notebook/notebook-model";
 
 type Envelope = Empty | NotEmpty;
 type NotEmpty = Local | Remote | Merged;

@@ -12,13 +12,7 @@ import {
 import { isPermissionDeniedError } from "../app/app-error";
 import { clientId } from "../app/app-model";
 import { peek } from "../lib/peek";
-import {
-  empty,
-  incrementClock,
-  mergeNotes,
-  unWrap,
-  wrap,
-} from "../notebook/note-model";
+import { empty, incrementClock, mergeNotes, unWrap, wrap } from "./note-model";
 import { Note } from "../notebook/notebook-model";
 import { notebookService } from "../services/notebook-service";
 
