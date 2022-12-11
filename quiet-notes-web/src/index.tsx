@@ -29,7 +29,6 @@ const root = createRoot(document.getElementById("root")!);
 
 root.render(
   <Application>
-    <ReloadPrompt />
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/notebook" />} />
@@ -73,6 +72,7 @@ root.render(
         <Route element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
+    <ReloadPrompt />
   </Application>
 );
 
