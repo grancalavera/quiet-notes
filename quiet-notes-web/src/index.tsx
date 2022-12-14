@@ -2,76 +2,80 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import { Subscribe } from "@react-rxjs/core";
 import "normalize.css";
+import { lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
-import {
-  BrowserRouter,
-  Navigate,
-  Outlet,
-  Route,
-  Routes,
-} from "react-router-dom";
-import { Admin } from "./admin/admin";
-import { AppHeader } from "./app/app-header";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Application } from "./app/application";
 import { ReloadPrompt } from "./app/reload-prompt";
 import { LoginPage, RequireAuth, RequireRole } from "./auth/auth";
-import { HeaderLayout } from "./layout/header-layout";
+import { Loading } from "./components/loading";
 import { Lobby } from "./lobby/lobby";
-import { NoteEditor } from "./note/note-editor";
-import { NotebookEditorToolbar } from "./notebook-toolbars/notebook-editor-toolbar";
-import { NotebookSidebarToolbar } from "./notebook-toolbars/notebook-sidebar-toolbar";
-import { Notebook } from "./notebook/notebook";
-import { NotesList } from "./notebook/notebook-notes-list";
 import reportWebVitals from "./reportWebVitals";
+
+const AppShell = lazy(() => import("./routes/AppShell"));
+const Notebook = lazy(() => import("./routes/Notebook"));
+const Admin = lazy(() => import("./routes/Admin"));
+const NoteEditor = lazy(() => import("./routes/NoteEditor"));
 
 const root = createRoot(document.getElementById("root")!);
 
 root.render(
   <Application>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/notebook" />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route
-          path="/*"
-          element={
-            <RequireAuth>
-              <HeaderLayout header={<AppHeader />} body={<Outlet />} />
-            </RequireAuth>
-          }
-        >
-          <Route path="lobby" element={<Lobby />} />
-
+    <Subscribe fallback={<Loading />}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/notebook" />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route
-            path="notebook/*"
+            path="/*"
             element={
-              <RequireRole role="author" fallback="/lobby">
-                <Notebook
-                  sidebarToolbar={<NotebookSidebarToolbar />}
-                  sidebar={<NotesList />}
-                  editorToolbar={<NotebookEditorToolbar />}
-                  editor={<Outlet />}
-                />
-              </RequireRole>
+              <RequireAuth>
+                <Suspense fallback={<Loading />}>
+                  <AppShell />
+                </Suspense>
+              </RequireAuth>
             }
           >
-            <Route path=":noteId" element={<NoteEditor />} />
+            <Route path="lobby" element={<Lobby />} />
+
+            <Route
+              path="notebook/*"
+              element={
+                <RequireRole role="author" fallback="/lobby">
+                  <Suspense fallback={<Loading />}>
+                    <Notebook />
+                  </Suspense>
+                </RequireRole>
+              }
+            >
+              <Route
+                path=":noteId"
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <NoteEditor />
+                  </Suspense>
+                }
+              />
+            </Route>
+
+            <Route
+              path="admin"
+              element={
+                <RequireRole role="admin" fallback="/">
+                  <Suspense fallback={<Loading />}>
+                    <Admin />
+                  </Suspense>
+                </RequireRole>
+              }
+            />
           </Route>
 
-          <Route
-            path="admin"
-            element={
-              <RequireRole role="admin" fallback="/">
-                <Admin />
-              </RequireRole>
-            }
-          />
-        </Route>
-
-        <Route element={<Navigate to="/" />} />
-      </Routes>
-    </BrowserRouter>
+          <Route element={<Navigate to="/" />} />
+        </Routes>
+      </BrowserRouter>
+    </Subscribe>
     <ReloadPrompt />
   </Application>
 );

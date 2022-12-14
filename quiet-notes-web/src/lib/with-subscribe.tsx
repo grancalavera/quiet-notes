@@ -1,7 +1,7 @@
 import { Subscribe } from "@react-rxjs/core";
 import { ReactNode } from "react";
 import { Observable } from "rxjs";
-import { LoadingLayout } from "../layout/loading-layout";
+import { Loading } from "../components/loading";
 
 interface WithSubscribeOptions {
   source$?: Observable<unknown>;
@@ -14,7 +14,11 @@ export function withSubscribe<T extends JSX.IntrinsicAttributes>(
 ) {
   const { source$, fallback } = options;
 
-  const actualFallback = fallback ? fallback : fallback === null ? null : <LoadingLayout />;
+  const actualFallback = fallback ? (
+    fallback
+  ) : fallback === null ? null : (
+    <Loading />
+  );
 
   return (props: T) => (
     <Subscribe source$={source$} fallback={actualFallback}>

@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import { Subscribe } from "@react-rxjs/core";
 import { FC, useRef } from "react";
 import { Navigate } from "react-router-dom";
-import { LoadingLayout } from "../layout/loading-layout";
+import { Loading } from "../components/loading";
 import { useSelectedNoteId } from "../notebook/notebook-state";
 import { updateNote, useNote } from "./note-state";
 
@@ -11,7 +11,7 @@ export const NoteEditor = () => {
   const noteId = useSelectedNoteId();
 
   return noteId ? (
-    <Subscribe fallback={<LoadingLayout />} key={noteId}>
+    <Subscribe fallback={<Loading />} key={noteId}>
       <NoteEditorInternal noteId={noteId} />
     </Subscribe>
   ) : null;

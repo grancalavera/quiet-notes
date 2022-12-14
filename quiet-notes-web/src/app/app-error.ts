@@ -13,21 +13,27 @@ export class QNError extends Error {
   }
 }
 
-export const isFirebaseError = (candidate: unknown): candidate is FirebaseError =>
+export const isFirebaseError = (
+  candidate: unknown
+): candidate is FirebaseError =>
   hasErrorName(candidate) && candidate.name === "FirebaseError";
 
-export const isPermissionDeniedError = (candidate: unknown): candidate is FirebaseError =>
+export const isPermissionDeniedError = (
+  candidate: unknown
+): candidate is FirebaseError =>
   isFirebaseError(candidate) && candidate.code === "permission-denied";
 
 export const isQnError = (candidate: unknown): candidate is QNError =>
   hasErrorName(candidate) && candidate.name === "QNError";
 
 const hasErrorName = (candidate: unknown): candidate is { name: string } =>
-  typeof candidate === "object" && candidate !== null && hasOwnProperty(candidate, "name");
+  typeof candidate === "object" &&
+  candidate !== null &&
+  hasOwnProperty(candidate, "name");
 
 // https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/#use-unknown-catch-variables
 export const errorFromUnknown = (error: unknown): QNError => {
-  const message = error instanceof Error && error.message ? error.message : "Unknown error";
-
+  const message =
+    error instanceof Error && error.message ? error.message : "Unknown error";
   return new QNError(message, error);
 };

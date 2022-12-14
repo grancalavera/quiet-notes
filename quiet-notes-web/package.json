@@ -54,11 +54,12 @@
     "workbox-window": "6.5.4"
   },
   "scripts": {
-    "t": "tsc",
+    "typecheck": "tsc",
     "start": "vite",
     "start:emulated": "VITE_FIREBASE_USE_EMULATORS=true vite",
     "build": "tsc && vite build",
     "build:w": "tsc -w & vite build -w",
+    "build:emulated:w": "tsc -w & VITE_FIREBASE_USE_EMULATORS=true vite build -w --mode development",
     "serve": "vite preview",
     "test": "jest",
     "test:ci": "jest --watchAll=false --verbose",
