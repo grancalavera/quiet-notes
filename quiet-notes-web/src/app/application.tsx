@@ -1,7 +1,5 @@
-import { Subscribe } from "@react-rxjs/core";
 import { FC, PropsWithChildren, StrictMode } from "react";
 import { FullPageLayout } from "../layout/full-page-layout";
-import { LoadingLayout } from "../layout/loading-layout";
 import { AppErrorBoundary } from "./app-error-boundary";
 import { AppTheme } from "./app-theme";
 
@@ -10,9 +8,7 @@ export const Application: FC<PropsWithChildren<{}>> = ({ children }) => {
     <StrictMode>
       <AppTheme>
         <FullPageLayout>
-          <AppErrorBoundary>
-            <Subscribe fallback={<LoadingLayout />}>{children}</Subscribe>
-          </AppErrorBoundary>
+          <AppErrorBoundary>{children}</AppErrorBoundary>
         </FullPageLayout>
       </AppTheme>
     </StrictMode>

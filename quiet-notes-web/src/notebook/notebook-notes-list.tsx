@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import { Subscribe } from "@react-rxjs/core";
 import { VFC } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoadingLayout } from "../layout/loading-layout";
+import { Loading } from "../components/loading";
 import { NotesListItem } from "./notebook-notes-list-item";
 import { useNotesCollection, useSelectedNoteId } from "./notebook-state";
 
@@ -11,10 +11,15 @@ export const testId = "notes-list";
 export const NotesList = () => {
   return (
     <Box
-      sx={{ height: "100%", overflowY: "auto", overflowX: "hidden", padding: "0.5rem" }}
+      sx={{
+        height: "100%",
+        overflowY: "auto",
+        overflowX: "hidden",
+        padding: "0.5rem",
+      }}
       data-testid={testId}
     >
-      <Subscribe fallback={<LoadingLayout />}>
+      <Subscribe fallback={<Loading />}>
         <NotesListInternal />
       </Subscribe>
     </Box>

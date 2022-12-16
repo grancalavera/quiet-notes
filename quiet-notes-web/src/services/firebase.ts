@@ -23,7 +23,10 @@ export const app$ = fromFetch("/__/firebase/init.json").pipe(
   map((config) => initializeApp(config)),
   tap((firebaseApp) => {
     if (isDev && emulate) {
-      connectAuthEmulator(getAuth(firebaseApp), env.VITE_FIREBASE_EMULATOR_AUTH);
+      connectAuthEmulator(
+        getAuth(firebaseApp),
+        env.VITE_FIREBASE_EMULATOR_AUTH
+      );
 
       connectFirestoreEmulator(
         getFirestore(firebaseApp),

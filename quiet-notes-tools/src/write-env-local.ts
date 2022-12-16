@@ -10,6 +10,7 @@ async function main(): Promise<void> {
 VITE_FIREBASE_EMULATOR_AUTH=http://localhost:${firebaseConfig.emulators.auth.port}
 VITE_FIREBASE_EMULATOR_FIRESTORE_PORT=${firebaseConfig.emulators.firestore.port}
 VITE_FIREBASE_EMULATOR_FUNCTIONS_PORT=${firebaseConfig.emulators.functions.port}
+# VITE_ENABLE_PWA_DEV=true
 BROWSER=none
 `;
   const path = resolve(__dirname, "../../quiet-notes-web/.env.local");
