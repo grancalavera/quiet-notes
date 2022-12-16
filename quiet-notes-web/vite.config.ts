@@ -39,6 +39,7 @@ export default defineConfig(({ mode }) => {
           "mstile-70x70.png",
         ],
         manifest: {
+          start_url: "/",
           name: "Quiet Notes",
           short_name: "Quiet Notes",
           description: "Quiet Notes",
