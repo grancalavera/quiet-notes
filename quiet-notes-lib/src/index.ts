@@ -1,4 +1,4 @@
-export type QNRole = "admin" | "author" | "user";
+export type QNRole = "root" | "admin" | "author" | "user";
 
 export interface QNListUsersResponse {
   users: QNUserRecord[];

@@ -20,11 +20,12 @@ import { useToggleRole, useUserList } from "../services/admin-service";
 export const Admin: FC = () => {
   const { data, refetch, isLoading } = useUserList();
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
-    columns,
-    data: data?.users ?? [],
-    getRowId: (x) => x.uid,
-  });
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable({
+      columns,
+      data: data?.users ?? [],
+      getRowId: (x) => x.uid,
+    });
 
   const someRoleUpdated = useAnyRoleUpdated();
 
@@ -50,7 +51,9 @@ export const Admin: FC = () => {
             {headerGroups.map((headerGroup) => (
               <TableRow {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
-                  <TableCell key={column.id}>{column.render("Header") as any}</TableCell>
+                  <TableCell key={column.id}>
+                    {column.render("Header") as any}
+                  </TableCell>
                 ))}
               </TableRow>
             ))}
@@ -63,7 +66,9 @@ export const Admin: FC = () => {
                 <TableRow {...row.getRowProps()}>
                   {row.cells.map((cell) => {
                     return (
-                      <TableCell {...cell.getCellProps()}>{cell.render("Cell") as any}</TableCell>
+                      <TableCell {...cell.getCellProps()}>
+                        {cell.render("Cell") as any}
+                      </TableCell>
                     );
                   })}
                 </TableRow>
@@ -76,11 +81,13 @@ export const Admin: FC = () => {
   );
 };
 
+type QNCheckboxToggle = QNToggleRole & { editable: boolean };
+
 interface CheckboxCellProps {
-  value: QNToggleRole;
+  value: QNCheckboxToggle;
 }
 
-const CheckboxCell: VFC<CheckboxCellProps> = ({ value }) => {
+const CheckboxCell: FC<CheckboxCellProps> = ({ value }) => {
   const [checked, setChecked] = useState(value.enabled);
   const { mutate: toggleRole } = useToggleRole();
 
@@ -90,6 +97,7 @@ const CheckboxCell: VFC<CheckboxCellProps> = ({ value }) => {
 
   return (
     <Checkbox
+      disabled={!value.editable}
       inputProps={{ "aria-label": `Toggle ${value.role} role` }}
       checked={checked}
       onChange={() => {
@@ -105,10 +113,11 @@ const CheckboxCell: VFC<CheckboxCellProps> = ({ value }) => {
 
 const toggleRoleAccessor =
   (role: QNRole) =>
-  (user: QNUserRecord): QNToggleRole => ({
+  (user: QNUserRecord): QNCheckboxToggle => ({
     email: user.email ?? "",
     role,
     enabled: user.customClaims.roles.includes(role),
+    editable: !user.customClaims.roles.includes("root"),
   });
 
 const columns: Column<QNUserRecord>[] = [
