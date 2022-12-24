@@ -1,3 +1,4 @@
+import GitHubIcon from "@mui/icons-material/GitHub";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {
   Avatar,
@@ -13,9 +14,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useIsAdmin, useUser } from "../auth/auth-state";
 import { authService } from "../services/auth-service";
-import { useAppTheme, useToggleAppTheme } from "./app-theme-state";
+import { toggleTheme, useAppTheme } from "./app-theme-state";
 import { ToggleThemeSwitch } from "./toggle-theme-switch";
-import GitHubIcon from "@mui/icons-material/GitHub";
 
 export const AppHeader = () => {
   const navigate = useNavigate();
@@ -115,7 +115,6 @@ const Profile = () => {
 
 const ToggleThemeButton = () => {
   const theme = useAppTheme();
-  const toggleTheme = useToggleAppTheme();
   return (
     <ToggleThemeSwitch
       checked={theme === "dark"}

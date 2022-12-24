@@ -2,13 +2,11 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import { Subscribe } from "@react-rxjs/core";
 import "normalize.css";
 import { lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Application } from "./app/application";
-import { ReloadPrompt } from "./app/reload-prompt";
 import { LoginPage, RequireAuth, RequireRole } from "./auth/auth";
 import { Loading } from "./components/loading";
 import { Lobby } from "./lobby/lobby";
@@ -23,60 +21,57 @@ const root = createRoot(document.getElementById("root")!);
 
 root.render(
   <Application>
-    <Subscribe fallback={<Loading />}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/notebook" />} />
-          <Route path="/login" element={<LoginPage />} />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/notebook" />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/*"
+          element={
+            <RequireAuth>
+              <Suspense fallback={<Loading />}>
+                <AppShell />
+              </Suspense>
+            </RequireAuth>
+          }
+        >
+          <Route path="lobby" element={<Lobby />} />
+
           <Route
-            path="/*"
+            path="notebook/*"
             element={
-              <RequireAuth>
+              <RequireRole role="author" fallback="/lobby">
                 <Suspense fallback={<Loading />}>
-                  <AppShell />
+                  <Notebook />
                 </Suspense>
-              </RequireAuth>
+              </RequireRole>
             }
           >
-            <Route path="lobby" element={<Lobby />} />
-
             <Route
-              path="notebook/*"
+              path=":noteId"
               element={
-                <RequireRole role="author" fallback="/lobby">
-                  <Suspense fallback={<Loading />}>
-                    <Notebook />
-                  </Suspense>
-                </RequireRole>
-              }
-            >
-              <Route
-                path=":noteId"
-                element={
-                  <Suspense fallback={<Loading />}>
-                    <NoteEditor />
-                  </Suspense>
-                }
-              />
-            </Route>
-
-            <Route
-              path="admin"
-              element={
-                <RequireRole role="admin" fallback="/">
-                  <Suspense fallback={<Loading />}>
-                    <Admin />
-                  </Suspense>
-                </RequireRole>
+                <Suspense fallback={<Loading />}>
+                  <NoteEditor />
+                </Suspense>
               }
             />
           </Route>
 
-          <Route element={<Navigate to="/" />} />
-        </Routes>
-      </BrowserRouter>
-    </Subscribe>
-    <ReloadPrompt />
+          <Route
+            path="admin"
+            element={
+              <RequireRole role="admin" fallback="/">
+                <Suspense fallback={<Loading />}>
+                  <Admin />
+                </Suspense>
+              </RequireRole>
+            }
+          />
+        </Route>
+
+        <Route element={<Navigate to="/" />} />
+      </Routes>
+    </BrowserRouter>
   </Application>
 );
 

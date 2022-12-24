@@ -1,7 +1,7 @@
-import clsx from "clsx";
-import { styled } from "@mui/system";
 import { useSwitch, UseSwitchProps } from "@mui/core/SwitchUnstyled";
-import { VFC } from "react";
+import { styled } from "@mui/system";
+import clsx from "clsx";
+import { FC } from "react";
 
 const SwitchRoot = styled("span")(`
   display: inline-block;
@@ -71,7 +71,7 @@ const SwitchTrack = styled("span")(
 `
 );
 
-export const ToggleThemeSwitch: VFC<UseSwitchProps> = (props) => {
+export const ToggleThemeSwitch: FC<UseSwitchProps> = (props) => {
   const { getInputProps, checked, disabled, focusVisible } = useSwitch(props);
 
   const stateClasses = {
