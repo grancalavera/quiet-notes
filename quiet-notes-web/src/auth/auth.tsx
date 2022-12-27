@@ -11,7 +11,11 @@ interface RoleProps {
   fallback: string;
 }
 
-export const RequireRole = ({ children, role, fallback }: PropsWithChildren<RoleProps>) => {
+export const RequireRole = ({
+  children,
+  role,
+  fallback,
+}: PropsWithChildren<RoleProps>) => {
   const hasRole = useHasRole(role);
   return hasRole ? <>{children}</> : <Navigate to={fallback} />;
 };
@@ -20,7 +24,11 @@ export const RequireAuth = ({ children }: PropsWithChildren<{}>) => {
   const authState = useAuthState();
   const location = useLocation();
 
-  return authState ? <>{children}</> : <Navigate to="/login" state={{ from: location }} />;
+  return authState ? (
+    <>{children}</>
+  ) : (
+    <Navigate to="/login" state={{ from: location }} />
+  );
 };
 
 export const LoginPage = () => {

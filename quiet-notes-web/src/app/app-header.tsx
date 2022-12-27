@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useIsAdmin, useUser } from "../auth/auth-state";
 import { authService } from "../services/auth-service";
-import { toggleTheme, useAppTheme } from "./app-theme-state";
+import { toggleTheme, useSettings } from "../settings/settings-state";
 import { ToggleThemeSwitch } from "./toggle-theme-switch";
 
 export const AppHeader = () => {
@@ -83,7 +83,13 @@ const Profile = () => {
         <em>{user?.uid}</em>
       </Typography>
 
-      <Button onClick={() => authService.signOut()} variant="contained">
+      <Button
+        onClick={async () => {
+          await authService.signOut();
+          location.reload();
+        }}
+        variant="contained"
+      >
         Sign Out
       </Button>
     </ProfileLayout>
@@ -114,7 +120,7 @@ const Profile = () => {
 };
 
 const ToggleThemeButton = () => {
-  const theme = useAppTheme();
+  const theme = useSettings().theme;
   return (
     <ToggleThemeSwitch
       checked={theme === "dark"}
