@@ -1,17 +1,36 @@
 import ViteReact from "@vitejs/plugin-react";
+import { relative } from "path";
 import {
   defineConfig,
-  splitVendorChunkPlugin,
   loadEnv,
+  splitVendorChunkPlugin,
   UserConfigExport,
 } from "vite";
+import Inspect from "vite-plugin-inspect";
 import { VitePWA } from "vite-plugin-pwa";
+
+function InjectFilename() {
+  return {
+    name: "InjectPathname",
+    transform(code, id) {
+      if (id.endsWith(".tsx") || id.endsWith(".ts")) {
+        return {
+          code: `const __filename = "${relative(process.cwd(), id)}";
+${code}`,
+          map: null,
+        };
+      }
+    },
+  };
+}
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   const config: UserConfigExport = {
     plugins: [
+      InjectFilename(),
+      Inspect(),
       splitVendorChunkPlugin(),
       ViteReact(),
       VitePWA({

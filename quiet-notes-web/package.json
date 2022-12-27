@@ -89,5 +89,8 @@
   "engines": {
     "node": ">=16",
     "pnpm": ">=7"
+  },
+  "devDependencies": {
+    "vite-plugin-inspect": "0.7.11"
   }
 }

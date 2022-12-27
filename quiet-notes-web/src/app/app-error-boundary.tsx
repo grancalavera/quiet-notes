@@ -48,12 +48,20 @@ interface GlobalErrorHandlerProps {
 
 const GlobalErrorHandler = ({ error }: GlobalErrorHandlerProps) => {
   const [isOpen, setIsOpen] = useState(true);
-  return <ErrorAlert error={error} onClose={() => setIsOpen(false)} isOpen={isOpen} />;
+  return (
+    <ErrorAlert
+      error={error}
+      onClose={() => setIsOpen(false)}
+      isOpen={isOpen}
+    />
+  );
 };
 
 const AppErrorHandler = withSubscribe(() => {
   const [nextError] = useAppErrors();
-  return <ErrorAlert error={nextError} onClose={dismissError} isOpen={!!nextError} />;
+  return (
+    <ErrorAlert error={nextError} onClose={dismissError} isOpen={!!nextError} />
+  );
 });
 
 interface ErrorAlertProps {
@@ -62,49 +70,54 @@ interface ErrorAlertProps {
   onClose: () => void;
 }
 
-const ErrorAlert = ({ error, ...props }: ErrorAlertProps) => {
-  return (
-    <Dialog
-      open={props.isOpen}
-      onClose={props.onClose}
-      aria-labelledby="error-alert-title"
-      aria-describedby="error-alert-description"
-    >
-      {(() => {
-        if (isFirebaseError(error)) {
-          return (
-            <>
-              <DialogTitle id="error-alert-title">{error.name}</DialogTitle>
-              <DialogContent>
-                <DialogContentText id="error-alert-description" sx={{ whiteSpace: "pre-wrap" }}>
-                  {error.code} {process.env.NODE_ENV === "development" && `\n\n${error.message}`}
-                </DialogContentText>
-              </DialogContent>
-            </>
-          );
-        } else if (isQnError(error)) {
-          return (
-            <>
-              <DialogTitle id="error-alert-title">{error.name}</DialogTitle>
-              <DialogContent>
-                <DialogContentText id="error-alert-description">{error.message}</DialogContentText>
-              </DialogContent>
-            </>
-          );
-        } else {
-          return (
-            <>
-              <DialogTitle id="error-alert-title">Fatal Error</DialogTitle>
-              <DialogContentText id="error-alert-decription">
-                Something went wrong! Please reload the page.
+const ErrorAlert = ({ error, ...props }: ErrorAlertProps) => (
+  <Dialog
+    open={props.isOpen}
+    onClose={props.onClose}
+    aria-labelledby="error-alert-title"
+    aria-describedby="error-alert-description"
+  >
+    {(() => {
+      if (isFirebaseError(error)) {
+        return (
+          <>
+            <DialogTitle id="error-alert-title">{error.name}</DialogTitle>
+            <DialogContent>
+              <DialogContentText
+                id="error-alert-description"
+                sx={{ whiteSpace: "pre-wrap" }}
+              >
+                {error.code}{" "}
+                {process.env.NODE_ENV === "development" &&
+                  `\n\n${error.message}`}
               </DialogContentText>
-            </>
-          );
-        }
-      })()}
-      <DialogActions>
-        <Button onClick={props.onClose}>ok</Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
+            </DialogContent>
+          </>
+        );
+      } else if (isQnError(error)) {
+        return (
+          <>
+            <DialogTitle id="error-alert-title">{error.name}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="error-alert-description">
+                {error.message}
+              </DialogContentText>
+            </DialogContent>
+          </>
+        );
+      } else {
+        return (
+          <>
+            <DialogTitle id="error-alert-title">Fatal Error</DialogTitle>
+            <DialogContentText id="error-alert-description">
+              Something went wrong! Please reload the page.
+            </DialogContentText>
+          </>
+        );
+      }
+    })()}
+    <DialogActions>
+      <Button onClick={props.onClose}>ok</Button>
+    </DialogActions>
+  </Dialog>
+);
