@@ -46,7 +46,6 @@ export const [useAppErrors, appErrors$] = bind<ErrorState>(
           assertNever(signal);
       }
     }, defaultState),
-    startWith(defaultState),
-    peek("errors")
+    startWith(defaultState)
   )
 );

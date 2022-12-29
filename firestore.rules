@@ -13,10 +13,14 @@ service cloud.firestore {
     return loggedIn() && request.auth.token.roles != null && "admin" in request.auth.token.roles;
   }
 
+  function onwsPath(path) {
+    return loggedIn() && request.auth.uid == path;
+  }
+
   match /databases/{database}/documents {
 
     match /notes/{note} {
-      allow create: if request.auth != null;
+      allow create: if loggedIn();
       allow read: if isAuthor();
       allow update: if isAuthor();
       allow delete: if isAuthor();
@@ -27,8 +31,13 @@ service cloud.firestore {
     }
 
     match /roles-updates/{uid} {
-      allow read: if loggedIn() && request.auth.uid == uid
+      allow read: if onwsPath(uid)
     }
 
+    match /settings/{uid} {
+      allow create: if loggedIn();
+      allow read: if onwsPath(uid)
+      allow update: if onwsPath(uid)
+    }
   }
 }

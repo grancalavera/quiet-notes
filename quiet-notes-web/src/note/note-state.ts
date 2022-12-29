@@ -24,6 +24,9 @@ const remoteNote$ = (noteId: string) =>
       // the requested object, but in reality the object doesn't exit. This
       // error should also be raised when users try to read a note that exist
       // but doesn't belong to them.
+
+      // This can be happening because we're actually trying to read a note that
+      // doesn't belong to us.
       return isPermissionDeniedError(error)
         ? of(undefined)
         : throwError(() => error);
