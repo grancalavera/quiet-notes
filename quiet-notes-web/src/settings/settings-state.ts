@@ -7,6 +7,7 @@ import {
   filter,
   first,
   ignoreElements,
+  NEVER,
   scan,
   shareReplay,
   startWith,
@@ -24,9 +25,11 @@ const [signal$, sendSignal] = createSignal<SettingsSignal>();
 export const toggleTheme = () => sendSignal({ kind: "ToggleTheme" });
 
 const loadSettings$ = settingsService.settings$.pipe(
-  catchError((error, caught) => {
-    handleError(new QNError("Failed to load user settings.", error));
-    return caught;
+  catchError((error) => {
+    const message = "Failed to load user settings.";
+    console.error(message, error);
+    handleError(new QNError(message, error));
+    return NEVER;
   }),
   first(),
   startWith(defaultSettings),

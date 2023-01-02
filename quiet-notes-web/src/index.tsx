@@ -11,6 +11,8 @@ import { LoginPage, RequireAuth, RequireRole } from "./auth/auth";
 import { Loading } from "./components/loading";
 import { Lobby } from "./lobby/lobby";
 import reportWebVitals from "./reportWebVitals";
+import logger from "virtual:logger";
+console.log({ logger });
 
 const AppShell = lazy(() => import("./routes/AppShell"));
 const Notebook = lazy(() => import("./routes/Notebook"));

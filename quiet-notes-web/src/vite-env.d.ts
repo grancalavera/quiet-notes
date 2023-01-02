@@ -14,3 +14,7 @@ interface ImportMeta {
 }
 
 declare const __filename: string;
+
+declare module "virtual:logger" {
+  export default string;
+}

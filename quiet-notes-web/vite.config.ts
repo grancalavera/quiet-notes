@@ -1,13 +1,20 @@
 import ViteReact from "@vitejs/plugin-react";
-import { relative } from "path";
+import { promises as fs } from "fs";
+import path from "node:path";
+import { dirname, relative, resolve } from "path";
+import { fileURLToPath } from "url";
 import {
   defineConfig,
   loadEnv,
+  Plugin,
   splitVendorChunkPlugin,
   UserConfigExport,
 } from "vite";
 import Inspect from "vite-plugin-inspect";
 import { VitePWA } from "vite-plugin-pwa";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const __filename = (id: string): string => relative(process.cwd(), id);
 
 function InjectFilename() {
   return {
@@ -24,13 +31,52 @@ ${code}`,
   };
 }
 
+// https://rollupjs.org/guide/en/#plugins-overview
+function Logger(): Plugin {
+  const moduleId = "virtual:logger";
+  const resolvedModuleBasename = `\0${moduleId}`;
+
+  return <Plugin>{
+    name: "vite-plugin-logger",
+    resolveId: (id, importer) => {
+      if (id === moduleId) {
+        const params = new URLSearchParams({
+          filename: __filename(importer ?? ""),
+        });
+
+        const resolvedModuleId = path.posix.join(
+          resolvedModuleBasename,
+          `?${params.toString()}`
+        );
+
+        return resolvedModuleId;
+      }
+    },
+    load: async (id) => {
+      if (id.startsWith(resolvedModuleBasename)) {
+        const searchParams = new URL(id).searchParams;
+
+        const source = await fs.readFile(
+          resolve(__dirname, "src/logger-plugin.ts"),
+          "utf8"
+        );
+
+        return source.replace(
+          "__FILENAME__",
+          searchParams.get("filename") ?? ""
+        );
+      }
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   const config: UserConfigExport = {
     plugins: [
-      InjectFilename(),
       Inspect(),
+      Logger(),
       splitVendorChunkPlugin(),
       ViteReact(),
       VitePWA({
