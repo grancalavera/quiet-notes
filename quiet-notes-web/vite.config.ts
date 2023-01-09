@@ -161,7 +161,10 @@ export default defineConfig(({ mode }) => {
       // https://github.com/http-party/node-http-proxy#options
       proxy: {
         "^/__/firebase/.*": {
-          target: "https://quiet-notes-e83fb.web.app",
+          target:
+            env.VITE_FIREBASE_USE_EMULATORS === "true"
+              ? "http://localhost:5000"
+              : "https://quiet-notes-e83fb.web.app",
           changeOrigin: true,
         },
       },
