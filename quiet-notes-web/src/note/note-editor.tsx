@@ -4,11 +4,21 @@ import { Subscribe } from "@react-rxjs/core";
 import { FC, useRef } from "react";
 import { Navigate } from "react-router-dom";
 import { Loading } from "../components/loading";
-import { useSelectedNoteId } from "../notebook/notebook-state";
+import { useSelectedNoteId, useSidebarNote } from "../notebook/notebook-state";
 import { updateNote, useNote } from "./note-state";
 
-export const NoteEditor = () => {
+export const DefaultNoteEditor = () => {
   const noteId = useSelectedNoteId();
+
+  return noteId ? (
+    <Subscribe fallback={<Loading />} key={noteId}>
+      <NoteEditorInternal noteId={noteId} />
+    </Subscribe>
+  ) : null;
+};
+
+export const SidebarNoteEditor = () => {
+  const noteId = useSidebarNote();
 
   return noteId ? (
     <Subscribe fallback={<Loading />} key={noteId}>

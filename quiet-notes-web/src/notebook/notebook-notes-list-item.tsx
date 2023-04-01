@@ -7,7 +7,6 @@ import {
 } from "@mui/material";
 import { formatDate } from "../lib/date-format";
 import { usePrevious } from "../lib/use-previous";
-import { DeleteNoteButton } from "../notebook-toolbars/delete-note-button";
 import { OpenInSidebarButton } from "../notebook-toolbars/open-in-sidebar-button";
 import { deriveTitle, Note } from "./notebook-model";
 

@@ -1,4 +1,4 @@
-import { useSelectedNoteId } from "../notebook/notebook-state";
+import { openNoteInSidebar } from "../notebook/notebook-state";
 import { NotebookToolbarButton } from "./notebook-toolbar-button";
 
 export const OpenInSidebarButton = ({ noteId }: { noteId: string }) => {
@@ -6,7 +6,7 @@ export const OpenInSidebarButton = ({ noteId }: { noteId: string }) => {
     <NotebookToolbarButton
       loading={false}
       title="Open note in sidebar"
-      onClick={() => console.log("open in sidebar:", noteId)}
+      onClick={() => openNoteInSidebar(noteId)}
       kind="split"
     />
   );
