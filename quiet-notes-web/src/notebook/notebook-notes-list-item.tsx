@@ -7,13 +7,9 @@ import {
 } from "@mui/material";
 import { formatDate } from "../lib/date-format";
 import { usePrevious } from "../lib/use-previous";
-import { OpenInSidebarButton } from "../notebook-toolbars/open-in-sidebar-button";
+import { DeleteNoteButton } from "../toolbars/delete-note-button";
 import { deriveTitle, Note } from "./notebook-model";
-
-export const tid = {
-  component: "notes-list-item",
-  trigger: "notes-list-item-trigger",
-};
+import { openMainNote, useIsNoteOpen } from "./notebook-state";
 
 export const defaultNoteTitle = "Untitled Note";
 export const maxTitleLength = 27;
@@ -26,15 +22,11 @@ export const updatedAt = (date?: Date) =>
 
 export interface NotesListItemProps {
   note: Note;
-  isSelected: boolean;
-  onSelect: (noteId: string) => void;
 }
 
-export function NotesListItem({
-  note,
-  isSelected,
-  onSelect,
-}: NotesListItemProps) {
+export const NotesListItem = ({ note }: NotesListItemProps) => {
+  const isOpen = useIsNoteOpen(note.id);
+
   const previous = usePrevious({
     _createdAt: note._createdAt,
     _updatedAt: note._updatedAt,
@@ -42,14 +34,10 @@ export function NotesListItem({
 
   return (
     <Card
-      sx={{ mb: 1, bgcolor: isSelected ? "action.selected" : "" }}
-      aria-current={isSelected ? "true" : "false"}
-      data-testid={tid.component}
+      sx={{ mb: 1, bgcolor: isOpen ? "action.selected" : "" }}
+      aria-current={isOpen ? "true" : "false"}
     >
-      <CardActionArea
-        onClick={() => onSelect(note.id)}
-        data-testid={tid.trigger}
-      >
+      <CardActionArea onClick={() => openMainNote(note.id)}>
         <CardContent>
           <Typography gutterBottom variant="h6" noWrap>
             {deriveTitle(note) || defaultNoteTitle}
@@ -67,8 +55,8 @@ export function NotesListItem({
 
       {/* change to https://mui.com/components/menus/#context-menu */}
       <CardActions sx={{ justifyContent: "flex-end" }}>
-        <OpenInSidebarButton noteId={note.id} />
+        <DeleteNoteButton noteId={note.id} />
       </CardActions>
     </Card>
   );
-}
+};

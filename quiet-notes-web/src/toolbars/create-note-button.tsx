@@ -1,24 +1,24 @@
 import { useEffect } from "react";
 import { handleError } from "../app/app-error-state";
 import { isLoadFailure, isLoading, isLoadSuccess } from "../lib/load-result";
-import { useDeleteNote, useSelectedNoteId } from "../notebook/notebook-state";
+import { openMainNote, useCreateNote } from "../notebook/notebook-state";
 import { NotebookToolbarButton } from "./notebook-toolbar-button";
 
-export const DeleteNoteButton = () => {
-  const { mutate: deleteNote, result, reset } = useDeleteNote();
-  const noteId = useSelectedNoteId();
+export const CreateNoteButton = () => {
+  const { mutate: createNote, reset, result } = useCreateNote();
 
   useEffect(() => {
+    isLoadSuccess(result) && openMainNote(result.value);
     isLoadFailure(result) && handleError(result.error);
     (isLoadSuccess(result) || isLoadFailure(result)) && reset();
   }, [result]);
 
-  return noteId ? (
+  return (
     <NotebookToolbarButton
       loading={isLoading(result)}
-      title="delete note"
-      onClick={() => deleteNote(noteId)}
-      kind="delete"
+      title="create note"
+      onClick={() => createNote()}
+      kind="create"
     />
-  ) : null;
+  );
 };

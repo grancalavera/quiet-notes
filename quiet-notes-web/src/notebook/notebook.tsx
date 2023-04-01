@@ -6,13 +6,11 @@ interface NotebookProps {
   className?: string;
   sidebarToolbar?: ReactNode;
   sidebar?: ReactNode;
-  editorToolbar?: ReactNode;
   editor?: ReactNode;
-  editorSidebar?: ReactNode;
 }
 
 export const Notebook = (props: NotebookProps) => (
-  <Layout showSidebar={!!props.editorSidebar}>
+  <Layout>
     <Box
       sx={{
         borderRightWidth: 1,
@@ -37,41 +35,22 @@ export const Notebook = (props: NotebookProps) => (
     </Box>
     <Box
       sx={{
-        gridArea: "editor-toolbar",
-        overflow: "hidden",
-      }}
-    >
-      {props.editorToolbar}
-    </Box>
-    <Box
-      sx={{
         gridArea: "editor",
         overflow: "hidden",
       }}
     >
       {props.editor}
     </Box>
-    {props.editorSidebar ? (
-      <Box
-        sx={{
-          gridArea: "editor-sidebar",
-          overflow: "hidden",
-        }}
-      >
-        {props.editorSidebar}
-      </Box>
-    ) : null}
   </Layout>
 );
 
-const Layout = styled("div")<{ showSidebar: boolean }>`
+const Layout = styled("div")`
   display: grid;
   height: 100%;
-  grid-template-columns: 300px 1fr 1fr;
+  grid-template-columns: 300px 1fr;
   grid-template-rows: auto 1fr;
 
   grid-template-areas:
-    "sidebar-toolbar editor-toolbar editor-toolbar"
-    "sidebar editor ${({ showSidebar }) =>
-      showSidebar ? "editor-sidebar" : "editor"}";
+    "sidebar-toolbar editor"
+    "sidebar editor ";
 `;

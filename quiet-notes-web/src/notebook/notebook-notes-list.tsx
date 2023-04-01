@@ -1,12 +1,9 @@
 import Box from "@mui/material/Box";
 import { Subscribe } from "@react-rxjs/core";
-import { VFC } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../components/loading";
 import { NotesListItem } from "./notebook-notes-list-item";
-import { useNotesCollection, useSelectedNoteId } from "./notebook-state";
-
-export const testId = "notes-list";
+import { notebookState$, useNotesCollection } from "./notebook-state";
 
 export const NotesList = () => {
   return (
@@ -17,7 +14,6 @@ export const NotesList = () => {
         overflowX: "hidden",
         padding: "0.5rem",
       }}
-      data-testid={testId}
     >
       <Subscribe fallback={<Loading />}>
         <NotesListInternal />
@@ -26,21 +22,15 @@ export const NotesList = () => {
   );
 };
 
-const NotesListInternal: VFC = () => {
-  const selectedNoteId = useSelectedNoteId();
+const NotesListInternal = () => {
   const notes = useNotesCollection();
   const navigate = useNavigate();
 
   return (
-    <>
+    <Subscribe source$={notebookState$}>
       {notes.map((note) => (
-        <NotesListItem
-          note={note}
-          key={note.id}
-          isSelected={note.id === selectedNoteId}
-          onSelect={() => navigate(`/notebook/${note.id}`)}
-        />
+        <NotesListItem note={note} key={note.id} />
       ))}
-    </>
+    </Subscribe>
   );
 };

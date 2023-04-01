@@ -1,2 +1,2 @@
-import { DefaultNoteEditor } from "../note/note-editor";
-export default () => <DefaultNoteEditor />;
+import { NoteEditor } from "../note/note-editor";
+export default () => <NoteEditor />;
