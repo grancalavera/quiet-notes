@@ -1,6 +1,14 @@
-import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
+import {
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  Typography,
+} from "@mui/material";
 import { formatDate } from "../lib/date-format";
 import { usePrevious } from "../lib/use-previous";
+import { DeleteNoteButton } from "../notebook-toolbars/delete-note-button";
+import { OpenInSidebarButton } from "../notebook-toolbars/open-in-sidebar-button";
 import { deriveTitle, Note } from "./notebook-model";
 
 export const tid = {
@@ -23,7 +31,11 @@ export interface NotesListItemProps {
   onSelect: (noteId: string) => void;
 }
 
-export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps) {
+export function NotesListItem({
+  note,
+  isSelected,
+  onSelect,
+}: NotesListItemProps) {
   const previous = usePrevious({
     _createdAt: note._createdAt,
     _updatedAt: note._updatedAt,
@@ -35,7 +47,10 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
       aria-current={isSelected ? "true" : "false"}
       data-testid={tid.component}
     >
-      <CardActionArea onClick={() => onSelect(note.id)} data-testid={tid.trigger}>
+      <CardActionArea
+        onClick={() => onSelect(note.id)}
+        data-testid={tid.trigger}
+      >
         <CardContent>
           <Typography gutterBottom variant="h6" noWrap>
             {deriveTitle(note) || defaultNoteTitle}
@@ -52,9 +67,9 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
       </CardActionArea>
 
       {/* change to https://mui.com/components/menus/#context-menu */}
-      {/* <CardActions sx={{ justifyContent: "flex-end" }}>
-        <DeleteNoteButton noteId={note.id} isSelected={isSelected} />
-      </CardActions> */}
+      <CardActions sx={{ justifyContent: "flex-end" }}>
+        <OpenInSidebarButton noteId={note.id} />
+      </CardActions>
     </Card>
   );
 }

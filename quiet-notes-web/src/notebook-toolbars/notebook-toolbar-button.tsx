@@ -1,3 +1,4 @@
+import CallSplitIcon from "@mui/icons-material/CallSplit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import SaveIcon from "@mui/icons-material/Save";
@@ -10,13 +11,14 @@ interface NotebookToolbarButtonProps {
   loading: boolean;
   onClick: () => void;
   title: string;
-  kind: "save" | "delete" | "create";
+  kind: "save" | "delete" | "create" | "split";
 }
 
 const iconByKind: Record<NotebookToolbarButtonProps["kind"], ReactNode> = {
   create: <NoteAddIcon />,
   delete: <DeleteIcon />,
   save: <SaveIcon />,
+  split: <CallSplitIcon />,
 };
 
 export const NotebookToolbarButton: VFC<NotebookToolbarButtonProps> = ({
