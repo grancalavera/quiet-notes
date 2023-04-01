@@ -1,4 +1,5 @@
 import CloseIcon from "@mui/icons-material/Close";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EastIcon from "@mui/icons-material/East";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
@@ -12,7 +13,7 @@ interface NotebookToolbarButtonProps {
   loading?: boolean;
   onClick: () => void;
   title: string;
-  kind: "save" | "delete" | "create" | "split" | "close";
+  kind: "save" | "delete" | "create" | "split" | "close" | "duplicate";
   disabled?: boolean;
 }
 
@@ -22,6 +23,7 @@ const iconByKind: Record<NotebookToolbarButtonProps["kind"], ReactNode> = {
   save: <SaveIcon />,
   split: <EastIcon />,
   close: <CloseIcon />,
+  duplicate: <ContentCopyIcon />,
 };
 
 export const NotebookToolbarButton = ({

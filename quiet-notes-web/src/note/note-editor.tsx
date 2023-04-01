@@ -38,7 +38,7 @@ const AdditionalNoteEditor = () => {
     <Subscribe fallback={<Loading />} key={noteId}>
       <NoteEditorLayout
         editor={<NoteEditorInternal noteId={noteId} />}
-        toolbar={<AdditionalNoteEditorToolbar />}
+        toolbar={<AdditionalNoteEditorToolbar noteId={noteId} />}
       />
     </Subscribe>
   ) : null;
