@@ -14,9 +14,9 @@ export interface Note {
   readonly _updatedAt?: Date;
 }
 
-export const createNote = (author: string): Note => ({
+export const createNote = (author: string, content: string = ""): Note => ({
   id: nanoid(),
-  content: "",
+  content,
   author,
   clock: initialize(clientId),
   _version: 0,

@@ -1,28 +1,69 @@
-import { TextareaAutosize } from "@mui/material";
+import { Stack, TextareaAutosize } from "@mui/material";
 import Box from "@mui/material/Box";
 import { Subscribe } from "@react-rxjs/core";
-import { FC, useRef } from "react";
-import { Navigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
 import { Loading } from "../components/loading";
-import { useSelectedNoteId } from "../notebook/notebook-state";
+import { useAdditionalNoteId, useMainNoteId } from "../notebook/notebook-state";
+import {
+  AdditionalNoteEditorToolbar,
+  MainNoteEditorToolbar,
+} from "../toolbars/note-editor-toolbar";
+import { NoteEditorLayout } from "./note-editor-layout";
 import { updateNote, useNote } from "./note-state";
 
 export const NoteEditor = () => {
-  const noteId = useSelectedNoteId();
+  return (
+    <Stack direction={"row"} width="100%" height="100%" gap={1} padding={1}>
+      <MainNoteEditor />
+      <AdditionalNoteEditor />
+    </Stack>
+  );
+};
 
+const MainNoteEditor = () => {
+  const noteId = useMainNoteId();
   return noteId ? (
     <Subscribe fallback={<Loading />} key={noteId}>
-      <NoteEditorInternal noteId={noteId} />
+      <NoteEditorLayout
+        editor={<NoteEditorInternal noteId={noteId} />}
+        toolbar={<MainNoteEditorToolbar noteId={noteId} />}
+      />
     </Subscribe>
   ) : null;
 };
 
-const NoteEditorInternal: FC<{ noteId: string }> = ({ noteId }) => {
+const AdditionalNoteEditor = () => {
+  const noteId = useAdditionalNoteId();
+  return noteId ? (
+    <Subscribe fallback={<Loading />} key={noteId}>
+      <NoteEditorLayout
+        editor={<NoteEditorInternal noteId={noteId} />}
+        toolbar={<AdditionalNoteEditorToolbar noteId={noteId} />}
+      />
+    </Subscribe>
+  ) : null;
+};
+
+const NoteEditorInternal = ({ noteId }: { noteId: string }) => {
   const note = useNote(noteId);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
+  useEffect(() => {
+    const textArea = inputRef.current;
+    if (textArea) {
+      const end = textArea.value.length;
+      textArea.focus();
+      textArea.setSelectionRange(end, end);
+    }
+  }, []);
+
   return note ? (
-    <Box sx={{ overflow: "hidden", height: "100%", padding: "0.5rem" }}>
+    <Box
+      sx={{
+        overflow: "hidden",
+        height: "100%",
+      }}
+    >
       <TextareaAutosize
         aria-label="a quiet note"
         ref={inputRef}
@@ -39,7 +80,5 @@ const NoteEditorInternal: FC<{ noteId: string }> = ({ noteId }) => {
         }}
       />
     </Box>
-  ) : (
-    <Navigate to="/notebook" />
-  );
+  ) : null;
 };

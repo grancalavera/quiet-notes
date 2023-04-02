@@ -38,7 +38,7 @@ root.render(
           <Route path="lobby" element={<Lobby />} />
 
           <Route
-            path="notebook/*"
+            path="notebook"
             element={
               <RequireRole role="author" fallback="/lobby">
                 <Suspense fallback={<Loading />}>
@@ -46,16 +46,7 @@ root.render(
                 </Suspense>
               </RequireRole>
             }
-          >
-            <Route
-              path=":noteId"
-              element={
-                <Suspense fallback={<Loading />}>
-                  <NoteEditor />
-                </Suspense>
-              }
-            />
-          </Route>
+          />
 
           <Route
             path="admin"

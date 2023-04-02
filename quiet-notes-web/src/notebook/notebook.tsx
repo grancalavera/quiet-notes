@@ -6,7 +6,6 @@ interface NotebookProps {
   className?: string;
   sidebarToolbar?: ReactNode;
   sidebar?: ReactNode;
-  editorToolbar?: ReactNode;
   editor?: ReactNode;
 }
 
@@ -36,14 +35,6 @@ export const Notebook = (props: NotebookProps) => (
     </Box>
     <Box
       sx={{
-        gridArea: "editor-toolbar",
-        overflow: "hidden",
-      }}
-    >
-      {props.editorToolbar}
-    </Box>
-    <Box
-      sx={{
         gridArea: "editor",
         overflow: "hidden",
       }}
@@ -60,6 +51,6 @@ const Layout = styled("div")`
   grid-template-rows: auto 1fr;
 
   grid-template-areas:
-    "sidebar-toolbar editor-toolbar"
-    "sidebar editor";
+    "sidebar-toolbar editor"
+    "sidebar editor ";
 `;

@@ -5,7 +5,7 @@ export interface NotebookServiceSchema {
   getNotesCollection: () => Observable<Note[]>;
   getNoteById: (id: NoteId) => Observable<Note>;
 
-  createNote: () => Promise<NoteId>;
+  createNote: (content?: string) => Promise<NoteId>;
   saveNote: (note: Note) => Promise<void>;
   deleteNote: (id: NoteId) => Promise<void>;
 }

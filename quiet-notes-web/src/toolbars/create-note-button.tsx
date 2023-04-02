@@ -1,16 +1,14 @@
-import { useEffect, VFC } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { handleError } from "../app/app-error-state";
 import { isLoadFailure, isLoading, isLoadSuccess } from "../lib/load-result";
-import { useCreateNote } from "../notebook/notebook-state";
+import { openMainNote, useCreateNote } from "../notebook/notebook-state";
 import { NotebookToolbarButton } from "./notebook-toolbar-button";
 
-export const CreateNoteButton: VFC = () => {
+export const CreateNoteButton = () => {
   const { mutate: createNote, reset, result } = useCreateNote();
-  const navigate = useNavigate();
 
   useEffect(() => {
-    isLoadSuccess(result) && navigate(`/notebook/${result.value}`);
+    isLoadSuccess(result) && openMainNote(result.value);
     isLoadFailure(result) && handleError(result.error);
     (isLoadSuccess(result) || isLoadFailure(result)) && reset();
   }, [result]);
@@ -19,7 +17,7 @@ export const CreateNoteButton: VFC = () => {
     <NotebookToolbarButton
       loading={isLoading(result)}
       title="create note"
-      onClick={() => createNote()}
+      onClick={() => createNote("")}
       kind="create"
     />
   );

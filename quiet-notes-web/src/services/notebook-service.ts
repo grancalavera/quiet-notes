@@ -41,9 +41,9 @@ export const notebookService: NotebookServiceSchema = {
       })
     ),
 
-  createNote: async () => {
+  createNote: async (content) => {
     const { firestore, user } = await firstValueFrom(serviceContext$);
-    const note = createNote(user.uid);
+    const note = createNote(user.uid, content);
     await setDoc(noteRef(firestore, note.id), note);
     return note.id;
   },
