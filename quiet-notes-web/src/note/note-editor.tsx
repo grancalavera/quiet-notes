@@ -1,7 +1,7 @@
 import { Stack, TextareaAutosize } from "@mui/material";
 import Box from "@mui/material/Box";
 import { Subscribe } from "@react-rxjs/core";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Loading } from "../components/loading";
 import { useAdditionalNoteId, useMainNoteId } from "../notebook/notebook-state";
 import {
@@ -47,6 +47,15 @@ const AdditionalNoteEditor = () => {
 const NoteEditorInternal = ({ noteId }: { noteId: string }) => {
   const note = useNote(noteId);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    const textArea = inputRef.current;
+    if (textArea) {
+      const end = textArea.value.length;
+      textArea.focus();
+      textArea.setSelectionRange(end, end);
+    }
+  }, []);
 
   return note ? (
     <Box

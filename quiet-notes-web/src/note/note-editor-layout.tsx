@@ -11,6 +11,6 @@ export const NoteEditorLayout = ({
 }: NoteEditorLayoutProps) => (
   <Stack flexGrow={1} gap={1}>
     <Box sx={{ overflow: "hidden" }}>{toolbar}</Box>
-    <Box sx={{ flexGrow: 1, overflow: "hidden" }}>{editor}</Box>
+    <Box sx={{ flex: 1, overflow: "hidden" }}>{editor}</Box>
   </Stack>
 );

@@ -9,7 +9,7 @@ import { formatDate } from "../lib/date-format";
 import { usePrevious } from "../lib/use-previous";
 import { DeleteNoteButton } from "../toolbars/delete-note-button";
 import { DuplicateNoteButton } from "../toolbars/duplicate-note-button";
-import { OpenAdditionalNoteButton } from "../toolbars/open-in-sidebar-button";
+import { OpenAdditionalNoteButton } from "../toolbars/open-additional-note-button";
 import { deriveTitle, Note } from "./notebook-model";
 import { openMainNote, useIsNoteOpen } from "./notebook-state";
 
@@ -57,10 +57,7 @@ export const NotesListItem = ({ note }: NotesListItemProps) => {
 
       {/* change to https://mui.com/components/menus/#context-menu */}
       <CardActions sx={{ justifyContent: "flex-end" }}>
-        <DuplicateNoteButton
-          noteId={note.id}
-          onDuplicated={(dupId) => openMainNote(dupId)}
-        />
+        <DuplicateNoteButton noteId={note.id} onDuplicated={openMainNote} />
         <OpenAdditionalNoteButton noteId={note.id} />
         <DeleteNoteButton noteId={note.id} />
       </CardActions>

@@ -1,6 +1,5 @@
 import {
   openAdditionalNote,
-  useAdditionalNoteId,
   useNotebookState,
 } from "../notebook/notebook-state";
 import { NotebookToolbarButton } from "./notebook-toolbar-button";

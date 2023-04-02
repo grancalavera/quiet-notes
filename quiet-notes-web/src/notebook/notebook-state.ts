@@ -1,5 +1,6 @@
 import { bind } from "@react-rxjs/core";
 import { createSignal, mergeWithKey } from "@react-rxjs/utils";
+import produce from "immer";
 import { combineLatest } from "rxjs";
 import { map, scan, startWith } from "rxjs/operators";
 import { assertNever } from "../lib/assert-never";
@@ -63,38 +64,51 @@ const defaultNotebookState: NotebookState = {
   mainNoteId: undefined,
 };
 
-const reduceNotebookState = (state: NotebookState, signal: Signal) => {
-  switch (signal.type) {
-    case "mainNote$":
-      return { ...state, mainNoteId: signal.payload };
-    case "additionalNote$":
-      return { ...state, additionalNoteId: signal.payload };
-    case "closeMainNote$":
-      return { ...state, mainNoteId: undefined };
-    case "closeAdditionalNote$":
-      return { ...state, additionalNoteId: undefined };
-    case "deletedNoteId$":
-      return reconciliateNotebookState({
-        ...state,
-        mainNoteId:
-          state.mainNoteId === signal.payload ? undefined : state.mainNoteId,
-        additionalNoteId:
-          state.additionalNoteId === signal.payload
-            ? undefined
-            : state.additionalNoteId,
-      });
-    default:
-      return assertNever(signal);
-  }
-};
+const reduceNotebookState = (state: NotebookState, signal: Signal) =>
+  produce(state, (draft) => {
+    // in the case where the additional note is undefined this is
+    // effectively a no-op, otherwise it'll move the additional note
+    // to the main note.
+    const closeMainNote = () => {
+      draft.mainNoteId = draft.additionalNoteId;
+      draft.additionalNoteId = undefined;
+    };
 
-const reconciliateNotebookState = (state: NotebookState): NotebookState => {
-  if (state.mainNoteId === undefined) {
-    return { mainNoteId: state.additionalNoteId, additionalNoteId: undefined };
-  } else {
-    return state;
-  }
-};
+    switch (signal.type) {
+      case "mainNote$":
+        draft.mainNoteId = signal.payload;
+        break;
+      case "additionalNote$":
+        draft.additionalNoteId = signal.payload;
+        break;
+      case "closeMainNote$":
+        closeMainNote();
+        break;
+      case "closeAdditionalNote$":
+        draft.additionalNoteId = undefined;
+        break;
+      case "deletedNoteId$":
+        if (
+          draft.additionalNoteId === draft.mainNoteId &&
+          draft.mainNoteId === signal.payload
+        ) {
+          return defaultNotebookState;
+        }
+
+        if (draft.mainNoteId === signal.payload) {
+          closeMainNote();
+          break;
+        }
+
+        if (draft.additionalNoteId === signal.payload) {
+          draft.additionalNoteId = undefined;
+          break;
+        }
+        break;
+      default:
+        assertNever(signal);
+    }
+  });
 
 export const [useNotebookState, notebookState$] = bind(
   signal$.pipe(
