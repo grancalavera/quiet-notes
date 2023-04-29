@@ -14,6 +14,7 @@ import { combineLatest, firstValueFrom, NEVER } from "rxjs";
 import { filter, map, switchMap } from "rxjs/operators";
 import { AuthServiceSchema } from "./auth-service-schema";
 import { auth$, firestore$ } from "./firebase";
+import { peek } from "../lib/peek";
 
 const authState$ = auth$.pipe(switchMap((auth) => authState(auth)));
 const user$ = authState$.pipe(filter(Boolean));
@@ -37,6 +38,7 @@ export const authService: AuthServiceSchema = {
 
   roles$: user$.pipe(
     switchMap((user) => user.getIdTokenResult(true)),
+    peek("roles$.getIdTokenResult"),
     map(({ claims }) => parseRoles(claims.roles))
   ),
 
