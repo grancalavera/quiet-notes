@@ -12,12 +12,12 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { QNRole, QNToggleRole, QNUserRecord } from "quiet-notes-lib";
-import { FC, useEffect, useState, VFC } from "react";
+import { useEffect, useState } from "react";
 import { Column, useTable } from "react-table";
 import { useAnyRoleUpdated } from "../auth/auth-state";
 import { useToggleRole, useUserList } from "../services/admin-service";
 
-export const Admin: FC = () => {
+export const Admin = () => {
   const { data, refetch, isLoading } = useUserList();
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
@@ -81,13 +81,11 @@ export const Admin: FC = () => {
   );
 };
 
-type QNCheckboxToggle = QNToggleRole & { editable: boolean };
-
 interface CheckboxCellProps {
-  value: QNCheckboxToggle;
+  value: QNToggleRole;
 }
 
-const CheckboxCell: FC<CheckboxCellProps> = ({ value }) => {
+const CheckboxCell = ({ value }: CheckboxCellProps) => {
   const [checked, setChecked] = useState(value.enabled);
   const { mutate: toggleRole } = useToggleRole();
 
@@ -97,7 +95,6 @@ const CheckboxCell: FC<CheckboxCellProps> = ({ value }) => {
 
   return (
     <Checkbox
-      disabled={!value.editable}
       inputProps={{ "aria-label": `Toggle ${value.role} role` }}
       checked={checked}
       onChange={() => {
@@ -113,11 +110,10 @@ const CheckboxCell: FC<CheckboxCellProps> = ({ value }) => {
 
 const toggleRoleAccessor =
   (role: QNRole) =>
-  (user: QNUserRecord): QNCheckboxToggle => ({
+  (user: QNUserRecord): QNToggleRole => ({
     email: user.email ?? "",
     role,
     enabled: user.customClaims.roles.includes(role),
-    editable: !user.customClaims.roles.includes("root"),
   });
 
 const columns: Column<QNUserRecord>[] = [

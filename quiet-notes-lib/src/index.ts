@@ -1,4 +1,4 @@
-export type QNRole = "root" | "admin" | "author" | "user";
+export type QNRole = "admin" | "author" | "user";
 
 export const qnLight = "light" as const;
 export const qnDark = "dark" as const;
