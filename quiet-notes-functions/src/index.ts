@@ -2,7 +2,6 @@ import admin from "firebase-admin";
 import { UserRecord } from "firebase-admin/auth";
 import { Timestamp } from "firebase-admin/firestore";
 import functions from "firebase-functions";
-import isEqual from "lodash/isEqual";
 import {
   ANY_ROLE_UPDATED,
   QNListUsersResponse,
@@ -13,11 +12,7 @@ import {
 import {
   assertIsAdmin,
   getRolesFromUser,
-  invalidArgument,
-  isAdmin,
   isDefaultAdmin,
-  isRoot,
-  isUser,
   notAuthorized,
 } from "./lib";
 
@@ -26,77 +21,19 @@ admin.initializeApp({
 });
 
 export const onboardUser = functions.auth.user().onCreate(async (user) => {
-  console.log("onboard user", user.uid, { config: functions.config() });
+  functions.logger.info("onboard user", user.uid, {
+    config: functions.config(),
+    uid: user.uid,
+  });
 
   const roles: QNRole[] = ["user"];
 
   if (isDefaultAdmin(user)) {
     roles.push("admin");
-    roles.push("root");
   }
 
   addRoles(user, roles);
 });
-
-export const reconcileRoles = functions.auth
-  .user()
-  .beforeSignIn(async (authUser) => {
-    const { email } = authUser;
-
-    if (!email) {
-      console.log("reconcileRoles no email", authUser.uid);
-      return {};
-    }
-
-    const user = await admin.auth().getUserByEmail(email);
-
-    const initialRoles = [...getRolesFromUser(user)].sort();
-
-    const roleSet = new Set<QNRole>(
-      initialRoles.filter((candidate) => candidate !== "root")
-    );
-
-    roleSet.add("user");
-
-    const defaultAdmin = isDefaultAdmin(user);
-
-    if (defaultAdmin) {
-      roleSet.add("root");
-      roleSet.add("admin");
-    }
-
-    const roles = [...roleSet].sort();
-
-    console.log("reconcileRoles", user.uid, {
-      initialRoles,
-      finalRoles: roles,
-    });
-
-    if (isEqual(initialRoles, roles)) {
-      console.log("reconcileRoles: no change", user.uid);
-      return {};
-    }
-
-    if (!defaultAdmin && isRoot(user)) {
-      console.log("reconcileRoles: revoking root", user.uid);
-    }
-
-    if (!isUser(user)) {
-      console.log("reconcileRoles: granting user", user.uid);
-    }
-
-    if (defaultAdmin && !isRoot(user)) {
-      console.log("reconcileRoles: granting root to default admin", user.uid);
-    }
-
-    if (defaultAdmin && !isAdmin(user)) {
-      console.log("reconcileRoles: granting admin to default admin", user.uid);
-    }
-
-    console.log("reconcileRoles: result", user.uid, { roles });
-
-    return { customClaims: { roles } };
-  });
 
 const toUserRecord = ({
   uid,
@@ -147,9 +84,6 @@ export const toggleRole = functions.https.onCall(
 const addRoles = async (user: UserRecord, roles: QNRole[]): Promise<void> => {
   const existingRoles = getRolesFromUser(user);
   const updatedRoles = [...new Set([...existingRoles, ...roles])];
-  if (isRoot(user)) {
-    throw invalidArgument("cannot add any role to root user");
-  }
 
   console.log("addRoles", {
     uid: user.uid,
@@ -161,10 +95,6 @@ const addRoles = async (user: UserRecord, roles: QNRole[]): Promise<void> => {
 };
 
 const revokeRole = async (user: UserRecord, role: QNRole): Promise<void> => {
-  if (isRoot(user)) {
-    throw invalidArgument("cannot revoke any role from root user");
-  }
-
   const existingRoles = getRolesFromUser(user);
   const updatedRoles = existingRoles.filter((candidate) => candidate !== role);
 
@@ -180,7 +110,7 @@ const revokeRole = async (user: UserRecord, role: QNRole): Promise<void> => {
 const setRoles = async (user: UserRecord, roles: QNRole[]) => {
   try {
     await admin.auth().setCustomUserClaims(user.uid, { roles });
-    await logRolesUpdate(user);
+    await recordRolesUpdate(user);
   } catch (error) {
     console.error("failed to set custom claims", { error });
   } finally {
@@ -189,7 +119,7 @@ const setRoles = async (user: UserRecord, roles: QNRole[]) => {
   }
 };
 
-const logRolesUpdate = async (user: UserRecord): Promise<void> => {
+export const recordRolesUpdate = async (user: UserRecord): Promise<void> => {
   const db = admin.firestore();
   const roleUpdates = db.collection("roles-updates");
 

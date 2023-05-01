@@ -45,4 +45,3 @@ export const invalidArgument = exception("invalid-argument");
 export const isUser = hasRoles(["user"]);
 export const isAuthor = hasRoles(["author"]);
 export const isAdmin = hasRoles(["admin"]);
-export const isRoot = hasRoles(["root"]);
