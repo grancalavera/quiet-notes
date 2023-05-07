@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box";
 import { Subscribe } from "@react-rxjs/core";
-import { useNavigate } from "react-router-dom";
 import { Loading } from "../components/loading";
 import { NotesListItem } from "./notebook-notes-list-item";
 import { notebookState$, useNotesCollection } from "./notebook-state";
@@ -24,7 +23,6 @@ export const NotesList = () => {
 
 const NotesListInternal = () => {
   const notes = useNotesCollection();
-  const navigate = useNavigate();
 
   return (
     <Subscribe source$={notebookState$}>
