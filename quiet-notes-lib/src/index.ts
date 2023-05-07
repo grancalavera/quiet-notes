@@ -13,8 +13,9 @@ export interface QNListUsersResponse {
 export interface QNUserRecord {
   uid: string;
   email?: string;
-  photoURL?: string;
+  displayName?: string;
   customClaims: QNCustomClaims;
+  photoURL?: string;
   metadata: QNUserMetadata;
 }
 
@@ -41,10 +42,3 @@ export interface QNListUsersResponse {
 export type QNToggleRoleResponse = true;
 
 export const ANY_ROLE_UPDATED = "ANY_ROLE_UPDATED" as const;
-
-export type QNUser = {
-  uid: string;
-  email: string;
-  displayName?: string;
-  customClaims: QNCustomClaims;
-};

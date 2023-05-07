@@ -1,9 +1,7 @@
 import admin from "firebase-admin";
 import { UserRecord } from "firebase-admin/auth";
-import { Timestamp } from "firebase-admin/firestore";
 import functions from "firebase-functions";
 import {
-  ANY_ROLE_UPDATED,
   QNListUsersResponse,
   QNRole,
   QNToggleRole,
@@ -14,6 +12,9 @@ import {
   getRolesFromUser,
   isDefaultAdmin,
   notAuthorized,
+  projectUser,
+  toQNUser,
+  userSchema,
 } from "./lib";
 
 admin.initializeApp({
@@ -110,26 +111,10 @@ const revokeRole = async (user: UserRecord, role: QNRole): Promise<void> => {
 const setRoles = async (user: UserRecord, roles: QNRole[]) => {
   try {
     await admin.auth().setCustomUserClaims(user.uid, { roles });
-    await recordRolesUpdate(user);
+    const result = await admin.auth().getUser(user.uid);
+    const parsed = userSchema.parse(result);
+    await projectUser(toQNUser(parsed));
   } catch (error) {
     console.error("failed to set custom claims", { error });
-  } finally {
-    const customClaims = (await admin.auth().getUser(user.uid)).customClaims;
-    console.log("final custom claims", { uid: user.uid, customClaims });
-  }
-};
-
-export const recordRolesUpdate = async (user: UserRecord): Promise<void> => {
-  const db = admin.firestore();
-  const roleUpdates = db.collection("roles-updates");
-
-  try {
-    await Promise.all([
-      roleUpdates.doc(user.uid).set({ timestamp: Timestamp.now() }),
-      roleUpdates.doc(ANY_ROLE_UPDATED).set({ timestamp: Timestamp.now() }),
-    ]);
-    console.log("roles updated", { uid: user.uid });
-  } catch (error) {
-    console.error("failed to log roles update", { error });
   }
 };
