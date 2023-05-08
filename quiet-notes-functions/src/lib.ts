@@ -96,8 +96,6 @@ export const parseUser = (candidate: unknown): QNUserRecord =>
   toQNUser(userSchema.parse(candidate));
 
 export const projectUser = (user: QNUserRecord) => {
-  const db = admin.firestore();
-  db.settings({ ignoreUndefinedProperties: true });
-  const usersCollection = db.collection("users");
+  const usersCollection = admin.firestore().collection("users");
   return usersCollection.doc(user.uid).set(user);
 };

@@ -39,5 +39,10 @@ service cloud.firestore {
       allow read: if onwsPath(uid)
       allow update: if onwsPath(uid)
     }
+
+    match /users/{uid} {
+      allow read: if isAdmin() || onwsPath(uid);
+      allow update: if isAdmin();
+    }
   }
 }

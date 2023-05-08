@@ -21,6 +21,8 @@ admin.initializeApp({
   credential: admin.credential.applicationDefault(),
 });
 
+admin.firestore().settings({ ignoreUndefinedProperties: true });
+
 export const onboardUser = functions.auth.user().onCreate(async (user) => {
   functions.logger.info("onboard user", user.uid, {
     config: functions.config(),
