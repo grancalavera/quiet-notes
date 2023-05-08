@@ -1,65 +1,25 @@
-import { Functions, httpsCallable } from "firebase/functions";
-import {
-  QNListUsersResponse,
-  QNToggleRole,
-  QNToggleRoleResponse,
-} from "quiet-notes-lib";
-import { useCallback, useEffect, useState } from "react";
-import { QNError } from "../app/app-error";
-import { handleError, handleUnknownError } from "../app/app-error-state";
-import { useFunctions } from "./firebase";
+import { collection } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
+import { QNToggleRole } from "quiet-notes-lib";
+import { collectionData } from "rxfire/firestore";
+import { firstValueFrom, switchMap } from "rxjs";
+import { AdminServiceSchema } from "./admin-service-schema";
+import { userConverter } from "./auth-service-model";
+import { firestore$, functions$ } from "./firebase";
 
-const listUsers = (fns: Functions) =>
-  httpsCallable<void, QNListUsersResponse>(fns, "listUsers")();
-
-export const useUserList = () => {
-  const [data, setData] = useState<QNListUsersResponse>();
-  const [isLoading, setIsLoading] = useState(false);
-  const fns = useFunctions();
-  const doFetch = useCallback(() => {
-    console.log("useUserList.doFetch");
-    setIsLoading(true);
-    (async function () {
-      try {
-        const result = await listUsers(fns);
-        setData(result.data);
-      } catch (error) {
-        handleError(new QNError("Failed to list users", error));
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    doFetch();
-  }, [doFetch]);
-
-  return { data, isLoading, refetch: doFetch };
+const toggleRole = async (toggle: QNToggleRole): Promise<void> => {
+  const functions = await firstValueFrom(functions$);
+  await httpsCallable<QNToggleRole>(functions, "toggleRole")(toggle);
 };
 
-const toggleRole = (fns: Functions, toggle: QNToggleRole) =>
-  httpsCallable<QNToggleRole, QNToggleRoleResponse>(fns, "toggleRole")(toggle);
+const users$ = firestore$.pipe(
+  switchMap((firestore) => {
+    const ref = collection(firestore, "users").withConverter(userConverter);
+    return collectionData(ref);
+  })
+);
 
-export const useToggleRole = () => {
-  const [data, setData] = useState<QNToggleRoleResponse>();
-  const [isLoading, setIsLoading] = useState(false);
-  const fns = useFunctions();
-
-  const run = useCallback((toggle: QNToggleRole) => {
-    setIsLoading(true);
-    async function run() {
-      try {
-        const result = await toggleRole(fns, toggle);
-        setData(result.data);
-      } catch (error) {
-        handleUnknownError(error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    run();
-  }, []);
-
-  return { data, isLoading, mutate: run };
+export const adminService: AdminServiceSchema = {
+  users$,
+  toggleRole,
 };
