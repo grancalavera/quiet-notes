@@ -3,17 +3,10 @@ import { doc } from "firebase/firestore";
 import { authState } from "rxfire/auth";
 import { docData } from "rxfire/firestore";
 import { combineLatest, firstValueFrom, from } from "rxjs";
-import {
-  distinctUntilChanged,
-  filter,
-  map,
-  share,
-  shareReplay,
-  switchMap,
-} from "rxjs/operators";
+import { filter, map, shareReplay, switchMap } from "rxjs/operators";
 import { peek } from "../lib/peek";
 import { userConverter } from "./auth-service-model";
-import { AuthServiceSchema } from "./auth-service-schema";
+import { AuthServiceSchema } from "../auth/auth-service-schema";
 import { auth$, firestore$ } from "./firebase";
 
 const authState$ = auth$.pipe(switchMap((auth) => authState(auth)));
@@ -52,7 +45,7 @@ const roles$ = user$.pipe(map((user) => user.customClaims.roles));
 export const authService: AuthServiceSchema = {
   signIn: async () => {
     const auth = await firstValueFrom(auth$);
-    return signInWithPopup(auth, new GoogleAuthProvider());
+    await signInWithPopup(auth, new GoogleAuthProvider());
   },
   signOut: async () => {
     const auth = await firstValueFrom(auth$);

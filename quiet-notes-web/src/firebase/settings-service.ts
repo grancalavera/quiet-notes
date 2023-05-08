@@ -4,7 +4,7 @@ import { combineLatest, filter, firstValueFrom, map, switchMap } from "rxjs";
 import { authService } from "./auth-service";
 import { firestore$ } from "./firebase";
 import { settingsConverter } from "./settings-service-model";
-import { SettingsServiceSchema } from "./settings-service-schema";
+import { SettingsServiceSchema } from "../settings/settings-service-schema";
 
 const settingsRef = (firestore: Firestore, id: string) =>
   doc(firestore, "settings", id).withConverter(settingsConverter);

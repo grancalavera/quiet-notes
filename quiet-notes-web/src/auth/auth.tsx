@@ -3,7 +3,7 @@ import { QNRole } from "quiet-notes-lib";
 import { PropsWithChildren } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { CenterLayout } from "../layout/center-layout";
-import { authService } from "../services/auth-service";
+import { authService } from "../firebase/auth-service";
 import { useAuthState, useHasRole } from "./auth-state";
 
 interface RoleProps {

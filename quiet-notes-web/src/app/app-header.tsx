@@ -13,7 +13,7 @@ import { styled } from "@mui/material/styles";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useIsAdmin, useUser } from "../auth/auth-state";
-import { authService } from "../services/auth-service";
+import { authService } from "../firebase/auth-service";
 import { toggleTheme, useSettings } from "../settings/settings-state";
 import { ToggleThemeSwitch } from "./toggle-theme-switch";
 

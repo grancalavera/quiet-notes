@@ -6,7 +6,7 @@ import { isPermissionDeniedError } from "../app/app-error";
 import { clientId } from "../app/app-model";
 import { peek } from "../lib/peek";
 import { Note } from "../notebook/notebook-model";
-import { notebookService } from "../services/notebook-service";
+import { notebookService } from "../firebase/notebook-service";
 import { empty, incrementClock, mergeNotes, unWrap, wrap } from "./note-model";
 
 const frequency = 2000;

@@ -3,7 +3,6 @@ import { createSignal } from "@react-rxjs/utils";
 import { useRef } from "react";
 import { catchError, from, map, merge, of, startWith, switchMap } from "rxjs";
 import { AsyncResult, failure, idle, loading, success } from "./async-result";
-import { peek } from "./peek";
 
 export type Mutation<TParams = void, TResult = void> = {
   mutate: (params: TParams) => void;
@@ -28,31 +27,23 @@ const mutationFactory = <TParams, TResult>(
     catchError((error) => of(handleError(error)))
   );
 
-  const reset$ = resetSignal$.pipe(switchMap(() => of(idle)));
+  const reset$ = resetSignal$.pipe(map(() => idle));
 
   const [useResult] = bind<AsyncResult<TResult>>(
-    merge(mutation$, reset$).pipe(startWith(idle), peek("mutation"))
+    merge(mutation$, reset$).pipe(startWith(idle))
   );
 
   return { mutate, reset, useResult };
 };
 
-export function useMutation(
-  mutationFunction: () => Promise<void>,
-  handleError?: (error: unknown) => AsyncResult<void>
-): Mutation<void, void>;
-export function useMutation<TParams>(
-  mutationFunction: (params: TParams) => Promise<void>,
-  handleError?: (error: unknown) => AsyncResult<void>
-): Mutation<TParams, void>;
-export function useMutation<TParams, TResult>(
-  mutationFunction: (params: TParams) => Promise<TResult>,
-  handleError?: (error: unknown) => AsyncResult<TResult>
-): Mutation<TParams, TResult>;
-export function useMutation<TParams = void, TResult = void>(
-  mutationFunction: (params: TParams) => Promise<TResult>,
-  handleError: (error: unknown) => AsyncResult<TResult> = unknownToFailure
-): Mutation<TParams, TResult> {
+// prettier-ignore
+export function useMutation(mutationFunction: () => Promise<void>, handleError?: (error: unknown) => AsyncResult<void>): Mutation<void, void>;
+// prettier-ignore
+export function useMutation<TParams>(mutationFunction: (params: TParams) => Promise<void>, handleError?: (error: unknown) => AsyncResult<void>): Mutation<TParams, void>;
+// prettier-ignore
+export function useMutation<TParams, TResult>(mutationFunction: (params: TParams) => Promise<TResult>, handleError?: (error: unknown) => AsyncResult<TResult>): Mutation<TParams, TResult>;
+// prettier-ignore
+export function useMutation<TParams = void, TResult = void>(mutationFunction: (params: TParams) => Promise<TResult>, handleError: (error: unknown) => AsyncResult<TResult> = unknownToFailure): Mutation<TParams, TResult> {
   const { mutate, reset, useResult } = useRef(
     mutationFactory(mutationFunction, handleError)
   ).current;

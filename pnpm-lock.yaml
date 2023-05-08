@@ -61,7 +61,6 @@ importers:
     dependencies:
       '@types/node': 16.18.3
       typescript: 5.0.3
-    devDependencies:
       zod: 3.20.2
 
   quiet-notes-tools:
