@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { Note, NoteId } from "../notebook/notebook-model";
+import { Note, NoteId } from "./notebook-model";
 
 export interface NotebookServiceSchema {
   getNotesCollection: () => Observable<Note[]>;

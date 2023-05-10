@@ -6,8 +6,8 @@ import { map, scan, startWith } from "rxjs/operators";
 import { assertNever } from "../lib/assert-never";
 import { Observed } from "../lib/observed";
 import { useMutation } from "../lib/use-mutation";
-import { notebookService } from "../services/notebook-service";
-import { hasCreatedDate, NotebookSortType, sortNotes } from "./notebook-model";
+import { notebookService } from "../firebase/notebook-service";
+import { NotebookSortType, hasCreatedDate, sortNotes } from "./notebook-model";
 
 export const [sortTypeSignal$, changeSortType] =
   createSignal<NotebookSortType>();

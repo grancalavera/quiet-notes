@@ -14,11 +14,14 @@ import {
 } from "rxjs";
 import { QNError } from "../app/app-error";
 import { handleError } from "../app/app-error-state";
+import { authService } from "../firebase/auth-service";
+import { settingsService } from "../firebase/settings-service";
 import { peek } from "../lib/peek";
-import { authService } from "../services/auth-service";
-import { settingsService } from "../services/settings-service";
-import { defaultSettings } from "../services/settings-service-model";
-import { reduceSettings, SettingsSignal } from "./settings-model";
+import {
+  SettingsSignal,
+  defaultSettings,
+  reduceSettings,
+} from "./settings-model";
 
 const [signal$, sendSignal] = createSignal<SettingsSignal>();
 export const toggleTheme = () => sendSignal({ kind: "ToggleTheme" });

@@ -1,8 +1,5 @@
-import RefreshIcon from "@mui/icons-material/Refresh";
 import {
   Checkbox,
-  CircularProgress,
-  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -14,32 +11,22 @@ import { styled } from "@mui/material/styles";
 import { QNRole, QNToggleRole, QNUserRecord } from "quiet-notes-lib";
 import { useEffect, useState } from "react";
 import { Column, useTable } from "react-table";
-import { useAnyRoleUpdated } from "../auth/auth-state";
-import { useToggleRole, useUserList } from "../services/admin-service";
+import { withSubscribe } from "../lib/with-subscribe";
+import { useToggleRole, useUsers } from "./admin-state";
 
-export const Admin = () => {
-  const { data, refetch, isLoading } = useUserList();
+export const Admin = withSubscribe(() => {
+  const users = useUsers();
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
       columns,
-      data: data?.users ?? [],
+      data: users,
       getRowId: (x) => x.uid,
     });
 
-  const someRoleUpdated = useAnyRoleUpdated();
-
-  useEffect(() => {
-    refetch();
-  }, [someRoleUpdated]);
-
   return (
     <AdminLayout>
-      <ToolbarLayout>
-        <IconButton onClick={() => refetch()} disabled={isLoading}>
-          {isLoading ? <CircularProgress size={24} /> : <RefreshIcon />}
-        </IconButton>
-      </ToolbarLayout>
+      <ToolbarLayout></ToolbarLayout>
 
       <TableContainer component={AdminTableLayout}>
         <Table
@@ -79,7 +66,7 @@ export const Admin = () => {
       </TableContainer>
     </AdminLayout>
   );
-};
+});
 
 interface CheckboxCellProps {
   value: QNToggleRole;

@@ -14,7 +14,7 @@ import { createNote } from "../notebook/notebook-model";
 import { authService } from "./auth-service";
 import { firestore$ } from "./firebase";
 import { noteConverter } from "./notebook-service-model";
-import { NotebookServiceSchema } from "./notebook-service-schema";
+import { NotebookServiceSchema } from "../notebook/notebook-service-schema";
 
 const noteRef = (firestore: Firestore, id: string) =>
   doc(firestore, "notes", id).withConverter(noteConverter);

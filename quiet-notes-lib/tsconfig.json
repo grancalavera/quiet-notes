@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "ES2022",
+    "module": "ESNext",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "forceConsistentCasingInFileNames": true,
