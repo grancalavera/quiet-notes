@@ -1,4 +1,5 @@
 import {
+  Box,
   Checkbox,
   Table,
   TableBody,
@@ -26,8 +27,6 @@ export const Admin = withSubscribe(() => {
 
   return (
     <AdminLayout>
-      <ToolbarLayout></ToolbarLayout>
-
       <TableContainer component={AdminTableLayout}>
         <Table
           aria-label="manage users"
@@ -120,21 +119,13 @@ const columns: Column<QNUserRecord>[] = [
   { Header: "User UID", accessor: (x) => x.uid },
 ];
 
-const AdminLayout = styled("div")`
+const AdminLayout = styled(Box)`
   overflow: hidden;
   height: 100%;
   padding: 0.5rem;
-  display: grid;
-  grid-template-rows: auto 1fr;
-  row-gap: 0.5rem;
 `;
 
-const ToolbarLayout = styled("div")`
-  display: flex;
-  justify-content: flex-end;
-`;
-
-const AdminTableLayout = styled("div")`
+const AdminTableLayout = styled(Box)`
   overflow-y: auto;
   overflow-x: hidden;
 

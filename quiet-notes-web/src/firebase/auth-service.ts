@@ -25,7 +25,8 @@ const user$ = combineLatest([
     // when rules are evaluated.
     const unsafe_user$ = docData(
       doc(firestore, "users", user.uid).withConverter(userConverter)
-    );
+    ).pipe(filter(Boolean));
+
     return unsafe_user$.pipe(
       peek("user$ [2] unsafe_user$"),
       switchMap(() =>
