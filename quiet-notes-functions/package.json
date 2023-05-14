@@ -26,7 +26,6 @@
     "firebase-admin": "11.8.0",
     "firebase-functions": "4.4.0",
     "firebase-functions-test": "3.1.0",
-    "jest": "29.3.1",
     "lodash": "4.17.21",
     "quiet-notes-lib": "workspace:*",
     "ts-node": "10.9.1",

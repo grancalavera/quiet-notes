@@ -1,6 +1,10 @@
 {
   "ignoreUnresolved": [],
-  "ignoreUnimported": ["src/setupTests.ts", "src/setupProxy.js", "http-proxy-middleware"],
+  "ignoreUnimported": [
+    "src/setupTests.ts",
+    "src/setupProxy.js",
+    "http-proxy-middleware"
+  ],
   "ignoreUnused": [
     "@testing-library/dom",
     "@testing-library/jest-dom",
