@@ -8,10 +8,10 @@
     "dist"
   ],
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "dependencies": {
-    "firebase-admin": "11.5.0",
-    "firebase-functions": "4.2.1"
+    "firebase-admin": "11.8.0",
+    "firebase-functions": "4.4.0"
   }
 }
