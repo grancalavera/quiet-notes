@@ -1,6 +1,6 @@
 import { bind } from "@react-rxjs/core";
 import { createSignal, mergeWithKey } from "@react-rxjs/utils";
-import produce from "immer";
+import { produce } from "immer";
 import { combineLatest } from "rxjs";
 import { map, scan, startWith } from "rxjs/operators";
 import { assertNever } from "../lib/assert-never";

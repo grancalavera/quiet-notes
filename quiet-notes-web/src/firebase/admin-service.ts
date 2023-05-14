@@ -4,6 +4,7 @@ import { QNToggleRole } from "quiet-notes-lib";
 import { collectionData } from "rxfire/firestore";
 import { firstValueFrom, map, switchMap } from "rxjs";
 import { AdminServiceSchema } from "../admin/admin-service-schema";
+import { removeNullables } from "../lib/isNotNullable";
 import { userConverter } from "./auth-service-model";
 import { firestore$, functions$ } from "./firebase";
 

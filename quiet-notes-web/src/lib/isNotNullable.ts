@@ -10,7 +10,7 @@
  * @returns `true` if the value is not null or undefined, `false`
  * otherwise.
  */
-const isNotNullable = <T>(value: T | null | undefined): value is T =>
+export const isNotNullable = <T>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined;
 
 /**
@@ -18,5 +18,5 @@ const isNotNullable = <T>(value: T | null | undefined): value is T =>
  *
  * @param xs - The array to remove null and undefined values from.
  */
-const removeNullables = <T>(xs: (T | null | undefined)[]): T[] =>
+export const removeNullables = <T>(xs: (T | null | undefined)[]): T[] =>
   xs.filter(isNotNullable);
