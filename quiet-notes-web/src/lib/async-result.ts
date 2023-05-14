@@ -1,8 +1,8 @@
 export type AsyncResult<T> =
-  | AsyncFailure
-  | AsyncSuccess<T>
   | AsyncIdle
-  | AsyncLoading;
+  | AsyncLoading
+  | AsyncSuccess<T>
+  | AsyncFailure;
 
 type AsyncIdle = {
   kind: "AsyncIdle";
