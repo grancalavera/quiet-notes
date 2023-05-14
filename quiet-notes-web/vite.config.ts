@@ -1,14 +1,17 @@
 import ViteReact from "@vitejs/plugin-react";
 import {
-  defineConfig,
-  splitVendorChunkPlugin,
-  loadEnv,
   UserConfigExport,
+  defineConfig,
+  loadEnv,
+  splitVendorChunkPlugin,
 } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
+import { viteEnvSchema } from "./src/lib/env-schema";
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
+  const unsafe_env = loadEnv(mode, process.cwd(), "");
+  const env = viteEnvSchema.parse(unsafe_env);
+  console.log({ env, mode });
 
   const config: UserConfigExport = {
     plugins: [
@@ -16,7 +19,7 @@ export default defineConfig(({ mode }) => {
       ViteReact(),
       VitePWA({
         registerType: "prompt",
-        devOptions: { enabled: env.VITE_ENABLE_PWA_DEV === "true" },
+        devOptions: { enabled: unsafe_env.VITE_ENABLE_PWA_DEV === "true" },
         workbox: { sourcemap: true },
         includeAssets: [
           "apple-touch-icon-114x114.png",
@@ -77,7 +80,6 @@ export default defineConfig(({ mode }) => {
 
     server: {
       port: 3000,
-      //
       // ┌────────────────┬────────────────┬─────────────────────────────────┐
       // │ Emulator       │ Host:Port      │ View in Emulator UI             │
       // ├────────────────┼────────────────┼─────────────────────────────────┤
@@ -91,7 +93,7 @@ export default defineConfig(({ mode }) => {
       // └────────────────┴────────────────┴─────────────────────────────────┘
       //   Emulator Hub running at localhost:4400
       //   Other reserved ports: 4500
-
+      //
       // https://vitejs.dev/config/#server-proxy
       // https://github.com/http-party/node-http-proxy#options
       proxy: {
