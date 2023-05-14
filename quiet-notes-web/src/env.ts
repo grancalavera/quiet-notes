@@ -1,3 +1,3 @@
 import { envSchema } from "./lib/env-schema";
-
-export const env = envSchema.parse(import.meta.env);
+const unsafe_env = import.meta.env;
+export const env = envSchema.parse(unsafe_env);

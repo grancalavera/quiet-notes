@@ -58,10 +58,11 @@
   "scripts": {
     "typecheck": "tsc",
     "start": "vite",
-    "start:emulated": "VITE_FIREBASE_USE_EMULATORS=true vite",
+    "start:emulated": "vite --mode emulated",
     "build": "tsc && vite build",
     "build:w": "tsc -w & vite build -w",
-    "build:emulated:w": "tsc -w & VITE_FIREBASE_USE_EMULATORS=true vite build -w --mode development",
+    "build:emulated": "tsc -w & vite build --mode emulated",
+    "build:emulated:w": "tsc -w & vite build -w --mode emulated",
     "serve": "vite preview",
     "test": "jest",
     "test:ci": "jest --watchAll=false --verbose",

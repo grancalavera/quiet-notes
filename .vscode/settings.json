@@ -1,4 +1,11 @@
 {
-  "cSpell.words": ["Autosize", "crdt", "firestore", "immer", "typecheck"],
+  "cSpell.words": [
+    "Autosize",
+    "crdt",
+    "firebaserc",
+    "firestore",
+    "immer",
+    "typecheck"
+  ],
   "typescript.tsdk": "node_modules/typescript/lib"
 }

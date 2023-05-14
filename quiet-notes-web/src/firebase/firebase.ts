@@ -46,4 +46,3 @@ export const app$ = fromFetch("/__/firebase/init.json").pipe(
 export const auth$ = app$.pipe(map((app) => getAuth(app)));
 export const firestore$ = app$.pipe(map((app) => getFirestore(app)));
 export const functions$ = app$.pipe(map((app) => getFunctions(app)));
-export const [useFunctions] = bind(functions$);

@@ -22,11 +22,14 @@ const viteEnvBuiltinsSchema = z.object({
 });
 
 export const viteEnvSchema = z.object({
+  VITE_FIREBASE_PROJECT: z.string(),
+  VITE_FIREBASE_PROJECT_HOSTING: z.string().url(),
   VITE_FIREBASE_USE_EMULATORS: booleanSchema(),
   VITE_FIREBASE_EMULATOR_AUTH: z.string().default(""),
   VITE_FIREBASE_EMULATOR_FIRESTORE_PORT: portSchema(),
   VITE_FIREBASE_EMULATOR_FUNCTIONS_PORT: portSchema(),
   VITE_FIREBASE_EMULATOR_HOSTING_PORT: portSchema(),
+  VITE_FIREBASE_EMULATOR_HOSTING: z.string().default(""),
   VITE_ENABLE_PWA_DEV: booleanSchema(),
 });
 
