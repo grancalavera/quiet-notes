@@ -1,4 +1,5 @@
 import { merge, increment, initialize, isLessThan, receive } from "./clock";
+import { describe, it, expect } from "vitest";
 
 describe("Clock Order", () => {
   it("empty clocks", () => {

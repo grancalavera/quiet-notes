@@ -8,15 +8,16 @@ import { peek } from "../lib/peek";
 import { userConverter } from "./auth-service-model";
 import { AuthServiceSchema } from "../auth/auth-service-schema";
 import { auth$, firestore$ } from "./firebase";
+import { isNotNullable } from "../lib/isNotNullable";
 
-const authState$ = auth$.pipe(switchMap((auth) => authState(auth)));
+const firebaseUser$ = auth$.pipe(
+  switchMap((auth) => authState(auth)),
+  filter(isNotNullable)
+);
 
-const authenticated$ = authState$.pipe(map((user) => !!user));
+const authenticated$ = firebaseUser$.pipe(map((user) => !!user));
 
-const user$ = combineLatest([
-  firestore$,
-  authState$.pipe(filter(Boolean)),
-]).pipe(
+const user$ = combineLatest([firestore$, firebaseUser$]).pipe(
   peek("user$ [1] [enter]"),
   switchMap(([firestore, user]) => {
     // this is unsafe because before we can read
@@ -25,7 +26,7 @@ const user$ = combineLatest([
     // when rules are evaluated.
     const unsafe_user$ = docData(
       doc(firestore, "users", user.uid).withConverter(userConverter)
-    ).pipe(filter(Boolean));
+    ).pipe(filter(isNotNullable));
 
     return unsafe_user$.pipe(
       peek("user$ [2] unsafe_user$"),
