@@ -1,5 +1,6 @@
 import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
+import { defaultUserSettings } from "quiet-notes-lib";
 import {
   catchError,
   concat,
@@ -17,11 +18,7 @@ import { handleError } from "../app/app-error-state";
 import { authService } from "../firebase/auth-service";
 import { settingsService } from "../firebase/settings-service";
 import { peek } from "../lib/peek";
-import {
-  SettingsSignal,
-  defaultSettings,
-  reduceSettings,
-} from "./settings-model";
+import { SettingsSignal, reduceSettings } from "./settings-model";
 
 const [signal$, sendSignal] = createSignal<SettingsSignal>();
 export const toggleTheme = () => sendSignal({ kind: "ToggleTheme" });
@@ -32,7 +29,7 @@ const loadSettings$ = settingsService.settings$.pipe(
     return caught;
   }),
   first(),
-  startWith(defaultSettings),
+  startWith(defaultUserSettings),
   peek("remote settings")
 );
 
@@ -44,13 +41,13 @@ export const [useSettings, settings$] = bind(
     peek("local settings"),
     shareReplay(1)
   ),
-  defaultSettings
+  defaultUserSettings
 );
 
 const updateSettings$ = concat(
   authService.user$.pipe(first(), ignoreElements()),
   settings$.pipe(
-    filter((candidate) => candidate !== defaultSettings),
+    filter((candidate) => candidate !== defaultUserSettings),
     distinctUntilChanged()
   )
 );

@@ -1,6 +1,7 @@
 import admin from "firebase-admin";
+import { userSchema } from "quiet-notes-lib";
 import z from "zod";
-import { projectUser, toQNUser, userSchema } from "./lib.js";
+import { projectUser } from "./lib.js";
 
 const credential = admin.credential.applicationDefault();
 
@@ -20,7 +21,7 @@ const main = async () => {
     const users = result.users.flatMap((candidate) => {
       const parseResult = userSchema.safeParse(candidate);
       if (parseResult.success) {
-        return [toQNUser(parseResult.data)];
+        return [parseResult.data];
       } else {
         console.log("parse error", { error: parseResult.error });
         return [];

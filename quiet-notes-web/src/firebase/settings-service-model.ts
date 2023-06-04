@@ -5,19 +5,21 @@ import {
   SnapshotOptions,
 } from "firebase/firestore";
 import {
-  Settings,
-  defaultSettings,
-  settingsSchema,
-} from "../settings/settings-model";
+  UserSettings,
+  defaultUserSettings,
+  userSettingsSchema,
+} from "quiet-notes-lib";
 
-export const settingsConverter: FirestoreDataConverter<Settings | undefined> = {
+export const settingsConverter: FirestoreDataConverter<
+  UserSettings | undefined
+> = {
   toFirestore: (settings): DocumentData => settings ?? {},
   fromFirestore: (
-    snapshot: QueryDocumentSnapshot<Settings>,
+    snapshot: QueryDocumentSnapshot<UserSettings>,
     options: SnapshotOptions
-  ): Settings => {
+  ): UserSettings => {
     const candidate = snapshot.data(options);
-    const result = settingsSchema.safeParse(candidate);
-    return result.success ? result.data : defaultSettings;
+    const result = userSettingsSchema.safeParse(candidate);
+    return result.success ? result.data : defaultUserSettings;
   },
 };
