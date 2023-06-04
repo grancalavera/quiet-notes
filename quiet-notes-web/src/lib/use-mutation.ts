@@ -2,6 +2,7 @@ import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
 import { useRef } from "react";
 import { catchError, from, map, merge, of, startWith, switchMap } from "rxjs";
+import { unknownToQNError } from "../app/app-error";
 import { AsyncResult, failure, idle, loading, success } from "./async-result";
 
 export type Mutation<TParams = void, TResult = void> = {
@@ -10,7 +11,7 @@ export type Mutation<TParams = void, TResult = void> = {
   result: AsyncResult<TResult>;
 };
 
-const mutationFactory = <TParams, TResult>(
+const createMutation = <TParams, TResult>(
   mutationFn: (params: TParams) => Promise<TResult>,
   handleError: (error: unknown) => AsyncResult<TResult>
 ) => {
@@ -45,33 +46,10 @@ export function useMutation<TParams, TResult>(mutationFunction: (params: TParams
 // prettier-ignore
 export function useMutation<TParams = void, TResult = void>(mutationFunction: (params: TParams) => Promise<TResult>, handleError: (error: unknown) => AsyncResult<TResult> = unknownToFailure): Mutation<TParams, TResult> {
   const { mutate, reset, useResult } = useRef(
-    mutationFactory(mutationFunction, handleError)
+    createMutation(mutationFunction, handleError)
   ).current;
   return { result: useResult(), mutate, reset };
 }
 
 const unknownToFailure = <T>(error: unknown): AsyncResult<T> =>
-  failure(unknownToError(error));
-
-const unknownToError = (error: unknown): Error => {
-  if (error instanceof Error) {
-    return error;
-  }
-
-  if (hasProperty(error, "message") && typeof error.message === "string") {
-    return new Error(error.message);
-  }
-
-  if (typeof error === "string") {
-    return new Error(error);
-  }
-
-  return new Error("Unknown error");
-};
-
-function hasProperty(
-  obj: unknown,
-  prop: string
-): obj is { [key: string]: unknown } & Record<typeof prop, unknown> {
-  return typeof obj === "object" && obj !== null && prop in obj;
-}
+  failure(unknownToQNError(error));

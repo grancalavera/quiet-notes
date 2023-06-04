@@ -10,15 +10,13 @@ export interface Failure {
   error: any;
 }
 
-export function success(): Result<void>;
+export function success<T = void>(): Result<void>;
 export function success<T>(value: T): Result<T>;
-export function success<T>(value?: T): Result<T | void> {
+export function success<T = void>(value?: T): Result<T | void> {
   return { kind: "Success", value };
 }
 
-export function failure<T>(): Result<T>;
-export function failure<T>(error: any): Result<T>;
-export function failure<T>(error?: any): Result<T> {
+export function failure<T>(error: Error): Result<T> {
   return { kind: "Failure", error };
 }
 

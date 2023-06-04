@@ -1,14 +1,17 @@
 import ViteReact from "@vitejs/plugin-react";
 import {
-  defineConfig,
-  splitVendorChunkPlugin,
-  loadEnv,
   UserConfigExport,
+  defineConfig,
+  loadEnv,
+  splitVendorChunkPlugin,
 } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
+import { viteEnvSchema } from "./src/lib/env-schema";
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
+  const unsafe_env = loadEnv(mode, process.cwd(), "");
+  const env = viteEnvSchema.parse(unsafe_env);
+  const { VITE_FIREBASE_PROJECT_HOSTING } = env;
 
   const config: UserConfigExport = {
     plugins: [
@@ -16,7 +19,7 @@ export default defineConfig(({ mode }) => {
       ViteReact(),
       VitePWA({
         registerType: "prompt",
-        devOptions: { enabled: env.VITE_ENABLE_PWA_DEV === "true" },
+        devOptions: { enabled: env.VITE_ENABLE_PWA_DEV },
         workbox: { sourcemap: true },
         includeAssets: [
           "apple-touch-icon-114x114.png",
@@ -74,29 +77,11 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
-
     server: {
       port: 3000,
-      //
-      // ┌────────────────┬────────────────┬─────────────────────────────────┐
-      // │ Emulator       │ Host:Port      │ View in Emulator UI             │
-      // ├────────────────┼────────────────┼─────────────────────────────────┤
-      // │ Authentication │ localhost:9099 │ http://localhost:4000/auth      │
-      // ├────────────────┼────────────────┼─────────────────────────────────┤
-      // │ Functions      │ localhost:5001 │ http://localhost:4000/functions │
-      // ├────────────────┼────────────────┼─────────────────────────────────┤
-      // │ Firestore      │ localhost:8080 │ http://localhost:4000/firestore │
-      // ├────────────────┼────────────────┼─────────────────────────────────┤
-      // │ Hosting        │ localhost:5000 │ n/a                             │
-      // └────────────────┴────────────────┴─────────────────────────────────┘
-      //   Emulator Hub running at localhost:4400
-      //   Other reserved ports: 4500
-
-      // https://vitejs.dev/config/#server-proxy
-      // https://github.com/http-party/node-http-proxy#options
       proxy: {
         "^/__/firebase/.*": {
-          target: "https://quiet-notes-e83fb.web.app",
+          target: VITE_FIREBASE_PROJECT_HOSTING,
           changeOrigin: true,
         },
       },

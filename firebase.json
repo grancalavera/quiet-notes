@@ -7,7 +7,7 @@
     "rules": "storage.rules"
   },
   "functions": {
-    "runtime": "nodejs16",
+    "runtime": "nodejs18",
     "predeploy": ["pnpm --filter quiet-notes-functions... build"],
     "source": "quiet-notes-functions-dist"
   },

@@ -48,12 +48,20 @@ interface GlobalErrorHandlerProps {
 
 const GlobalErrorHandler = ({ error }: GlobalErrorHandlerProps) => {
   const [isOpen, setIsOpen] = useState(true);
-  return <ErrorAlert error={error} onClose={() => setIsOpen(false)} isOpen={isOpen} />;
+  return (
+    <ErrorAlert
+      error={error}
+      onClose={() => setIsOpen(false)}
+      isOpen={isOpen}
+    />
+  );
 };
 
 const AppErrorHandler = withSubscribe(() => {
   const [nextError] = useAppErrors();
-  return <ErrorAlert error={nextError} onClose={dismissError} isOpen={!!nextError} />;
+  return (
+    <ErrorAlert error={nextError} onClose={dismissError} isOpen={!!nextError} />
+  );
 });
 
 interface ErrorAlertProps {
@@ -76,8 +84,13 @@ const ErrorAlert = ({ error, ...props }: ErrorAlertProps) => {
             <>
               <DialogTitle id="error-alert-title">{error.name}</DialogTitle>
               <DialogContent>
-                <DialogContentText id="error-alert-description" sx={{ whiteSpace: "pre-wrap" }}>
-                  {error.code} {process.env.NODE_ENV === "development" && `\n\n${error.message}`}
+                <DialogContentText
+                  id="error-alert-description"
+                  sx={{ whiteSpace: "pre-wrap" }}
+                >
+                  {error.code}{" "}
+                  {process.env.NODE_ENV === "development" &&
+                    `\n\n${error.message}`}
                 </DialogContentText>
               </DialogContent>
             </>
@@ -87,7 +100,9 @@ const ErrorAlert = ({ error, ...props }: ErrorAlertProps) => {
             <>
               <DialogTitle id="error-alert-title">{error.name}</DialogTitle>
               <DialogContent>
-                <DialogContentText id="error-alert-description">{error.message}</DialogContentText>
+                <DialogContentText id="error-alert-description">
+                  {error.message}
+                </DialogContentText>
               </DialogContent>
             </>
           );

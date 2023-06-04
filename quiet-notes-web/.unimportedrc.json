@@ -1,6 +1,6 @@
 {
-  "ignoreUnresolved": [],
-  "ignoreUnimported": ["src/setupTests.ts", "src/setupProxy.js", "http-proxy-middleware"],
+  "ignoreUnresolved": ["virtual:pwa-register/react"],
+  "ignoreUnimported": ["src/lib/result.ts"],
   "ignoreUnused": [
     "@testing-library/dom",
     "@testing-library/jest-dom",
@@ -15,7 +15,13 @@
     "history",
     "http-proxy-middleware",
     "typescript",
-    "unimported"
+    "unimported",
+    "@vitejs/plugin-react",
+    "benny",
+    "nodemon",
+    "ts-node",
+    "vite-plugin-pwa",
+    "workbox-precaching"
   ],
   "ignorePatterns": [
     "**/node_modules/**",

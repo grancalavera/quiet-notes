@@ -1,5 +1,5 @@
 import { FirebaseError } from "firebase/app";
-import { hasOwnProperty } from "../lib/has-own-property";
+import { hasOwnProperty } from "../lib/has-property";
 
 export type AppError = FirebaseError | QNError;
 
@@ -27,13 +27,29 @@ export const isQnError = (candidate: unknown): candidate is QNError =>
   hasErrorName(candidate) && candidate.name === "QNError";
 
 const hasErrorName = (candidate: unknown): candidate is { name: string } =>
-  typeof candidate === "object" &&
-  candidate !== null &&
   hasOwnProperty(candidate, "name");
 
 // https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/#use-unknown-catch-variables
-export const errorFromUnknown = (error: unknown): QNError => {
-  const message =
-    error instanceof Error && error.message ? error.message : "Unknown error";
-  return new QNError(message, error);
+export const unknownToQNError = (unsafe_error: unknown): QNError => {
+  const error = unknownToError(unsafe_error);
+  return new QNError(error.message, unsafe_error);
+};
+
+export const unknownToError = (unsafe_error: unknown): Error => {
+  if (unsafe_error instanceof Error) {
+    return unsafe_error;
+  }
+
+  if (
+    hasOwnProperty(unsafe_error, "message") &&
+    typeof unsafe_error.message === "string"
+  ) {
+    return new Error(unsafe_error.message);
+  }
+
+  if (typeof unsafe_error === "string") {
+    return new Error(unsafe_error);
+  }
+
+  return new Error("Unknown error");
 };

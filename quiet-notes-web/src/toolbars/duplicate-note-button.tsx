@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import { errorFromUnknown } from "../app/app-error";
-import { handleError } from "../app/app-error-state";
+import { handleUnknownError } from "../app/app-error-state";
 import { isFailure, isLoading, isSuccess } from "../lib/async-result";
 import { useNote } from "../note/note-state";
 import { useCreateNote } from "../notebook/notebook-state";
@@ -17,7 +16,7 @@ export const DuplicateNoteButton = ({
   const note = useNote(noteId);
 
   useEffect(() => {
-    isFailure(result) && handleError(errorFromUnknown(result.error));
+    isFailure(result) && handleUnknownError(result.error);
     (isSuccess(result) || isFailure(result)) && reset();
     isSuccess(result) && onDuplicated(result.value);
   }, [result]);
