@@ -7,6 +7,7 @@ read ADMIN_EMAIL
 if [ -z "$ADMIN_EMAIL" ]; then
   ADMIN_EMAIL="admin@example.com"
 fi
+echo "building..."
 
 firebase functions:config:set quiet_notes.default_admin="$ADMIN_EMAIL"
 
