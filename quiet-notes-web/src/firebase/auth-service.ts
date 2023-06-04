@@ -3,21 +3,30 @@ import { doc } from "firebase/firestore";
 import { authState } from "rxfire/auth";
 import { docData } from "rxfire/firestore";
 import { combineLatest, firstValueFrom, from } from "rxjs";
-import { filter, map, shareReplay, switchMap } from "rxjs/operators";
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  shareReplay,
+  switchMap,
+} from "rxjs/operators";
+import { AuthServiceSchema } from "../auth/auth-service-schema";
+import { isNotNullable } from "../lib/isNotNullable";
 import { peek } from "../lib/peek";
 import { userConverter } from "./auth-service-model";
-import { AuthServiceSchema } from "../auth/auth-service-schema";
 import { auth$, firestore$ } from "./firebase";
-import { isNotNullable } from "../lib/isNotNullable";
 
-const firebaseUser$ = auth$.pipe(
-  switchMap((auth) => authState(auth)),
-  filter(isNotNullable)
+const maybeUser$ = auth$.pipe(switchMap((auth) => authState(auth)));
+const unsafeUser$ = maybeUser$.pipe(filter(isNotNullable));
+
+const authenticated$ = maybeUser$.pipe(
+  peek("authenticated$ [enter]"),
+  map((user) => !!user),
+  distinctUntilChanged(),
+  peek("authenticated$ [exit]")
 );
 
-const authenticated$ = firebaseUser$.pipe(map((user) => !!user));
-
-const user$ = combineLatest([firestore$, firebaseUser$]).pipe(
+const user$ = combineLatest([firestore$, unsafeUser$]).pipe(
   peek("user$ [1] [enter]"),
   switchMap(([firestore, user]) => {
     // this is unsafe because before we can read

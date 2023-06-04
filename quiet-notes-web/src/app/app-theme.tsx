@@ -7,8 +7,6 @@ export const AppTheme: FC<PropsWithChildren<{}>> = ({ children }) => {
   const mode = useSettings().theme;
   const theme = useMemo(() => createTheme({ palette: { mode } }), [mode]);
 
-  console.log("<AppTheme />");
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

@@ -10,7 +10,8 @@ import { viteEnvSchema } from "./src/lib/env-schema";
 
 export default defineConfig(({ mode }) => {
   const unsafe_env = loadEnv(mode, process.cwd(), "");
-  const { VITE_FIREBASE_PROJECT_HOSTING } = viteEnvSchema.parse(unsafe_env);
+  const env = viteEnvSchema.parse(unsafe_env);
+  const { VITE_FIREBASE_PROJECT_HOSTING } = env;
 
   const config: UserConfigExport = {
     plugins: [
@@ -18,7 +19,7 @@ export default defineConfig(({ mode }) => {
       ViteReact(),
       VitePWA({
         registerType: "prompt",
-        devOptions: { enabled: unsafe_env.VITE_ENABLE_PWA_DEV === "true" },
+        devOptions: { enabled: env.VITE_ENABLE_PWA_DEV },
         workbox: { sourcemap: true },
         includeAssets: [
           "apple-touch-icon-114x114.png",

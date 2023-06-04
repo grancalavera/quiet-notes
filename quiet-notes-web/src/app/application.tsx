@@ -7,18 +7,15 @@ import { AppErrorBoundary } from "./app-error-boundary";
 import { AppTheme } from "./app-theme";
 import { ReloadPrompt } from "./reload-prompt";
 
-export const Application: FC<PropsWithChildren<{}>> = ({ children }) => {
-  console.log("<Application />");
-  return (
-    <Subscribe source$={settings$}>
-      <AppTheme>
-        <FullPageLayout>
-          <AppErrorBoundary>
-            <Subscribe fallback={<Loading />}>{children}</Subscribe>
-          </AppErrorBoundary>
-        </FullPageLayout>
-        <ReloadPrompt />
-      </AppTheme>
-    </Subscribe>
-  );
-};
+export const Application: FC<PropsWithChildren<{}>> = ({ children }) => (
+  <Subscribe source$={settings$}>
+    <AppTheme>
+      <FullPageLayout>
+        <AppErrorBoundary>
+          <Subscribe fallback={<Loading />}>{children}</Subscribe>
+        </AppErrorBoundary>
+      </FullPageLayout>
+      <ReloadPrompt />
+    </AppTheme>
+  </Subscribe>
+);

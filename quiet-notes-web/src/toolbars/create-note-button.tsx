@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import { unknownToQNError } from "../app/app-error";
-import { handleError } from "../app/app-error-state";
+import { handleUnknownError } from "../app/app-error-state";
 import { isFailure, isLoading, isSuccess } from "../lib/async-result";
 import { openMainNote, useCreateNote } from "../notebook/notebook-state";
 import { NotebookToolbarButton } from "./notebook-toolbar-button";
@@ -10,7 +9,7 @@ export const CreateNoteButton = () => {
 
   useEffect(() => {
     isSuccess(result) && openMainNote(result.value);
-    isFailure(result) && handleError(unknownToQNError(result.error));
+    isFailure(result) && handleUnknownError(result.error);
     (isSuccess(result) || isFailure(result)) && reset();
   }, [result]);
 

@@ -6,12 +6,12 @@
  * of writing out the whole `value !== null && value !== undefined`
  * expression.
  *
- * @param value The value to check.
+ * @param x The value to check.
  * @returns `true` if the value is not null or undefined, `false`
  * otherwise.
  */
-export const isNotNullable = <T>(value: T | null | undefined): value is T =>
-  value !== null && value !== undefined;
+export const isNotNullable = <T>(x: T | null | undefined): x is T =>
+  x !== null && x !== undefined;
 
 /**
  * Remove null and undefined values from an array.

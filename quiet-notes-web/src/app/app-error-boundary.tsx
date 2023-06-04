@@ -29,7 +29,6 @@ export class AppErrorBoundary extends React.Component<
   }
 
   render() {
-    console.log("<AppErrorBoundary />");
     return (
       <>
         {this.state.hasError ? (
