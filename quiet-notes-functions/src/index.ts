@@ -2,10 +2,10 @@ import admin from "firebase-admin";
 import { UserRecord } from "firebase-admin/auth";
 import functions from "firebase-functions";
 import {
-  QNListUsersResponse,
   QNRole,
   QNToggleRole,
   QNUserRecord,
+  userSchema,
 } from "quiet-notes-lib";
 import {
   assertIsAdmin,
@@ -13,8 +13,6 @@ import {
   isDefaultAdmin,
   notAuthorized,
   projectUser,
-  toQNUser,
-  userSchema,
 } from "./lib";
 
 admin.initializeApp({
@@ -54,6 +52,11 @@ const toUserRecord = ({
   metadata: { lastSignInTime, lastRefreshTime, creationTime },
 });
 
+interface QNListUsersResponse {
+  users: QNUserRecord[];
+}
+
+// kept here because some clients might still be calling this API
 export const listUsers = functions.https.onCall(async (_, context) => {
   await assertIsAdmin(context);
 
@@ -115,7 +118,7 @@ const setRoles = async (user: UserRecord, roles: QNRole[]) => {
     await admin.auth().setCustomUserClaims(user.uid, { roles });
     const result = await admin.auth().getUser(user.uid);
     const parsed = userSchema.parse(result);
-    await projectUser(toQNUser(parsed));
+    await projectUser(parsed);
   } catch (error) {
     console.error("failed to set custom claims", { error });
   }
