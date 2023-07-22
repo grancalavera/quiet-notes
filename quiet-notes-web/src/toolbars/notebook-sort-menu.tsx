@@ -3,21 +3,21 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { NotebookSortType } from "../notebook/notebook-model";
-import { changeSortType, useSortType } from "../notebook/notebook-state";
+import {
+  changeSortType,
+  useSortType,
+} from "../notebook/notes-collection-state";
 
 export const NotebookSortMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const sortType = useSortType();
 
-  const handleSort = useCallback(
-    (s: NotebookSortType) => {
-      setAnchorEl(null);
-      changeSortType(s);
-    },
-    [changeSortType]
-  );
+  const handleSort = (s: NotebookSortType) => {
+    setAnchorEl(null);
+    changeSortType(s);
+  };
 
   return (
     <>
