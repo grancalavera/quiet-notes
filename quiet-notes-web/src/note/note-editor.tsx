@@ -12,17 +12,17 @@ import { updateNote, useNote } from "./note-state";
 
 export const NoteEditor = () => {
   return (
-    <StyleNoteEditor direction={"row"}>
+    <StyledNoteEditor className="qn-note-editor" direction={"row"} minWidth={0}>
       <MainNoteEditor />
       <AdditionalNoteEditor />
-    </StyleNoteEditor>
+    </StyledNoteEditor>
   );
 };
 
 const MainNoteEditor = () => {
   const noteId = useMainNoteId();
   return noteId ? (
-    <Subscribe fallback={<Loading />} key={noteId}>
+    <Subscribe fallback={<Loading />}>
       <NoteEditorLayout
         editor={<NoteEditorInternal noteId={noteId} />}
         toolbar={<MainNoteEditorToolbar noteId={noteId} />}
@@ -34,7 +34,7 @@ const MainNoteEditor = () => {
 const AdditionalNoteEditor = () => {
   const noteId = useAdditionalNoteId();
   return noteId ? (
-    <Subscribe fallback={<Loading />} key={noteId}>
+    <Subscribe fallback={<Loading />}>
       <NoteEditorLayout
         editor={<NoteEditorInternal noteId={noteId} />}
         toolbar={<AdditionalNoteEditorToolbar noteId={noteId} />}
@@ -72,11 +72,12 @@ const NoteEditorInternal = ({ noteId }: { noteId: string }) => {
   ) : null;
 };
 
-const StyleNoteEditor = styled(Stack)`
+const StyledNoteEditor = styled(Stack)`
   height: 100%;
   width: 100%;
   gap: ${(p) => p.theme.spacing(1)};
   padding: ${(p) => p.theme.spacing(1)};
+  padding-top: 0;
   background-color: ${(p) =>
     p.theme.palette.mode === "dark"
       ? p.theme.palette.grey[900]

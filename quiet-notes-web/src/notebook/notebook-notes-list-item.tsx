@@ -10,7 +10,7 @@ import { usePrevious } from "../lib/use-previous";
 import { DeleteNoteButton } from "../toolbars/delete-note-button";
 import { DuplicateNoteButton } from "../toolbars/duplicate-note-button";
 import { OpenAdditionalNoteButton } from "../toolbars/open-additional-note-button";
-import { deriveTitle, Note } from "./notebook-model";
+import { Note, deriveTitle } from "./notebook-model";
 import { openMainNote, useIsNoteOpen } from "./notebook-state";
 
 export const defaultNoteTitle = "Untitled Note";

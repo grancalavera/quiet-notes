@@ -1,16 +1,24 @@
 import { bind } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
 import { filter, merge, Observable, of, switchMap, throwError } from "rxjs";
-import { catchError, map, sampleTime, scan, share } from "rxjs/operators";
+import {
+  catchError,
+  distinctUntilChanged,
+  map,
+  sampleTime,
+  scan,
+  share,
+} from "rxjs/operators";
 import { isPermissionDeniedError } from "../app/app-error";
 import { clientId } from "../app/app-model";
-import { peek } from "../lib/peek";
-import { Note } from "../notebook/notebook-model";
 import { notebookService } from "../firebase/notebook-service";
+import { peek } from "../lib/peek";
+import { deriveTitle, Note } from "../notebook/notebook-model";
 import { empty, incrementClock, mergeNotes, unWrap, wrap } from "./note-model";
 
-const frequency = 2000;
+export { updateNote, useNote, useNoteTitle };
 
+const frequency = 2000;
 const [noteUpdates$, updateNote] = createSignal<Note>();
 
 const remoteNote$ = (noteId: string) =>
@@ -42,7 +50,7 @@ const localNote$ = noteUpdates$.pipe(
   peek("[exit] localNote$")
 );
 
-const [useNote] = bind(
+const [useNote, note$] = bind(
   (noteId: string): Observable<Note | undefined> =>
     merge(
       localNote$.pipe(
@@ -58,6 +66,13 @@ const [useNote] = bind(
     )
 );
 
+const [useNoteTitle] = bind((noteId: string) =>
+  note$(noteId).pipe(
+    map((note) => (note ? deriveTitle(note) : "")),
+    distinctUntilChanged()
+  )
+);
+
 localNote$
   .pipe(
     sampleTime(frequency),
@@ -66,5 +81,3 @@ localNote$
     peek("[exit] saveNote$")
   )
   .subscribe(notebookService.saveNote);
-
-export { updateNote, useNote };

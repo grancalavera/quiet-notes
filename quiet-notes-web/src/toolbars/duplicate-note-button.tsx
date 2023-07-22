@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { handleUnknownError } from "../app/app-error-state";
 import { isFailure, isLoading, isSuccess } from "../lib/async-result";
 import { useNote } from "../note/note-state";
+import { deriveTitle } from "../notebook/notebook-model";
 import { useCreateNote } from "../notebook/notebook-state";
 import { NotebookToolbarButton } from "./notebook-toolbar-button";
 
@@ -25,7 +26,11 @@ export const DuplicateNoteButton = ({
     <NotebookToolbarButton
       loading={isLoading(result)}
       title="duplicate note"
-      onClick={() => createNote(`copy of ${noteId}\n${note?.content ?? ""}`)}
+      onClick={() => {
+        const title = note ? deriveTitle(note) : "untitled note";
+        const content = `copy of ${title}\n${note?.content ?? ""}`;
+        return createNote(content);
+      }}
       kind="duplicate"
     />
   );

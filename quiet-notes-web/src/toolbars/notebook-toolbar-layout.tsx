@@ -1,10 +1,27 @@
-import { styled } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import { PropsWithChildren, ReactNode } from "react";
 
-export const NotebookToolbarLayout = styled("div")`
-  height: 100%;
-  padding: 0.5rem;
-  padding-bottom: 0;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-`;
+export const NotebookToolbarLayout = (
+  props: PropsWithChildren<{
+    title?: ReactNode;
+  }>
+) => (
+  <Box
+    className="qn-notebook-toolbar-layout"
+    sx={{
+      height: "100%",
+      with: "100%",
+      padding: "0.5rem",
+      paddingBottom: "0",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }}
+  >
+    <Box sx={{ flexGrow: 1, overflow: "hidden" }}>{props.title}</Box>
+    <ButtonGroup sx={{ flexShrink: 0, flexBasis: "auto" }}>
+      {props.children}
+    </ButtonGroup>
+  </Box>
+);
