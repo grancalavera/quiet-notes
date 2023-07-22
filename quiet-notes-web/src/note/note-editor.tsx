@@ -1,4 +1,4 @@
-import { Stack, styled } from "@mui/material";
+import { Skeleton, Stack, styled } from "@mui/material";
 import { Subscribe } from "@react-rxjs/core";
 import { useEffect, useRef } from "react";
 import { Loading } from "../components/loading";
@@ -9,6 +9,7 @@ import {
 } from "../toolbars/note-editor-toolbar";
 import { NoteEditorLayout } from "./note-editor-layout";
 import { updateNote, useNote } from "./note-state";
+import Box from "@mui/system/Box";
 
 export const NoteEditor = () => {
   return (
@@ -22,10 +23,10 @@ export const NoteEditor = () => {
 const MainNoteEditor = () => {
   const noteId = useMainNoteId();
   return noteId ? (
-    <Subscribe fallback={<Loading />}>
+    <Subscribe fallback={<NoteSkeleton />}>
       <NoteEditorLayout
-        editor={<NoteEditorInternal noteId={noteId} />}
         toolbar={<MainNoteEditorToolbar noteId={noteId} />}
+        editor={<NoteEditorInternal noteId={noteId} />}
       />
     </Subscribe>
   ) : null;
@@ -34,10 +35,10 @@ const MainNoteEditor = () => {
 const AdditionalNoteEditor = () => {
   const noteId = useAdditionalNoteId();
   return noteId ? (
-    <Subscribe fallback={<Loading />}>
+    <Subscribe fallback={<NoteSkeleton />}>
       <NoteEditorLayout
-        editor={<NoteEditorInternal noteId={noteId} />}
         toolbar={<AdditionalNoteEditorToolbar noteId={noteId} />}
+        editor={<NoteEditorInternal noteId={noteId} />}
       />
     </Subscribe>
   ) : null;
@@ -71,6 +72,20 @@ const NoteEditorInternal = ({ noteId }: { noteId: string }) => {
     </Stack>
   ) : null;
 };
+
+const NoteSkeleton = () => (
+  <NoteEditorLayout
+    toolbar={
+      <Skeleton
+        sx={{ height: 48, marginRight: 1, marginTop: 1 }}
+        variant="rounded"
+      />
+    }
+    editor={
+      <Skeleton sx={{ height: "100%", marginRight: 1 }} variant="rounded" />
+    }
+  />
+);
 
 const StyledNoteEditor = styled(Stack)`
   height: 100%;

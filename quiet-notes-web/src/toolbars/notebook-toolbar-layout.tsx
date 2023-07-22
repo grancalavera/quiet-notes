@@ -11,7 +11,7 @@ export const NotebookToolbarLayout = (
     className="qn-notebook-toolbar-layout"
     sx={{
       height: "100%",
-      with: "100%",
+      width: "100%",
       padding: "0.5rem",
       paddingBottom: "0",
       display: "flex",
