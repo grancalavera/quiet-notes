@@ -33,15 +33,18 @@ const NotesListItemLayout = (props: {
   createdAt: ReactNode;
   updatedAt: ReactNode;
   actions: ReactNode;
-
   isOpen?: boolean;
+  testid?: string;
   onClick?: () => void;
 }) => (
   <Card
     sx={{ mb: 1, bgcolor: props.isOpen ? "action.selected" : "" }}
     aria-current={props.isOpen ? "true" : "false"}
   >
-    <CardActionArea onClick={() => props.onClick?.()}>
+    <CardActionArea
+      onClick={() => props.onClick?.()}
+      data-testid={props.testid}
+    >
       <CardContent>
         <Typography gutterBottom variant="h6" noWrap>
           {props.title}
@@ -67,6 +70,7 @@ const NotesListItemLayout = (props: {
 export const NotesListItem = withSubscribe(
   ({ note }: NotesListItemProps) => {
     const isOpen = useIsNoteOpen(note.id);
+    const title = deriveTitle(note) || defaultNoteTitle;
 
     const previous = usePrevious({
       _createdAt: note._createdAt,
@@ -75,9 +79,10 @@ export const NotesListItem = withSubscribe(
 
     return (
       <NotesListItemLayout
+        testid={`notes-list-item-${title}`}
         isOpen={isOpen}
         onClick={() => openNote(note.id)}
-        title={deriveTitle(note) || defaultNoteTitle}
+        title={title}
         createdAt={createdAt(note._createdAt ?? previous?._createdAt)}
         updatedAt={updatedAt(note._updatedAt ?? previous?._updatedAt)}
         actions={

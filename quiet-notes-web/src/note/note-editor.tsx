@@ -22,7 +22,7 @@ type WithEditorKind = { kind: EditorKind };
 type NoteEditorProps = WithNoteId & WithEditorKind;
 
 export const NoteEditorGroup = () => (
-  <StyledNoteEditorGroup className="qn-note-editor-group" direction={"row"}>
+  <StyledNoteEditorGroup data-testid="note-editor-group" direction={"row"}>
     <NoteEditor kind="main" />
     <NoteEditor kind="additional" />
   </StyledNoteEditorGroup>
@@ -98,6 +98,7 @@ const NoteEditorInternal = ({ noteId, kind }: NoteEditorProps) => {
       <Spacer />
       <StyledTextArea
         aria-label="a quiet note"
+        data-testid={`note-editor-${kind}`}
         ref={inputRef}
         value={note.content}
         onChange={(e) => {

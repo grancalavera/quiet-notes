@@ -68,6 +68,11 @@ const reduceNotebookState = (state: NotebookState, signal: Signal) =>
       draft.selectedEditor = "main";
     };
 
+    const closeAdditionalNote = () => {
+      draft.additional.noteId = undefined;
+      draft.selectedEditor = "main";
+    };
+
     switch (signal.type) {
       case "selectedEditorNote$":
         draft[state.selectedEditor].noteId = signal.payload;
@@ -84,8 +89,7 @@ const reduceNotebookState = (state: NotebookState, signal: Signal) =>
         closeMainNote();
         break;
       case "closeAdditionalNote$":
-        draft.additional.noteId = undefined;
-        draft.selectedEditor = "main";
+        closeAdditionalNote();
         break;
       case "deletedNoteId$":
         if (
@@ -101,7 +105,7 @@ const reduceNotebookState = (state: NotebookState, signal: Signal) =>
         }
 
         if (draft.additional.noteId === signal.payload) {
-          draft.additional.noteId = undefined;
+          closeAdditionalNote();
           break;
         }
 
