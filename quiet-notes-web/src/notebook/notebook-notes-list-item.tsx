@@ -14,6 +14,7 @@ import { DeleteNoteButton } from "../toolbars/delete-note-button";
 import { DuplicateNoteButton } from "../toolbars/duplicate-note-button";
 import { Note, deriveTitle } from "./notebook-model";
 import { openNote, useIsNoteOpen } from "./notebook-state";
+import { NotebookButtonGroup } from "../toolbars/notebook-toolbar-button";
 
 export const defaultNoteTitle = "Untitled Note";
 export const maxTitleLength = 27;
@@ -86,10 +87,10 @@ export const NotesListItem = withSubscribe(
         createdAt={createdAt(note._createdAt ?? previous?._createdAt)}
         updatedAt={updatedAt(note._updatedAt ?? previous?._updatedAt)}
         actions={
-          <ButtonGroup>
+          <NotebookButtonGroup>
             <DuplicateNoteButton noteId={note.id} />
             <DeleteNoteButton noteId={note.id} />
-          </ButtonGroup>
+          </NotebookButtonGroup>
         }
       />
     );

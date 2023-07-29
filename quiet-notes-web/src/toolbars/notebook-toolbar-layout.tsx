@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
-import ButtonGroup from "@mui/material/ButtonGroup";
 import { PropsWithChildren, ReactNode } from "react";
+import { NotebookButtonGroup } from "./notebook-toolbar-button";
 
 export const NotebookToolbarLayout = (
   props: PropsWithChildren<{
@@ -27,13 +27,6 @@ export const NotebookToolbarLayout = (
     >
       {props.title}
     </Box>
-    <ButtonGroup
-      sx={{
-        flexShrink: 0,
-        flexBasis: "auto",
-      }}
-    >
-      {props.children}
-    </ButtonGroup>
+    <NotebookButtonGroup>{props.children}</NotebookButtonGroup>
   </Box>
 );
