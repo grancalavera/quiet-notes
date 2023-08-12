@@ -10,7 +10,7 @@
     "/lib"
   ],
   "scripts": {
-    "write-env": "ts-node-esm src/write-env.ts"
+    "write-env": "node --no-warnings=ExperimentalWarning --loader ts-node/esm src/write-env.ts"
   },
   "dependencies": {
     "@swc/core": "1.3.62",
