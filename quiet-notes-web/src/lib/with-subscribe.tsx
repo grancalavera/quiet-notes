@@ -8,8 +8,8 @@ interface WithSubscribeOptions {
   fallback?: ReactNode | null;
 }
 
-export function withSubscribe<T extends JSX.IntrinsicAttributes>(
-  Component: React.ComponentType<T>,
+export function withSubscribe<T>(
+  Component: React.ComponentType<T & JSX.IntrinsicAttributes>,
   options: WithSubscribeOptions = {}
 ) {
   const { source$, fallback } = options;
@@ -20,7 +20,7 @@ export function withSubscribe<T extends JSX.IntrinsicAttributes>(
     <Loading />
   );
 
-  return (props: T) => (
+  return (props: T & JSX.IntrinsicAttributes) => (
     <Subscribe source$={source$} fallback={actualFallback}>
       <Component {...props} />
     </Subscribe>

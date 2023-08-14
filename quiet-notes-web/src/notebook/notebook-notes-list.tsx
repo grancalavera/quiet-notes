@@ -1,10 +1,10 @@
 import Box from "@mui/material/Box";
-import { Subscribe } from "@react-rxjs/core";
-import { Loading } from "../components/loading";
+import { withSubscribe } from "../lib/with-subscribe";
 import { NotesListItem } from "./notebook-notes-list-item";
-import { notebookState$, useNotesCollection } from "./notebook-state";
+import { useNotesCollection } from "./notes-collection-state";
 
-export const NotesList = () => {
+export const NotesList = withSubscribe(() => {
+  const notes = useNotesCollection();
   return (
     <Box
       sx={{
@@ -14,21 +14,9 @@ export const NotesList = () => {
         padding: "0.5rem",
       }}
     >
-      <Subscribe fallback={<Loading />}>
-        <NotesListInternal />
-      </Subscribe>
-    </Box>
-  );
-};
-
-const NotesListInternal = () => {
-  const notes = useNotesCollection();
-
-  return (
-    <Subscribe source$={notebookState$}>
       {notes.map((note) => (
         <NotesListItem note={note} key={note.id} />
       ))}
-    </Subscribe>
+    </Box>
   );
-};
+});

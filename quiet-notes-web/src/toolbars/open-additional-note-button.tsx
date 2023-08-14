@@ -1,11 +1,13 @@
 import {
   openAdditionalNote,
-  useNotebookState,
+  useAdditionalNoteId,
+  useMainNoteId,
 } from "../notebook/notebook-state";
 import { NotebookToolbarButton } from "./notebook-toolbar-button";
 
 export const OpenAdditionalNoteButton = ({ noteId }: { noteId: string }) => {
-  const { additionalNoteId, mainNoteId } = useNotebookState();
+  const mainNoteId = useMainNoteId();
+  const additionalNoteId = useAdditionalNoteId();
   return (
     <NotebookToolbarButton
       disabled={additionalNoteId === noteId || mainNoteId === undefined}

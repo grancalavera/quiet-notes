@@ -6,11 +6,13 @@
   "storage": {
     "rules": "storage.rules"
   },
-  "functions": {
-    "runtime": "nodejs18",
-    "predeploy": ["pnpm --filter quiet-notes-functions... build"],
-    "source": "quiet-notes-functions-dist"
-  },
+  "functions": [
+    {
+      "runtime": "nodejs18",
+      "predeploy": ["pnpm --filter quiet-notes-functions... build"],
+      "source": "quiet-notes-functions-dist"
+    }
+  ],
   "hosting": {
     "public": "quiet-notes-web/dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],

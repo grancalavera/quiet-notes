@@ -23,7 +23,7 @@ export const createNote = (author: string, content: string = ""): Note => ({
 });
 
 export const deriveTitle = (note: Note): string => {
-  return note.content.trimStart().split("\n")[0] ?? "";
+  return note.content.trimStart().split("\n")[0] || "untitled";
 };
 
 export const hasCreatedDate = (candidate: Note): boolean =>

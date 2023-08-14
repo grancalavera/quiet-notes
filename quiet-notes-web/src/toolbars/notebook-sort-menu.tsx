@@ -1,32 +1,29 @@
-import SortIcon from "@mui/icons-material/Sort";
-import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Tooltip from "@mui/material/Tooltip";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { NotebookSortType } from "../notebook/notebook-model";
-import { changeSortType, useSortType } from "../notebook/notebook-state";
+import {
+  changeSortType,
+  useSortType,
+} from "../notebook/notes-collection-state";
+import { NotebookToolbarButton } from "./notebook-toolbar-button";
 
 export const NotebookSortMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const sortType = useSortType();
 
-  const handleSort = useCallback(
-    (s: NotebookSortType) => {
-      setAnchorEl(null);
-      changeSortType(s);
-    },
-    [changeSortType]
-  );
+  const handleSort = (s: NotebookSortType) => {
+    setAnchorEl(null);
+    changeSortType(s);
+  };
 
   return (
     <>
-      <Tooltip title="sort">
-        <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
-          <SortIcon color="primary" />
-        </IconButton>
-      </Tooltip>
-
+      <NotebookToolbarButton
+        title="sort"
+        onMouseDown={(e) => setAnchorEl(e.currentTarget)}
+        kind="sort"
+      />
       <Menu
         anchorEl={anchorEl}
         open={!!anchorEl}

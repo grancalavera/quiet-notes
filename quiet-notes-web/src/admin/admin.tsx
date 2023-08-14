@@ -81,7 +81,10 @@ const CheckboxCell = ({ value }: CheckboxCellProps) => {
 
   return (
     <Checkbox
-      inputProps={{ "aria-label": `Toggle ${value.role} role` }}
+      data-testid={`toggle-role-${value.role}-${value.email}`}
+      inputProps={{
+        "aria-label": `Toggle ${value.role} role`,
+      }}
       checked={checked}
       onChange={() => {
         setChecked((current) => {

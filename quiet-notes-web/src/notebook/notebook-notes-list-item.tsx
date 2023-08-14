@@ -1,17 +1,20 @@
 import {
+  ButtonGroup,
   Card,
   CardActionArea,
   CardActions,
   CardContent,
   Typography,
 } from "@mui/material";
+import { ReactNode } from "react";
 import { formatDate } from "../lib/date-format";
 import { usePrevious } from "../lib/use-previous";
+import { withSubscribe } from "../lib/with-subscribe";
 import { DeleteNoteButton } from "../toolbars/delete-note-button";
 import { DuplicateNoteButton } from "../toolbars/duplicate-note-button";
-import { OpenAdditionalNoteButton } from "../toolbars/open-additional-note-button";
-import { deriveTitle, Note } from "./notebook-model";
-import { openMainNote, useIsNoteOpen } from "./notebook-state";
+import { Note, deriveTitle } from "./notebook-model";
+import { openNote, useIsNoteOpen } from "./notebook-state";
+import { NotebookButtonGroup } from "../toolbars/notebook-toolbar-button";
 
 export const defaultNoteTitle = "Untitled Note";
 export const maxTitleLength = 27;
@@ -26,41 +29,71 @@ export interface NotesListItemProps {
   note: Note;
 }
 
-export const NotesListItem = ({ note }: NotesListItemProps) => {
-  const isOpen = useIsNoteOpen(note.id);
-
-  const previous = usePrevious({
-    _createdAt: note._createdAt,
-    _updatedAt: note._updatedAt,
-  });
-
-  return (
-    <Card
-      sx={{ mb: 1, bgcolor: isOpen ? "action.selected" : "" }}
-      aria-current={isOpen ? "true" : "false"}
+const NotesListItemLayout = (props: {
+  title: ReactNode;
+  createdAt: ReactNode;
+  updatedAt: ReactNode;
+  actions: ReactNode;
+  isOpen?: boolean;
+  testid?: string;
+  onClick?: () => void;
+}) => (
+  <Card
+    sx={{ mb: 1, bgcolor: props.isOpen ? "action.selected" : "" }}
+    aria-current={props.isOpen ? "true" : "false"}
+  >
+    <CardActionArea
+      onClick={() => props.onClick?.()}
+      data-testid={props.testid}
     >
-      <CardActionArea onClick={() => openMainNote(note.id)}>
-        <CardContent>
-          <Typography gutterBottom variant="h6" noWrap>
-            {deriveTitle(note) || defaultNoteTitle}
-          </Typography>
+      <CardContent>
+        <Typography gutterBottom variant="h6" noWrap>
+          {props.title}
+        </Typography>
 
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-            {createdAt(note._createdAt ?? previous?._createdAt)}
-          </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+          {props.createdAt}
+        </Typography>
 
-          <Typography variant="body2" color="text.secondary">
-            {updatedAt(note._updatedAt ?? previous?._updatedAt)}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
+        <Typography variant="body2" color="text.secondary">
+          {props.updatedAt}
+        </Typography>
+      </CardContent>
+    </CardActionArea>
 
-      {/* change to https://mui.com/components/menus/#context-menu */}
-      <CardActions sx={{ justifyContent: "flex-end" }}>
-        <DuplicateNoteButton noteId={note.id} onDuplicated={openMainNote} />
-        <OpenAdditionalNoteButton noteId={note.id} />
-        <DeleteNoteButton noteId={note.id} />
-      </CardActions>
-    </Card>
-  );
-};
+    {/* change to https://mui.com/components/menus/#context-menu */}
+    <CardActions sx={{ justifyContent: "flex-end" }}>
+      {props.actions}
+    </CardActions>
+  </Card>
+);
+
+export const NotesListItem = withSubscribe(
+  ({ note }: NotesListItemProps) => {
+    const isOpen = useIsNoteOpen(note.id);
+    const title = deriveTitle(note) || defaultNoteTitle;
+
+    const previous = usePrevious({
+      _createdAt: note._createdAt,
+      _updatedAt: note._updatedAt,
+    });
+
+    return (
+      <NotesListItemLayout
+        testid={`notes-list-item-${title}`}
+        isOpen={isOpen}
+        onClick={() => openNote(note.id)}
+        title={title}
+        createdAt={createdAt(note._createdAt ?? previous?._createdAt)}
+        updatedAt={updatedAt(note._updatedAt ?? previous?._updatedAt)}
+        actions={
+          <NotebookButtonGroup>
+            <DuplicateNoteButton noteId={note.id} />
+            <DeleteNoteButton noteId={note.id} />
+          </NotebookButtonGroup>
+        }
+      />
+    );
+  },
+  { fallback: null }
+);

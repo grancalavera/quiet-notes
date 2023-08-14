@@ -89,6 +89,7 @@ const Profile = () => {
           location.reload();
         }}
         variant="contained"
+        data-testid="sign-out-button"
       >
         Sign Out
       </Button>
@@ -103,6 +104,7 @@ const Profile = () => {
       <IconButton
         onClick={(e) => setAnchorEl(e.currentTarget)}
         aria-describedby={id}
+        data-testid="user-profile-button"
       >
         <UserAvatar />
       </IconButton>

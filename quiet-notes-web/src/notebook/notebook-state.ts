@@ -1,67 +1,60 @@
 import { bind } from "@react-rxjs/core";
 import { createSignal, mergeWithKey } from "@react-rxjs/utils";
 import { produce } from "immer";
-import { combineLatest } from "rxjs";
-import { map, scan, startWith } from "rxjs/operators";
+import {
+  distinctUntilChanged,
+  map,
+  scan,
+  shareReplay,
+  startWith,
+} from "rxjs/operators";
+import { notebookService } from "../firebase/notebook-service";
 import { assertNever } from "../lib/assert-never";
 import { Observed } from "../lib/observed";
 import { useMutation } from "../lib/use-mutation";
-import { notebookService } from "../firebase/notebook-service";
-import { NotebookSortType, hasCreatedDate, sortNotes } from "./notebook-model";
 
-export const [sortTypeSignal$, changeSortType] =
-  createSignal<NotebookSortType>();
-
-export const [useSortType, sortTypeWithDefault$] = bind(
-  sortTypeSignal$.pipe(startWith("ByDateDesc" as const))
-);
-
-export const [useNotesCollection] = bind(
-  combineLatest([
-    sortTypeWithDefault$,
-    notebookService.getNotesCollection(),
-  ]).pipe(
-    map(([sortType, notes]) =>
-      sortNotes(sortType, notes).filter(hasCreatedDate)
-    )
-  )
-);
+export {
+  closeAdditionalNote,
+  closeDeletedNote,
+  closeMainNote,
+  openAdditionalNote,
+  openMainNote,
+  openNote,
+  selectEditor,
+};
 
 export const useCreateNote = () => useMutation(notebookService.createNote);
 export const useDeleteNote = () => useMutation(notebookService.deleteNote);
 
+const [selectedEditorNote$, openNote] = createSignal<string>();
 const [mainNote$, openMainNote] = createSignal<string>();
 const [closeMainNote$, closeMainNote] = createSignal();
 const [additionalNote$, openAdditionalNote] = createSignal<string>();
 const [closeAdditionalNote$, closeAdditionalNote] = createSignal();
 const [deletedNoteId$, closeDeletedNote] = createSignal<string>();
-
-export {
-  openMainNote,
-  closeMainNote,
-  openAdditionalNote,
-  closeAdditionalNote,
-  closeDeletedNote,
-};
+const [selectedEditor$, selectEditor] = createSignal<EditorKind>();
 
 const signal$ = mergeWithKey({
+  selectedEditorNote$,
   mainNote$,
   additionalNote$,
   closeMainNote$,
   closeAdditionalNote$,
   deletedNoteId$,
+  selectedEditor$,
 });
 
 type Signal = Observed<typeof signal$>;
-
-type NotebookState = {
-  additionalNoteId: string | undefined;
-  mainNoteId: string | undefined;
-};
+export type EditorKind = "main" | "additional";
+type EditorState = { noteId: string | undefined };
+type EditorGroupState = { [K in EditorKind]: EditorState };
+type WithSelectedEditor = { selectedEditor: EditorKind };
+type NotebookState = EditorGroupState & WithSelectedEditor;
 
 const defaultNotebookState: NotebookState = {
-  additionalNoteId: undefined,
-  mainNoteId: undefined,
+  selectedEditor: "main",
+  main: { noteId: undefined },
+  additional: { noteId: undefined },
 };
 
 const reduceNotebookState = (state: NotebookState, signal: Signal) =>
@@ -70,66 +63,98 @@ const reduceNotebookState = (state: NotebookState, signal: Signal) =>
     // effectively a no-op, otherwise it'll move the additional note
     // to the main note.
     const closeMainNote = () => {
-      draft.mainNoteId = draft.additionalNoteId;
-      draft.additionalNoteId = undefined;
+      draft.main.noteId = draft.additional.noteId;
+      draft.additional.noteId = undefined;
+      draft.selectedEditor = "main";
+    };
+
+    const closeAdditionalNote = () => {
+      draft.additional.noteId = undefined;
+      draft.selectedEditor = "main";
     };
 
     switch (signal.type) {
+      case "selectedEditorNote$":
+        draft[state.selectedEditor].noteId = signal.payload;
+        break;
       case "mainNote$":
-        draft.mainNoteId = signal.payload;
+        draft.main.noteId = signal.payload;
+        draft.selectedEditor = "main";
         break;
       case "additionalNote$":
-        draft.additionalNoteId = signal.payload;
+        draft.additional.noteId = signal.payload;
+        draft.selectedEditor = "additional";
         break;
       case "closeMainNote$":
         closeMainNote();
         break;
       case "closeAdditionalNote$":
-        draft.additionalNoteId = undefined;
+        closeAdditionalNote();
         break;
       case "deletedNoteId$":
         if (
-          draft.additionalNoteId === draft.mainNoteId &&
-          draft.mainNoteId === signal.payload
+          draft.additional.noteId === draft.main.noteId &&
+          draft.main.noteId === signal.payload
         ) {
           return defaultNotebookState;
         }
 
-        if (draft.mainNoteId === signal.payload) {
+        if (draft.main.noteId === signal.payload) {
           closeMainNote();
           break;
         }
 
-        if (draft.additionalNoteId === signal.payload) {
-          draft.additionalNoteId = undefined;
+        if (draft.additional.noteId === signal.payload) {
+          closeAdditionalNote();
           break;
         }
+
+        break;
+      case "selectedEditor$":
+        draft.selectedEditor = signal.payload;
         break;
       default:
         assertNever(signal);
     }
   });
 
-export const [useNotebookState, notebookState$] = bind(
-  signal$.pipe(
-    scan(reduceNotebookState, defaultNotebookState),
-    startWith(defaultNotebookState)
-  )
+const notebookState$ = signal$.pipe(
+  scan(reduceNotebookState, defaultNotebookState),
+  startWith(defaultNotebookState),
+  shareReplay(1)
+);
+
+export const [useNoteIdByEditorKind] = bind((kind: EditorKind) =>
+  notebookState$.pipe(map((state) => state[kind].noteId))
 );
 
 export const [useAdditionalNoteId] = bind(
-  notebookState$.pipe(map((state) => state.additionalNoteId))
+  notebookState$.pipe(
+    map((state) => state.additional.noteId),
+    distinctUntilChanged()
+  )
 );
 
 export const [useMainNoteId] = bind(
-  notebookState$.pipe(map((state) => state.mainNoteId))
+  notebookState$.pipe(
+    map((state) => state.main.noteId),
+    distinctUntilChanged()
+  )
 );
 
 export const [useIsNoteOpen] = bind((noteId: string) =>
   notebookState$.pipe(
     map(
       (state) =>
-        state.mainNoteId === noteId || state.additionalNoteId === noteId
-    )
+        state.main.noteId === noteId || state.additional.noteId === noteId
+    ),
+    distinctUntilChanged()
+  )
+);
+
+export const [useIsSelectedEditor] = bind((kind: EditorKind) =>
+  notebookState$.pipe(
+    map((state) => state.selectedEditor === kind),
+    distinctUntilChanged()
   )
 );
