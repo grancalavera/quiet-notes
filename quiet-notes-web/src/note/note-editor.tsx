@@ -10,6 +10,7 @@ import {
   useIsSelectedEditor,
   useNoteIdByEditorKind,
 } from "../notebook/notebook-state";
+import { useIsDesktop } from "../platform/devices";
 import { CloseAdditionalNoteButton } from "../toolbars/close-additional-note-button";
 import { DuplicateNoteButton } from "../toolbars/duplicate-note-button";
 import { NotebookToolbarLayout } from "../toolbars/notebook-toolbar-layout";
@@ -43,16 +44,21 @@ const NoteEditor = withSubscribe(({ kind }: WithEditorKind) => {
   ) : null;
 });
 
-const NoteEditorToolbar = ({ noteId, kind }: NoteEditorProps) => (
-  <NotebookToolbarLayout title={<NoteTitle {...{ noteId, kind }} />}>
-    <DuplicateNoteButton noteId={noteId} />
-    {kind === "main" ? (
-      <OpenAdditionalNoteButton noteId={noteId} />
-    ) : (
-      <CloseAdditionalNoteButton />
-    )}
-  </NotebookToolbarLayout>
-);
+const NoteEditorToolbar = ({ noteId, kind }: NoteEditorProps) => {
+  const isDesktop = useIsDesktop();
+  return (
+    <NotebookToolbarLayout title={<NoteTitle {...{ noteId, kind }} />}>
+      <DuplicateNoteButton noteId={noteId} />
+      {isDesktop ? (
+        kind === "main" ? (
+          <OpenAdditionalNoteButton noteId={noteId} />
+        ) : (
+          <CloseAdditionalNoteButton />
+        )
+      ) : null}
+    </NotebookToolbarLayout>
+  );
+};
 
 const NoteTitle = withSubscribe(({ noteId }: NoteEditorProps) => {
   const title = useNoteTitle(noteId);
