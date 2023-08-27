@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useIsAdmin, useIsAuthor } from "../auth/auth-state";
 import { CenterLayout } from "../layout/center-layout";
 
-export const Lobby = () => {
+export default () => {
   const isAdmin = useIsAdmin();
   const isAuthor = useIsAuthor();
 
@@ -18,8 +18,12 @@ export const Lobby = () => {
   return (
     <CenterLayout>
       <div>
-        <Typography variant="h6">Your application is being reviewed!</Typography>
-        <Typography variant="body1">Come back soon to check if it has been approved.</Typography>
+        <Typography variant="h6">
+          Your application is being reviewed!
+        </Typography>
+        <Typography variant="body1">
+          Come back soon to check if it has been approved.
+        </Typography>
       </div>
     </CenterLayout>
   );
