@@ -170,6 +170,9 @@ importers:
       '@emotion/styled':
         specifier: 11.11.0
         version: 11.11.0(@emotion/react@11.11.0)(@types/react@18.2.8)(react@18.2.0)
+      '@fontsource/merriweather':
+        specifier: 5.0.8
+        version: 5.0.8
       '@fontsource/roboto':
         specifier: 5.0.2
         version: 5.0.2
@@ -2520,6 +2523,10 @@ packages:
 
   /@firebase/webchannel-wrapper@0.10.1:
     resolution: {integrity: sha512-Dq5rYfEpdeel0bLVN+nfD1VWmzCkK+pJbSjIawGE+RY4+NIJqhbUDDQjvV0NUK84fMfwxvtFoCtEe70HfZjFcw==}
+    dev: false
+
+  /@fontsource/merriweather@5.0.8:
+    resolution: {integrity: sha512-4vvR6psdKcGzaFCQL8fGCqMI/mOLKD+mhmUe3iQilx/4VFkIcF7wswWHZ7KCPeF24edX8yd0QXX0DQ1CenMrYA==}
     dev: false
 
   /@fontsource/roboto@5.0.2:

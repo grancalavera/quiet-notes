@@ -14,6 +14,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useIsAdmin, useUser } from "../auth/auth-state";
 import { authService } from "../firebase/auth-service";
+import { tablet } from "../platform/devices";
 import { toggleTheme, useSettings } from "../settings/settings-state";
 import { ToggleThemeSwitch } from "./toggle-theme-switch";
 
@@ -25,9 +26,14 @@ export const AppHeader = () => {
       <Typography
         variant="h4"
         onClick={() => navigate("/")}
-        sx={{ userSelect: "none", cursor: "pointer" }}
+        sx={{
+          userSelect: "none",
+          cursor: "pointer",
+          fontFamily: "Merriweather, sans-serif",
+          fontWeight: 900,
+        }}
       >
-        Quiet Notes
+        Qn.
       </Typography>
       <ToolbarLayout direction="row" spacing={1}>
         <ToggleThemeButton />
@@ -47,19 +53,33 @@ const AdminLink = () => {
     <>
       {isAdmin && (
         <IconButton onClick={() => navigate("/admin")}>
-          <SettingsIcon />
+          <SettingsIcon
+            sx={(theme) => ({
+              width: 25,
+              height: 25,
+              [tablet(theme)]: { width: 25 * 0.7, height: 25 * 0.7 },
+            })}
+          />
         </IconButton>
       )}
     </>
   );
 };
 
-const UserAvatar = ({ size = 30 }: { size?: number }) => {
+const UserAvatar = ({ size }: { size: number }) => {
   const user = useUser();
   const photoURL = user.photoURL ?? undefined;
   const username = user.displayName ?? user.email ?? "";
   return (
-    <Avatar alt={username} src={photoURL} sx={{ width: size, height: size }} />
+    <Avatar
+      alt={username}
+      src={photoURL}
+      sx={(theme) => ({
+        width: size,
+        height: size,
+        [tablet(theme)]: { width: size * 0.7, height: size * 0.7 },
+      })}
+    />
   );
 };
 
@@ -106,7 +126,7 @@ const Profile = () => {
         aria-describedby={id}
         data-testid="user-profile-button"
       >
-        <UserAvatar />
+        <UserAvatar size={25} />
       </IconButton>
       <Popover
         id={id}
@@ -136,7 +156,13 @@ const ForkMeOnGithub = () => (
     href="https://github.com/grancalavera/quiet-notes"
     target="_blank"
   >
-    <GitHubIcon />
+    <GitHubIcon
+      sx={(theme) => ({
+        width: 25,
+        height: 25,
+        [tablet(theme)]: { width: 25 * 0.7, height: 25 * 0.7 },
+      })}
+    />
   </IconButton>
 );
 

@@ -1,10 +1,15 @@
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
+import { mobile, tablet } from "../platform/devices";
 
 export const ToggleThemeSwitch = styled(Switch)(({ theme }) => ({
   width: 62,
   height: 34,
   padding: 7,
+  transform: "scale(0.9)",
+  [tablet(theme)]: {
+    transform: "scale(0.7)",
+  },
   "& .MuiSwitch-switchBase": {
     margin: 1,
     padding: 0,
