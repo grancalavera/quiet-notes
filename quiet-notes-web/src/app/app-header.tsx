@@ -14,9 +14,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useIsAdmin, useUser } from "../auth/auth-state";
 import { authService } from "../firebase/auth-service";
+import { tablet } from "../platform/devices";
 import { toggleTheme, useSettings } from "../settings/settings-state";
 import { ToggleThemeSwitch } from "./toggle-theme-switch";
-import { mobile, tablet } from "../platform/devices";
 
 export const AppHeader = () => {
   const navigate = useNavigate();
@@ -26,9 +26,14 @@ export const AppHeader = () => {
       <Typography
         variant="h4"
         onClick={() => navigate("/")}
-        sx={{ userSelect: "none", cursor: "pointer" }}
+        sx={{
+          userSelect: "none",
+          cursor: "pointer",
+          fontFamily: "Merriweather, sans-serif",
+          fontWeight: 900,
+        }}
       >
-        Quiet Notes
+        Qn.
       </Typography>
       <ToolbarLayout direction="row" spacing={1}>
         <ToggleThemeButton />
