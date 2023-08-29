@@ -17,6 +17,7 @@ import { NotebookToolbarLayout } from "../toolbars/notebook-toolbar-layout";
 import { OpenAdditionalNoteButton } from "../toolbars/open-additional-note-button";
 import { NoteEditorLayout } from "./note-editor-layout";
 import { updateNote, useNote } from "./note-state";
+import { CloseNoteButton } from "../toolbars/close-note-button";
 
 type WithNoteId = { noteId: string };
 type WithEditorKind = { kind: EditorKind };
@@ -60,7 +61,31 @@ const NoteEditorToolbar = ({ noteId, kind }: NoteEditorProps) => {
   );
 };
 
-const NoteTitle = withSubscribe(({ noteId }: NoteEditorProps) => {
+export const NoteEditorMobile = withSubscribe(
+  ({ onClose }: { onClose: () => void }) => {
+    const noteId = useNoteIdByEditorKind("main");
+    return noteId ? (
+      <Subscribe fallback={<NoteEditorSkeleton />}>
+        <Stack height="100%" width="375px">
+          <NoteEditorToolbarMobile noteId={noteId} onClose={onClose} />
+          <NoteEditorInternal {...{ noteId, kind: "main" }} />
+        </Stack>
+      </Subscribe>
+    ) : null;
+  }
+);
+
+const NoteEditorToolbarMobile = ({
+  noteId,
+  onClose,
+}: WithNoteId & { onClose: () => void }) => (
+  <NotebookToolbarLayout title={<NoteTitle noteId={noteId} />}>
+    <DuplicateNoteButton noteId={noteId} />
+    <CloseNoteButton onClose={onClose} />
+  </NotebookToolbarLayout>
+);
+
+export const NoteTitle = withSubscribe(({ noteId }: WithNoteId) => {
   const title = useNoteTitle(noteId);
   return (
     <Typography

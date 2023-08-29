@@ -11,6 +11,7 @@ import {
 import { notebookService } from "../firebase/notebook-service";
 import { assertNever } from "../lib/assert-never";
 import { Observed } from "../lib/observed";
+import { peek } from "../lib/peek";
 import { useMutation } from "../lib/use-mutation";
 
 export {
@@ -119,9 +120,11 @@ const reduceNotebookState = (state: NotebookState, signal: Signal) =>
   });
 
 const notebookState$ = signal$.pipe(
+  peek("notebookState$ [enter]"),
   scan(reduceNotebookState, defaultNotebookState),
   startWith(defaultNotebookState),
-  shareReplay(1)
+  shareReplay(1),
+  peek("notebookState$ [exit]")
 );
 
 export const [useNoteIdByEditorKind] = bind((kind: EditorKind) =>

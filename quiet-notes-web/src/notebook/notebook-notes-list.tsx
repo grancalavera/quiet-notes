@@ -7,6 +7,7 @@ export const NotesList = withSubscribe(() => {
   const notes = useNotesCollection();
   return (
     <Box
+      data-testid="notes-list"
       sx={{
         height: "100%",
         overflowY: "auto",

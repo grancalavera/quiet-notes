@@ -9,8 +9,8 @@ export const NotebookToolbarLayout = (
 ) => (
   <Box
     className="qn-notebook-toolbar-layout"
+    data-testid="notebook-toolbar-layout"
     sx={{
-      height: "100%",
       width: "100%",
       display: "flex",
       justifyContent: "space-between",
