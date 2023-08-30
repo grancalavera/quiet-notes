@@ -5,7 +5,7 @@ import { RequireRole } from "../auth/auth";
 import { Loading } from "../components/loading";
 
 const Lobby = lazy(() => import("../routes/Lobby"));
-const Notebook = lazy(() => import("../routes/MobileNotebook"));
+const Notebook = lazy(() => import("../routes/NotebookMobile"));
 
 export default () => (
   <Routes>

@@ -1,8 +1,8 @@
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
-import { FC, PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 
-export const FullPageLayout: FC<PropsWithChildren<{}>> = ({ children }) => (
+export const FullPageLayout = ({ children }: PropsWithChildren) => (
   <Layout square>{children}</Layout>
 );
 
