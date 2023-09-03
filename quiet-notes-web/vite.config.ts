@@ -11,7 +11,7 @@ import { viteEnvSchema } from "./src/lib/env-schema";
 export default defineConfig(({ mode }) => {
   const unsafe_env = loadEnv(mode, process.cwd(), "");
   const env = viteEnvSchema.parse(unsafe_env);
-  const { VITE_FIREBASE_PROJECT_HOSTING } = env;
+  const { VITE_FIREBASE_PROJECT_HOSTING, VITE_APP_NAME } = env;
 
   const config: UserConfigExport = {
     plugins: [
@@ -43,9 +43,9 @@ export default defineConfig(({ mode }) => {
         ],
         manifest: {
           start_url: "/",
-          name: "Quiet Notes",
-          short_name: "Quiet Notes",
-          description: "Quiet Notes",
+          name: VITE_APP_NAME,
+          short_name: VITE_APP_NAME,
+          description: VITE_APP_NAME,
           icons: [
             {
               src: "icon-192x192.png",
