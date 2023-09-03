@@ -1,6 +1,11 @@
 import { initializeApp } from "firebase/app";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
-import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import {
+  connectFirestoreEmulator,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+} from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { fromFetch } from "rxjs/fetch";
 import { map, shareReplay, switchMap, tap } from "rxjs/operators";
@@ -25,23 +30,45 @@ export const app$ = fromFetch("/__/firebase/init.json").pipe(
         getAuth(firebaseApp),
         env.VITE_FIREBASE_EMULATOR_AUTH
       );
-
-      connectFirestoreEmulator(
-        getFirestore(firebaseApp),
-        "localhost",
-        env.VITE_FIREBASE_EMULATOR_FIRESTORE_PORT
-      );
-
-      connectFunctionsEmulator(
-        getFunctions(firebaseApp),
-        "localhost",
-        env.VITE_FIREBASE_EMULATOR_FUNCTIONS_PORT
-      );
     }
   }),
   shareReplay(1)
 );
 
 export const auth$ = app$.pipe(map((app) => getAuth(app)));
-export const firestore$ = app$.pipe(map((app) => getFirestore(app)));
-export const functions$ = app$.pipe(map((app) => getFunctions(app)));
+
+export const firestore$ = app$.pipe(
+  map((app) => {
+    const tabManager = persistentMultipleTabManager();
+    const localCache = persistentLocalCache({ tabManager });
+    const firestore = initializeFirestore(app, { localCache });
+
+    if (emulate) {
+      connectFirestoreEmulator(
+        firestore,
+        "localhost",
+        env.VITE_FIREBASE_EMULATOR_FIRESTORE_PORT
+      );
+    }
+
+    return firestore;
+  }),
+  shareReplay(1)
+);
+
+export const functions$ = app$.pipe(
+  map((app) => {
+    const functions = getFunctions(app);
+
+    if (emulate) {
+      connectFunctionsEmulator(
+        functions,
+        "localhost",
+        env.VITE_FIREBASE_EMULATOR_FUNCTIONS_PORT
+      );
+    }
+
+    return functions;
+  }),
+  shareReplay(1)
+);
