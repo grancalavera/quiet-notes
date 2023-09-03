@@ -81,3 +81,7 @@ localNote$
     peek("[exit] saveNote$")
   )
   .subscribe(notebookService.saveNote);
+
+export const [useNoteExists] = bind((noteId: string) =>
+  remoteNote$(noteId).pipe(map((note) => !!note))
+);
