@@ -8,7 +8,7 @@ import { settings$ } from "../settings/settings-state";
 import { AppErrorBoundary } from "./app-error-boundary";
 import { AppTheme } from "./app-theme";
 import { ReloadPrompt } from "./reload-prompt";
-const Desktop = lazy(() => import("../platform/Desktop"));
+import { TargetPlatform } from "../platform/target-platform";
 
 export const Application = () => (
   <Subscribe source$={settings$}>
@@ -20,9 +20,7 @@ export const Application = () => (
             <BrowserRouter>
               <Routes>
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/*" element={<Desktop />} />
-                {/* TODO: enable when mobile is ready */}
-                {/* <Route path="/*" element={<TargetPlatform />} /> */}
+                <Route path="/*" element={<TargetPlatform />} />
               </Routes>
             </BrowserRouter>
           </Subscribe>

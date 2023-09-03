@@ -47,7 +47,7 @@ const NoteEditor = withSubscribe(({ kind }: WithEditorKind) => {
 const NoteEditorToolbar = ({ noteId, kind }: NoteEditorProps) => {
   const isDesktop = useIsDesktop();
   return (
-    <NotebookToolbarLayout title={<NoteTitle {...{ noteId, kind }} />}>
+    <NotebookToolbarLayout title={<NoteTitle noteId={noteId} />}>
       <DuplicateNoteButton noteId={noteId} />
       {isDesktop ? (
         kind === "main" ? (
@@ -60,7 +60,7 @@ const NoteEditorToolbar = ({ noteId, kind }: NoteEditorProps) => {
   );
 };
 
-const NoteTitle = withSubscribe(({ noteId }: NoteEditorProps) => {
+export const NoteTitle = withSubscribe(({ noteId }: WithNoteId) => {
   const title = useNoteTitle(noteId);
   return (
     <Typography
@@ -77,7 +77,7 @@ const NoteTitle = withSubscribe(({ noteId }: NoteEditorProps) => {
   );
 });
 
-const NoteEditorInternal = ({ noteId, kind }: NoteEditorProps) => {
+export const NoteEditorInternal = ({ noteId, kind }: NoteEditorProps) => {
   const note = useNote(noteId);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const selected = useIsSelectedEditor(kind);

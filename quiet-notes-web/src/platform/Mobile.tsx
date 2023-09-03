@@ -5,6 +5,7 @@ import { RequireRole } from "../auth/auth";
 import { Loading } from "../components/loading";
 
 const Lobby = lazy(() => import("../routes/Lobby"));
+const Notebook = lazy(() => import("../routes/NotebookMobile"));
 
 export default () => (
   <Routes>
@@ -21,7 +22,9 @@ export default () => (
         path="notebook"
         element={
           <RequireRole role="author" fallback="/lobby">
-            <>Mobile Notebook</>
+            <Suspense fallback={<Loading />}>
+              <Notebook />
+            </Suspense>
           </RequireRole>
         }
       />
