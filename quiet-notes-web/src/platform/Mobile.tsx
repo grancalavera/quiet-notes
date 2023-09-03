@@ -28,15 +28,6 @@ export default () => (
           </RequireRole>
         }
       />
-      <Route
-        path="admin"
-        element={
-          <RequireRole role="admin" fallback="/">
-            <>Mobile Admin</>
-          </RequireRole>
-        }
-      />
-
       <Route path="*" element={<Navigate to="/notebook" />} />
     </Route>
   </Routes>

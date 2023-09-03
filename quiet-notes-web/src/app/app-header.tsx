@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useIsAdmin, useUser } from "../auth/auth-state";
 import { authService } from "../firebase/auth-service";
-import { tablet } from "../platform/devices";
+import { tablet, useIsDesktop } from "../platform/devices";
 import { toggleTheme, useSettings } from "../settings/settings-state";
 import { ToggleThemeSwitch } from "./toggle-theme-switch";
 
@@ -48,10 +48,10 @@ export const AppHeader = () => {
 const AdminLink = () => {
   const navigate = useNavigate();
   const isAdmin = useIsAdmin();
-
+  const isLargeEnoughForAdmin = useIsDesktop();
   return (
     <>
-      {isAdmin && (
+      {isAdmin && isLargeEnoughForAdmin && (
         <IconButton onClick={() => navigate("/admin")}>
           <SettingsIcon
             sx={(theme) => ({
