@@ -28,16 +28,19 @@ const header = `# ------------------------------------------------------------ #
 `;
 
 type EnvTemplate = (context: Context) => `${typeof header}
+VITE_APP_NAME=${string}
 VITE_FIREBASE_PROJECT=${string}
 VITE_FIREBASE_PROJECT_HOSTING=${string}
 `;
 
 const env: EnvTemplate = ({ firebaserc }) => `${header}
+VITE_APP_NAME="Quiet Notes"
 VITE_FIREBASE_PROJECT=${firebaserc.projects.default}
 VITE_FIREBASE_PROJECT_HOSTING=https://${firebaserc.projects.default}.web.app
 `;
 
 const envLocal: EnvTemplate = ({ firebaserc }) => `${header}
+VITE_APP_NAME="Quiet Notes (Local)"
 VITE_FIREBASE_PROJECT=${firebaserc.projects.default}
 VITE_FIREBASE_PROJECT_HOSTING=https://${firebaserc.projects.default}.web.app
 VITE_FIREBASE_USE_EMULATORS=false
@@ -47,6 +50,7 @@ BROWSER=none
 const envEmulatedLocal: EnvTemplate = ({ firebaserc, firebaseConfig }) => {
   const hosting = `http://localhost:${firebaseConfig.emulators.hosting.port}`;
   return `${header}
+VITE_APP_NAME="Quiet Notes (Local, Emulated)"
 VITE_FIREBASE_PROJECT=${firebaserc.projects.default}
 VITE_FIREBASE_PROJECT_HOSTING=${hosting}
 VITE_FIREBASE_USE_EMULATORS=true

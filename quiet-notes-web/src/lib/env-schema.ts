@@ -22,6 +22,7 @@ const viteEnvBuiltinsSchema = z.object({
 });
 
 export const viteEnvSchema = z.object({
+  VITE_APP_NAME: z.string(),
   VITE_FIREBASE_PROJECT: z.string(),
   VITE_FIREBASE_PROJECT_HOSTING: z.string().url(),
   VITE_FIREBASE_USE_EMULATORS: booleanSchema(),
