@@ -12,7 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "1.46.1",
-    "firebase-admin": "11.9.0",
-    "uuid": "9.0.0"
+    "firebase-admin": "12.3.1",
+    "uuid": "10.0.0"
   }
 }
