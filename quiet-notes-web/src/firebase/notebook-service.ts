@@ -38,6 +38,12 @@ export const notebookService: NotebookServiceSchema = {
       switchMap(({ firestore }) => {
         const ref = noteRef(firestore, noteId);
         return docData(ref);
+      }),
+      map((candidate) => {
+        if (candidate === undefined) {
+          throw new Error(`Note with id ${noteId} not found`);
+        }
+        return candidate;
       })
     ),
 

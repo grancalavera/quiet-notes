@@ -2,7 +2,7 @@
 
 DEFAULT_ADMIN=admin@example.com
 
-echo "default admin email:(${DEFAULT_ADMIN})"
+echo "admin email? (default: ${DEFAULT_ADMIN})"
 read ADMIN_EMAIL
 if [ -z "$ADMIN_EMAIL" ]; then
   ADMIN_EMAIL="admin@example.com"
