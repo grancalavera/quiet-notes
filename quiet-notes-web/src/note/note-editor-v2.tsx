@@ -6,10 +6,10 @@ import { withSubscribe } from "../lib/with-subscribe";
 import { useNoteTitle } from "../note/note-state";
 import {
   EditorKind,
+  useSelectEditor,
   useIsSelectedEditor,
   useNoteIdByEditorKind,
-  selectEditor,
-} from "../notebook/notebook-state";
+} from "../notebook/notebook-state-v2";
 import { useIsDesktop } from "../platform/devices";
 import { CloseAdditionalNoteButton } from "../toolbars/close-additional-note-button";
 import { DuplicateNoteButton } from "../toolbars/duplicate-note-button";
@@ -32,6 +32,7 @@ export const NoteEditorGroup = () => (
 const NoteEditor = withSubscribe(({ kind }: WithEditorKind) => {
   const noteId = useNoteIdByEditorKind(kind);
   const selected = useIsSelectedEditor(kind);
+  const selectEditor = useSelectEditor();
   return noteId ? (
     <Subscribe fallback={<NoteEditorSkeleton />}>
       <NoteEditorLayout

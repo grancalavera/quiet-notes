@@ -1,8 +1,8 @@
 import {
-  openAdditionalNote,
+  useOpenAdditionalNote,
   useAdditionalNoteId,
   useMainNoteId,
-} from "../notebook/notebook-state";
+} from "../notebook/notebook-state-v2";
 import { NotebookToolbarButton } from "./notebook-toolbar-button";
 
 export const OpenAdditionalNoteButton = ({ noteId }: { noteId: string }) => {
@@ -13,7 +13,7 @@ export const OpenAdditionalNoteButton = ({ noteId }: { noteId: string }) => {
       disabled={additionalNoteId === noteId || mainNoteId === undefined}
       loading={false}
       title="Send to additional editor"
-      onClick={() => openAdditionalNote(noteId)}
+      onClick={() => useOpenAdditionalNote(noteId)}
       kind="split"
     />
   );

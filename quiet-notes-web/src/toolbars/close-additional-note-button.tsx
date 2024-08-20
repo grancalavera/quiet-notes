@@ -1,4 +1,4 @@
-import { closeAdditionalNote } from "../notebook/notebook-state";
+import { useCloseAdditionalNote } from "../notebook/notebook-state-v2";
 import { NotebookToolbarButton } from "./notebook-toolbar-button";
 
 export const CloseAdditionalNoteButton = () => {
@@ -6,7 +6,7 @@ export const CloseAdditionalNoteButton = () => {
     <NotebookToolbarButton
       loading={false}
       title="Close additional note"
-      onClick={() => closeAdditionalNote()}
+      onClick={() => useCloseAdditionalNote()}
       kind="close"
     />
   );

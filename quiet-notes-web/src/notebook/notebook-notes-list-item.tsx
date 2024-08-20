@@ -13,7 +13,7 @@ import { withSubscribe } from "../lib/with-subscribe";
 import { DeleteNoteButton } from "../toolbars/delete-note-button";
 import { DuplicateNoteButton } from "../toolbars/duplicate-note-button";
 import { Note, deriveTitle } from "./notebook-model";
-import { openNote, useIsNoteOpen } from "./notebook-state";
+import { useOpenNote, useIsNoteOpen } from "./notebook-state-v2";
 import { NotebookButtonGroup } from "../toolbars/notebook-toolbar-button";
 
 export const defaultNoteTitle = "Untitled Note";
@@ -72,6 +72,7 @@ export const NotesListItem = withSubscribe(
   ({ note }: NotesListItemProps) => {
     const isOpen = useIsNoteOpen(note.id);
     const title = deriveTitle(note) || defaultNoteTitle;
+    const openNote = useOpenNote();
 
     const previous = usePrevious({
       _createdAt: note._createdAt,

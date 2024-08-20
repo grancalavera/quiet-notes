@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { closeAdditionalNote } from "../notebook/notebook-state";
+import { useCloseAdditionalNote } from "../notebook/notebook-state-v2";
 import { useIsMobile, useIsTablet } from "../platform/devices";
 
 export const NoteSplitAgent = () => {
@@ -7,7 +7,7 @@ export const NoteSplitAgent = () => {
   const isTablet = useIsTablet();
 
   useEffect(() => {
-    if (isMobile || isTablet) closeAdditionalNote();
+    if (isMobile || isTablet) useCloseAdditionalNote();
   }, [isMobile, isTablet]);
 
   return null;

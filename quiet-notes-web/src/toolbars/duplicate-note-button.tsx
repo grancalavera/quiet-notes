@@ -3,7 +3,7 @@ import { handleUnknownError } from "../app/app-error-state";
 import { isFailure, isLoading, isSuccess } from "../lib/async-result";
 import { useNote } from "../note/note-state";
 import { deriveTitle } from "../notebook/notebook-model";
-import { openNote, useCreateNote } from "../notebook/notebook-state";
+import { useOpenNote, useCreateNote } from "../notebook/notebook-state-v2";
 import { NotebookToolbarButton } from "./notebook-toolbar-button";
 
 export const DuplicateNoteButton = ({ noteId }: { noteId: string }) => {
@@ -13,7 +13,7 @@ export const DuplicateNoteButton = ({ noteId }: { noteId: string }) => {
   useEffect(() => {
     isFailure(result) && handleUnknownError(result.error);
     (isSuccess(result) || isFailure(result)) && reset();
-    isSuccess(result) && openNote(result.value);
+    isSuccess(result) && useOpenNote(result.value);
   }, [result]);
 
   return (

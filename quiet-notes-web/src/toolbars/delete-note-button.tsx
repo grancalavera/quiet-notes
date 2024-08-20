@@ -3,10 +3,10 @@ import { handleUnknownError } from "../app/app-error-state";
 import { isFailure, isLoading, isSuccess } from "../lib/async-result";
 import { useNoteExists } from "../note/note-state";
 import {
-  closeDeletedNote,
+  useCloseDeletedNote,
   useDeleteNote,
   useIsNoteOpen,
-} from "../notebook/notebook-state";
+} from "../notebook/notebook-state-v2";
 import { NotebookToolbarButton } from "./notebook-toolbar-button";
 
 export const DeleteNoteButton = ({ noteId }: { noteId: string }) => {
@@ -21,7 +21,7 @@ export const DeleteNoteButton = ({ noteId }: { noteId: string }) => {
 
   useEffect(() => {
     if (isNoteOpen && !doesNoteExist) {
-      closeDeletedNote(noteId);
+      useCloseDeletedNote(noteId);
     }
   }, [isNoteOpen, doesNoteExist]);
 
@@ -30,7 +30,7 @@ export const DeleteNoteButton = ({ noteId }: { noteId: string }) => {
       loading={isLoading(result)}
       title="delete note"
       onClick={() => {
-        closeDeletedNote(noteId);
+        useCloseDeletedNote(noteId);
         deleteNote(noteId);
       }}
       kind="delete"

@@ -2,7 +2,7 @@ import { Box, Drawer, Skeleton, Stack } from "@mui/material";
 import { withSubscribe } from "../lib/with-subscribe";
 import { NoteEditorInternal, NoteTitle } from "../note/note-editor";
 import { NotesList } from "../notebook/notebook-notes-list";
-import { closeMainNote, useMainNoteId } from "../notebook/notebook-state";
+import { useCloseMainNote, useMainNoteId } from "../notebook/notebook-state-v2";
 import { NotebookListToolbar } from "../toolbars/notebook-list-toolbar";
 import { NotebookToolbarLayout } from "../toolbars/notebook-toolbar-layout";
 import { NotebookToolbarButton } from "../toolbars/notebook-toolbar-button";
@@ -46,7 +46,7 @@ const NoteEditor = withSubscribe(
             <NotebookToolbarButton
               loading={false}
               title="Close"
-              onClick={() => closeMainNote()}
+              onClick={() => useCloseMainNote()}
               kind="close"
             />
           </NotebookToolbarLayout>
