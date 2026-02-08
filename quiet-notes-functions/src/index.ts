@@ -23,14 +23,14 @@ admin.firestore().settings({ ignoreUndefinedProperties: true });
 
 export const onboardUser = functions.auth.user().onCreate(async (user) => {
   functions.logger.info("onboard user", user.uid, {
-    config: functions.config(),
+    defaultAdmin: process.env.DEFAULT_ADMIN,
     uid: user.uid,
   });
 
   const roles: QNRole[] = ["user"];
 
   if (isDefaultAdmin(user)) {
-    roles.push("admin");
+    roles.push("admin", "author");
   }
 
   addRoles(user, roles);

@@ -16,10 +16,10 @@ project id with you own project id:
 
 This project uses:
 
-* Authentication
-* Firestore Database
-* Functions
-* Hosting
+- Authentication
+- Firestore Database
+- Functions
+- Hosting
 
 ### Firebase Github integration (kind of optional...)
 
@@ -55,14 +55,35 @@ Answer `y` to this prompt to override the existing configuration:
 
 ## Running Quiet Notes locally using the Firebase emulators
 
-```
-yarn install
-./set-default-admin.sh <default admin email>
-./set-functions-runtime-config.sh
-yarn env-local
-yarn start:emulated
+### Prerequisites
+
+- Node.js >= 18
+- pnpm >= 7
+- Firebase CLI: `npm install -g firebase-tools`
+
+### Setup and Run
+
+```bash
+# 1. Install dependencies
+pnpm install
+
+# 2. Bootstrap environment (generates .env files and sets Firebase config)
+./bootstrap.sh
+# You'll be prompted for default admin email (or press enter for admin@example.com)
+# Or run non-interactively with default admin (admin@example.com):
+./bootstrap.sh --defaults
+
+# 3. Start Firebase emulators (in one terminal)
+./emulate.sh
+
+# 4. Start web app on http://localhost:3000 (in another terminal)
+cd quiet-notes-web && pnpm start:emulated
 ```
 
-## Indexes
+### First-time Local Dev Workflow
 
-https://firebase.google.com/docs/reference/firestore/indexes
+After the emulators and web app are running:
+
+1. Sign up / log in with the admin email you configured during bootstrap
+2. The default admin is automatically granted `admin`, `author`, and `user` roles — you can start creating notes immediately
+3. To grant other users access, go to the Admin panel and toggle the `author` role for them
