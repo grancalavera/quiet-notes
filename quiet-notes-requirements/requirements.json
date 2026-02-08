@@ -2,12 +2,12 @@
   {
     "id": "REQ-AUTH-001",
     "category": "authentication",
-    "description": "Users can sign in via OAuth popup using a Google provider.",
+    "description": "Users can sign in using a third-party identity provider.",
     "steps": [
       "Navigate to the application while unauthenticated.",
-      "Verify the login page is displayed with a 'Sign In with Google' button.",
-      "Click the 'Sign In with Google' button.",
-      "Complete the OAuth flow in the popup window.",
+      "Verify the login page is displayed with a sign-in button.",
+      "Click the sign-in button.",
+      "Complete the authentication flow.",
       "Verify the user is redirected to the notebook page after successful sign-in."
     ],
     "passes": false
@@ -15,13 +15,13 @@
   {
     "id": "REQ-AUTH-002",
     "category": "authentication",
-    "description": "Users can sign out, which clears the session and reloads the page.",
+    "description": "Users can sign out, which clears the session and returns them to the login page.",
     "steps": [
       "Sign in as an authenticated user.",
       "Click the profile avatar button in the header.",
       "Click the 'Sign Out' button in the popover.",
-      "Verify the page reloads.",
-      "Verify the user is redirected to the login page."
+      "Verify the session is cleared.",
+      "Verify the user is returned to the login page."
     ],
     "passes": false
   },
@@ -30,9 +30,9 @@
     "category": "authentication",
     "description": "Unauthenticated users are redirected to the login page when accessing any protected route.",
     "steps": [
-      "Attempt to navigate to '/notebook' while unauthenticated.",
-      "Verify the user is redirected to '/login'.",
-      "Verify the original intended path is preserved in navigation state."
+      "Attempt to navigate to the notebook page while unauthenticated.",
+      "Verify the user is redirected to the login page.",
+      "Verify that after signing in, the user is taken to the originally requested page."
     ],
     "passes": false
   },
@@ -42,19 +42,19 @@
     "description": "Authenticated users are redirected away from the login page to their original intended destination or the home page.",
     "steps": [
       "Sign in as an authenticated user.",
-      "Navigate to '/login'.",
-      "Verify the user is redirected to '/' (or the previously intended path if available)."
+      "Navigate to the login page.",
+      "Verify the user is redirected to the home page (or the previously intended page if available)."
     ],
     "passes": false
   },
   {
     "id": "REQ-AUTH-005",
     "category": "authentication",
-    "description": "A loading state is displayed while authentication state is being initialized.",
+    "description": "A loading state is displayed while the application determines the user's authentication status.",
     "steps": [
       "Navigate to the application.",
-      "Verify a loading indicator is displayed while the auth state resolves.",
-      "Verify the appropriate page renders once auth state is determined."
+      "Verify a loading indicator is displayed while authentication is being determined.",
+      "Verify the appropriate page renders once the user's status is known."
     ],
     "passes": false
   },
@@ -75,9 +75,8 @@
     "category": "authorization",
     "description": "The system supports three roles: 'user', 'author', and 'admin'.",
     "steps": [
-      "Verify the user data model includes a 'customClaims.roles' array.",
-      "Verify the roles array accepts exactly the values 'user', 'author', and 'admin'.",
-      "Verify invalid role values are rejected by schema validation."
+      "Verify that users can be assigned the roles 'user', 'author', and 'admin'.",
+      "Verify that no other role values are accepted by the system."
     ],
     "passes": false
   },
@@ -86,8 +85,8 @@
     "category": "authorization",
     "description": "New users receive only the 'user' role by default upon account creation.",
     "steps": [
-      "Create a new user account (not the bootstrap admin).",
-      "Verify the user's roles array contains only 'user'.",
+      "Create a new user account.",
+      "Verify the user has only the 'user' role.",
       "Verify the user does not have 'author' or 'admin' roles."
     ],
     "passes": false
@@ -95,11 +94,11 @@
   {
     "id": "REQ-AUTHZ-003",
     "category": "authorization",
-    "description": "A bootstrap admin (configured via environment variable) receives 'user', 'author', and 'admin' roles on first sign-up.",
+    "description": "A pre-configured bootstrap admin receives all three roles ('user', 'author', 'admin') on first sign-up.",
     "steps": [
-      "Configure the DEFAULT_ADMIN environment variable with an email address.",
+      "Configure the application with a designated admin email.",
       "Create a new account using that email.",
-      "Verify the user's roles array contains 'user', 'author', and 'admin'."
+      "Verify the user has the 'user', 'author', and 'admin' roles."
     ],
     "passes": false
   },
@@ -109,8 +108,8 @@
     "description": "The notebook route requires the 'author' role. Users without it are redirected to the lobby.",
     "steps": [
       "Sign in as a user with only the 'user' role (no 'author' role).",
-      "Attempt to navigate to '/notebook'.",
-      "Verify the user is redirected to '/lobby'."
+      "Attempt to navigate to the notebook page.",
+      "Verify the user is redirected to the lobby page."
     ],
     "passes": false
   },
@@ -120,8 +119,8 @@
     "description": "The admin route requires the 'admin' role. Users without it are redirected to the home page.",
     "steps": [
       "Sign in as a user without the 'admin' role.",
-      "Attempt to navigate to '/admin'.",
-      "Verify the user is redirected to '/'."
+      "Attempt to navigate to the admin page.",
+      "Verify the user is redirected to the home page."
     ],
     "passes": false
   },
@@ -142,19 +141,19 @@
     "category": "authorization",
     "description": "The admin panel link is not visible on mobile viewports even for admin users.",
     "steps": [
-      "Sign in as a user with the 'admin' role on a mobile viewport (max-width 600px).",
-      "Verify the settings icon (admin link) is not visible in the header."
+      "Sign in as a user with the 'admin' role on a mobile viewport.",
+      "Verify the admin link is not visible in the header."
     ],
     "passes": false
   },
   {
     "id": "REQ-AUTHZ-008",
     "category": "authorization",
-    "description": "Server-side functions verify the caller has the 'admin' role before executing privileged operations (toggleRole, listUsers).",
+    "description": "Privileged operations (toggling roles, listing users) verify the caller has the 'admin' role before executing.",
     "steps": [
-      "Attempt to call the toggleRole function without admin role.",
+      "Attempt to toggle a user's role without admin privileges.",
       "Verify the request is rejected with an appropriate error.",
-      "Attempt to call the toggleRole function with admin role.",
+      "Attempt to toggle a user's role with admin privileges.",
       "Verify the request succeeds."
     ],
     "passes": false
@@ -209,7 +208,7 @@
   {
     "id": "REQ-SEC-005",
     "category": "security",
-    "description": "Users can only read and write their own settings (matched by user ID path).",
+    "description": "Users can only read and write their own settings.",
     "steps": [
       "Sign in as User A and save a theme preference.",
       "Sign in as User B.",
@@ -237,8 +236,8 @@
     "description": "Admins can read all user records. Non-admin users can only read their own user record.",
     "steps": [
       "Sign in as an admin user.",
-      "Read the users collection.",
-      "Verify all user records are returned.",
+      "Request all user records.",
+      "Verify all records are returned.",
       "Sign in as a non-admin user.",
       "Attempt to read another user's record.",
       "Verify the read is denied."
@@ -262,12 +261,12 @@
   {
     "id": "REQ-SEC-009",
     "category": "security",
-    "description": "Unauthenticated requests to protected resources receive appropriate error codes.",
+    "description": "Unauthenticated requests to protected resources are rejected with appropriate errors.",
     "steps": [
       "Attempt to read notes without authentication.",
       "Verify the request is rejected.",
-      "Attempt to call a server function without authentication.",
-      "Verify the request is rejected with an 'unauthenticated' error code."
+      "Attempt to perform a privileged operation without authentication.",
+      "Verify the request is rejected with an 'unauthenticated' error."
     ],
     "passes": false
   },
@@ -285,27 +284,26 @@
   {
     "id": "REQ-SEC-011",
     "category": "security",
-    "description": "Admins can read the global roles-updates document. Users can only read their own roles-updates document.",
+    "description": "Admins can read all role-update notifications. Non-admin users can only read their own role-update notifications.",
     "steps": [
       "Sign in as an admin user.",
-      "Read the 'roles-updates/ANY_ROLE_UPDATED' document.",
+      "Read the global role-update notification.",
       "Verify the read succeeds.",
       "Sign in as a non-admin user.",
-      "Attempt to read the 'roles-updates/ANY_ROLE_UPDATED' document.",
+      "Attempt to read the global role-update notification.",
       "Verify the read is denied.",
-      "Verify the user can read their own 'roles-updates/{uid}' document."
+      "Verify the user can read their own role-update notification."
     ],
     "passes": false
   },
   {
     "id": "REQ-ONBOARD-001",
     "category": "onboarding",
-    "description": "When a new user account is created, an onboarding process automatically runs to set up the user's initial roles.",
+    "description": "When a new user account is created, the system automatically assigns initial roles and persists the user profile.",
     "steps": [
-      "Create a new user account via OAuth sign-up.",
-      "Verify the onboarding function is triggered.",
-      "Verify the user's custom claims are set with the 'user' role.",
-      "Verify a user record is projected to the users collection in the database."
+      "Create a new user account via sign-up.",
+      "Verify the user is assigned the 'user' role.",
+      "Verify the user's profile is persisted and retrievable."
     ],
     "passes": false
   },
@@ -315,7 +313,7 @@
     "description": "The lobby page displays a 'Your application is being reviewed!' message for users who only have the 'user' role (no 'author' role).",
     "steps": [
       "Sign in as a user with only the 'user' role.",
-      "Navigate to '/lobby'.",
+      "Navigate to the lobby page.",
       "Verify the page displays 'Your application is being reviewed!'.",
       "Verify the page displays 'Come back soon to check if it has been approved.'."
     ],
@@ -327,8 +325,8 @@
     "description": "The lobby automatically redirects users who have the 'author' role to the notebook page.",
     "steps": [
       "Sign in as a user with the 'author' role.",
-      "Navigate to '/lobby'.",
-      "Verify the user is redirected to '/notebook'."
+      "Navigate to the lobby page.",
+      "Verify the user is redirected to the notebook page."
     ],
     "passes": false
   },
@@ -338,23 +336,23 @@
     "description": "The lobby automatically redirects users who have the 'admin' role (but not 'author') to the admin page.",
     "steps": [
       "Sign in as a user with the 'admin' role but not the 'author' role.",
-      "Navigate to '/lobby'.",
-      "Verify the user is redirected to '/admin'."
+      "Navigate to the lobby page.",
+      "Verify the user is redirected to the admin page."
     ],
     "passes": false
   },
   {
     "id": "REQ-NOTE-001",
     "category": "note-management",
-    "description": "Users can create a new empty note. The note is assigned a unique ID and the user's ID as the author.",
+    "description": "Users can create a new empty note. The note is assigned a unique ID and associated with the creating user.",
     "steps": [
       "Sign in as an author.",
       "Click the create note button in the notebook toolbar.",
       "Verify a new note appears in the notes list.",
       "Verify the note has a unique ID.",
-      "Verify the note's author field matches the current user's ID.",
+      "Verify the note is associated with the current user.",
       "Verify the note content is empty.",
-      "Verify the note's initial version is 0."
+      "Verify the note has an initial version number."
     ],
     "passes": false
   },
@@ -377,11 +375,11 @@
   {
     "id": "REQ-NOTE-003",
     "category": "note-management",
-    "description": "Users can edit note content in a plain text editor (textarea). Changes are reflected immediately in the local state.",
+    "description": "Users can edit note content in a plain text editor. Changes are reflected immediately in the local state.",
     "steps": [
       "Open a note in the editor.",
       "Type text into the editor.",
-      "Verify the text appears immediately in the textarea.",
+      "Verify the text appears immediately.",
       "Verify the note's title in the toolbar updates based on the first line.",
       "Verify the editor supports multi-line text input."
     ],
@@ -390,12 +388,12 @@
   {
     "id": "REQ-NOTE-004",
     "category": "note-management",
-    "description": "Note changes are auto-saved to the server with a 2-second throttle interval.",
+    "description": "Note changes are auto-saved to the server after a short idle period.",
     "steps": [
       "Open a note and type text.",
-      "Wait for at least 2 seconds without typing.",
+      "Stop typing and wait briefly.",
       "Verify the changes are persisted to the server.",
-      "Verify the note's updatedAt timestamp is set by the server.",
+      "Verify the note's updated timestamp is refreshed.",
       "Verify the note's version is incremented."
     ],
     "passes": false
@@ -443,28 +441,28 @@
   {
     "id": "REQ-NOTE-008",
     "category": "note-management",
-    "description": "Each note tracks: id, content, author, clock (vector clock), version, createdAt, and updatedAt.",
+    "description": "Each note tracks its content, author, version, and timestamps for creation and last update.",
     "steps": [
       "Create a note and save it.",
-      "Verify the note record contains all required fields: id, content, author, clock, _version, _createdAt, _updatedAt.",
-      "Verify _createdAt is set on first save.",
-      "Verify _updatedAt is updated on subsequent saves.",
-      "Verify _version increments on each save."
+      "Verify the note record contains: content, author, version, creation timestamp, and last-update timestamp.",
+      "Verify the creation timestamp is set on first save.",
+      "Verify the last-update timestamp is updated on subsequent saves.",
+      "Verify the version increments on each save."
     ],
     "passes": false
   },
   {
     "id": "REQ-NOTE-009",
     "category": "note-management",
-    "description": "The createdAt timestamp is set by the server on the first save (when version is 0). The updatedAt timestamp is set by the server on every save.",
+    "description": "The creation timestamp is set on the first save. The last-update timestamp is set on every save.",
     "steps": [
-      "Create a new note (version 0).",
+      "Create a new note.",
       "Save the note.",
-      "Verify _createdAt is set as a server timestamp.",
-      "Verify _updatedAt is set as a server timestamp.",
+      "Verify the creation timestamp is set.",
+      "Verify the last-update timestamp is set.",
       "Save the note again.",
-      "Verify _createdAt remains unchanged.",
-      "Verify _updatedAt is updated to a newer server timestamp."
+      "Verify the creation timestamp remains unchanged.",
+      "Verify the last-update timestamp is updated."
     ],
     "passes": false
   },
@@ -581,13 +579,13 @@
   {
     "id": "REQ-EDIT-001",
     "category": "editor",
-    "description": "The editor is a plain text textarea that fills the available space.",
+    "description": "The editor is an accessible plain-text editing area that fills the available space.",
     "steps": [
       "Open a note in the editor.",
-      "Verify the editor is a textarea element.",
-      "Verify the textarea fills the available width and height.",
-      "Verify the textarea does not allow resizing.",
-      "Verify the textarea has the aria-label 'a quiet note'."
+      "Verify the editor is a plain-text editing area.",
+      "Verify the editor fills the available width and height.",
+      "Verify the editor does not allow resizing.",
+      "Verify the editor is accessible (has an appropriate accessible name)."
     ],
     "passes": false
   },
@@ -647,14 +645,14 @@
   {
     "id": "REQ-EDIT-006",
     "category": "editor",
-    "description": "The currently focused/selected editor has a visual border indicator (primary color border).",
+    "description": "The currently focused editor has a visual indicator distinguishing it from inactive editors.",
     "steps": [
       "Open a note in the main editor on desktop.",
-      "Verify the main editor has a colored border (primary theme color).",
+      "Verify the main editor has a visual focus indicator.",
       "Open the additional editor with a different note.",
       "Click on the additional editor.",
-      "Verify the additional editor now has the colored border.",
-      "Verify the main editor's border becomes transparent."
+      "Verify the additional editor now has the focus indicator.",
+      "Verify the main editor's focus indicator is removed."
     ],
     "passes": false
   },
@@ -730,7 +728,7 @@
     "description": "The split editor automatically closes when the viewport shrinks to mobile or tablet size.",
     "steps": [
       "Open the split view on a desktop viewport.",
-      "Resize the browser window to below 900px width (tablet).",
+      "Resize the browser window to a tablet-sized viewport.",
       "Verify the additional editor is automatically closed.",
       "Verify only the main editor remains."
     ],
@@ -756,7 +754,7 @@
       "Sign in as an admin user on a desktop viewport.",
       "Click the settings icon in the header.",
       "Verify the admin panel is displayed.",
-      "Verify the admin route ('/admin') loads the admin table."
+      "Verify the admin page loads the admin table."
     ],
     "passes": false
   },
@@ -805,24 +803,24 @@
   {
     "id": "REQ-ADMIN-005",
     "category": "admin",
-    "description": "Role changes in the admin panel are executed via a server-side function that verifies the caller is an admin.",
+    "description": "Role changes in the admin panel are executed server-side with admin verification.",
     "steps": [
       "Toggle a role in the admin panel.",
-      "Verify the toggleRole server function is called.",
-      "Verify the function checks the caller's admin role before executing.",
-      "Verify the role change is applied to the user's custom claims.",
-      "Verify the user record in the database is updated to reflect the new roles."
+      "Verify the role change is processed server-side.",
+      "Verify the system confirms the caller has admin privileges before applying the change.",
+      "Verify the role change is applied to the target user.",
+      "Verify the user's persisted profile reflects the new roles."
     ],
     "passes": false
   },
   {
     "id": "REQ-ADMIN-006",
     "category": "admin",
-    "description": "The admin route does not exist on mobile. Mobile route trees do not include an '/admin' path.",
+    "description": "The admin route is not available on mobile viewports.",
     "steps": [
-      "View the application on a mobile viewport (max-width 600px).",
-      "Attempt to navigate to '/admin'.",
-      "Verify the user is redirected to '/notebook' (the default catch-all route)."
+      "View the application on a mobile viewport.",
+      "Attempt to navigate to the admin page.",
+      "Verify the user is redirected away from the admin page."
     ],
     "passes": false
   },
@@ -832,8 +830,8 @@
     "description": "Non-admin users who attempt to access the admin route on desktop are redirected to the home page.",
     "steps": [
       "Sign in as a non-admin user on desktop.",
-      "Navigate to '/admin'.",
-      "Verify the user is redirected to '/'."
+      "Navigate to the admin page.",
+      "Verify the user is redirected to the home page."
     ],
     "passes": false
   },
@@ -851,14 +849,14 @@
   {
     "id": "REQ-PROFILE-002",
     "category": "profile",
-    "description": "Clicking the profile button opens a popover displaying: avatar (larger), display name, email, and UID.",
+    "description": "Clicking the profile button opens a popover displaying: avatar, display name, email, and user ID.",
     "steps": [
       "Click the profile avatar button.",
       "Verify a popover opens below the avatar.",
       "Verify the popover shows a larger avatar image.",
-      "Verify the popover shows the user's display name in bold.",
-      "Verify the popover shows the user's email in italic.",
-      "Verify the popover shows the user's UID in italic."
+      "Verify the popover shows the user's display name.",
+      "Verify the popover shows the user's email.",
+      "Verify the popover shows the user's ID."
     ],
     "passes": false
   },
@@ -926,9 +924,9 @@
   {
     "id": "REQ-RESPONSIVE-001",
     "category": "responsive",
-    "description": "Mobile layout is used when viewport width is at most 600px.",
+    "description": "Mobile layout is used on small viewports.",
     "steps": [
-      "Set the viewport width to 600px or less.",
+      "Set the viewport to a mobile width.",
       "Verify the mobile layout is rendered (notes list as main view, drawer for editor)."
     ],
     "passes": false
@@ -936,33 +934,31 @@
   {
     "id": "REQ-RESPONSIVE-002",
     "category": "responsive",
-    "description": "Tablet breakpoint is at most 900px width. Header icons scale to 70% at tablet sizes.",
+    "description": "Header icons are visually reduced at tablet sizes.",
     "steps": [
-      "Set the viewport width between 601px and 900px.",
-      "Verify header icons (GitHub, settings, avatar) are scaled to 70% of their desktop size."
+      "Set the viewport to a tablet width.",
+      "Verify header icons are visually smaller than at desktop size."
     ],
     "passes": false
   },
   {
     "id": "REQ-RESPONSIVE-003",
     "category": "responsive",
-    "description": "Desktop layout is used when viewport width is at least 900px.",
+    "description": "Desktop layout is used on large viewports.",
     "steps": [
-      "Set the viewport width to 900px or wider.",
-      "Verify the desktop layout is rendered with the 3-pane grid layout."
+      "Set the viewport to a desktop width.",
+      "Verify the desktop layout is rendered with a multi-pane layout."
     ],
     "passes": false
   },
   {
     "id": "REQ-RESPONSIVE-004",
     "category": "responsive",
-    "description": "Desktop layout has a 3-pane grid: sidebar toolbar + notes list (300px wide) and editor area (remaining space).",
+    "description": "Desktop layout has a sidebar with a toolbar and notes list, and an editor area that fills the remaining space.",
     "steps": [
       "View the application on a desktop viewport.",
-      "Verify the sidebar column is 300px wide.",
-      "Verify the sidebar contains a toolbar area (top) and notes list area (below).",
-      "Verify the editor fills the remaining horizontal space.",
-      "Verify the layout uses CSS Grid with template areas: sidebar-toolbar, sidebar, and editor."
+      "Verify there is a narrower sidebar column containing a toolbar and notes list.",
+      "Verify the editor fills the remaining horizontal space."
     ],
     "passes": false
   },
@@ -971,7 +967,7 @@
     "category": "responsive",
     "description": "Mobile layout shows notes list as the main view. Tapping a note opens the editor in a right-side drawer that covers the full viewport.",
     "steps": [
-      "View the application on a mobile viewport (max-width 600px).",
+      "View the application on a mobile viewport.",
       "Verify the notes list is the main view.",
       "Tap on a note in the list.",
       "Verify a drawer slides in from the right showing the editor.",
@@ -988,7 +984,7 @@
     "description": "The mobile platform does not include an admin route.",
     "steps": [
       "View the application on a mobile viewport.",
-      "Verify no admin route exists in the mobile route tree.",
+      "Verify no admin route is accessible.",
       "Verify no admin link is visible in the header."
     ],
     "passes": false
@@ -1008,14 +1004,14 @@
   {
     "id": "REQ-RESPONSIVE-008",
     "category": "responsive",
-    "description": "Platform detection switches between the Desktop and Mobile component trees based on viewport width (600px threshold).",
+    "description": "The application switches between desktop and mobile layouts based on viewport width.",
     "steps": [
-      "Set viewport to 800px wide.",
-      "Verify the Desktop component tree is rendered.",
-      "Resize to 500px wide.",
-      "Verify the Mobile component tree is rendered.",
-      "Resize back to 800px.",
-      "Verify the Desktop component tree is rendered again."
+      "Set viewport to a desktop width.",
+      "Verify the desktop layout is rendered.",
+      "Resize to a mobile width.",
+      "Verify the mobile layout is rendered.",
+      "Resize back to desktop width.",
+      "Verify the desktop layout is rendered again."
     ],
     "passes": false
   },
@@ -1047,13 +1043,13 @@
   {
     "id": "REQ-SYNC-003",
     "category": "sync",
-    "description": "Concurrent edits from multiple clients are resolved using CRDT vector clocks without data loss.",
+    "description": "Concurrent edits from multiple clients are resolved without data loss.",
     "steps": [
       "Open the same note in two browser windows.",
       "Make different edits in both windows simultaneously.",
-      "Verify the vector clocks are merged correctly.",
-      "Verify one edit wins based on clock comparison (the edit with the greater clock takes precedence).",
-      "Verify no errors occur during conflict resolution."
+      "Verify the edits are merged without errors.",
+      "Verify one consistent version of the note is established across both clients.",
+      "Verify no data is silently lost."
     ],
     "passes": false
   },
@@ -1078,7 +1074,7 @@
       "Navigate to the application.",
       "Verify the web manifest is loaded with name 'Quiet Notes'.",
       "Verify the manifest specifies 'standalone' display mode.",
-      "Verify the manifest includes icons at sizes: 192x192, 256x256, 384x384, 512x512.",
+      "Verify the manifest includes icons at standard PWA sizes.",
       "Verify the manifest includes a maskable icon.",
       "Verify the browser offers to install the application."
     ],
@@ -1125,19 +1121,19 @@
     "category": "pwa",
     "description": "The application provides Apple touch icons for iOS devices.",
     "steps": [
-      "Verify the application includes apple-touch-icon files at various sizes (57x57, 60x60, 72x72, 76x76, 114x114, 120x120, 144x144, 152x152).",
-      "Verify the icons are referenced in the HTML head."
+      "Verify the application includes apple-touch-icon files at standard iOS sizes.",
+      "Verify the icons are discoverable by iOS devices."
     ],
     "passes": false
   },
   {
     "id": "REQ-NAV-001",
     "category": "navigation",
-    "description": "The logo 'Qn.' in the header is clickable and navigates to the home page (which redirects to /notebook).",
+    "description": "The logo 'Qn.' in the header is clickable and navigates to the home page.",
     "steps": [
       "Sign in and navigate to the admin panel.",
       "Click the 'Qn.' logo in the header.",
-      "Verify the user is navigated to '/' which redirects to '/notebook'."
+      "Verify the user is navigated to the home page."
     ],
     "passes": false
   },
@@ -1155,7 +1151,7 @@
   {
     "id": "REQ-NAV-003",
     "category": "navigation",
-    "description": "The header is always visible at the top of the page using a pancake stack layout (header + body).",
+    "description": "The header is always visible at the top of the page while body content scrolls independently.",
     "steps": [
       "Sign in to the application.",
       "Verify the header is visible at the top.",
@@ -1169,11 +1165,10 @@
   {
     "id": "REQ-NAV-004",
     "category": "navigation",
-    "description": "The application fills the full viewport (100% width and height) with no scrollable overflow on the body.",
+    "description": "The application fills the full viewport with no scrollable overflow on the body.",
     "steps": [
       "Load the application.",
-      "Verify the app container takes the full viewport width.",
-      "Verify the app container takes the full viewport height.",
+      "Verify the app fills the full viewport.",
       "Verify there is no horizontal or vertical scrollbar on the page body."
     ],
     "passes": false
@@ -1181,13 +1176,13 @@
   {
     "id": "REQ-NAV-005",
     "category": "navigation",
-    "description": "The default route '/*' redirects to '/notebook' for authenticated users.",
+    "description": "Unmatched routes redirect to the notebook page for authenticated users.",
     "steps": [
       "Sign in as an author.",
-      "Navigate to '/'.",
-      "Verify the user is redirected to '/notebook'.",
-      "Navigate to any non-existent route (e.g., '/nonexistent').",
-      "Verify the user is redirected to '/notebook'."
+      "Navigate to the home page.",
+      "Verify the user is redirected to the notebook page.",
+      "Navigate to a non-existent page.",
+      "Verify the user is redirected to the notebook page."
     ],
     "passes": false
   },
@@ -1229,11 +1224,10 @@
   {
     "id": "REQ-ERROR-004",
     "category": "error-handling",
-    "description": "Fatal React rendering errors are caught by an error boundary and displayed with a 'Fatal Error' message.",
+    "description": "Fatal rendering errors are caught and displayed with a 'Fatal Error' message instead of a blank screen.",
     "steps": [
-      "Trigger a fatal React rendering error.",
-      "Verify the error boundary catches the error.",
-      "Verify a 'Fatal Error' message is displayed.",
+      "Trigger a fatal rendering error.",
+      "Verify the error is caught and a 'Fatal Error' message is displayed.",
       "Verify the application does not crash to a blank screen."
     ],
     "passes": false
