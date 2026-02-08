@@ -2,17 +2,18 @@
 
 DEFAULT_ADMIN=admin@example.com
 
-echo "admin email? (default: ${DEFAULT_ADMIN})"
-read ADMIN_EMAIL
-if [ -z "$ADMIN_EMAIL" ]; then
-  ADMIN_EMAIL="admin@example.com"
+if [ "$1" = "--defaults" ]; then
+  ADMIN_EMAIL="$DEFAULT_ADMIN"
+  echo "using default admin ${DEFAULT_ADMIN}"
+else
+  echo "admin email? (default: ${DEFAULT_ADMIN})"
+  read ADMIN_EMAIL
+  if [ -z "$ADMIN_EMAIL" ]; then
+    ADMIN_EMAIL="$DEFAULT_ADMIN"
+  fi
 fi
 echo "building..."
 
-firebase functions:config:set quiet_notes.default_admin="$ADMIN_EMAIL"
-
-RUNTIME_CONFIG=$(firebase functions:config:get)
-echo "${RUNTIME_CONFIG}" > ./quiet-notes-functions-dist/.runtimeconfig.json
-echo "${RUNTIME_CONFIG}"
+echo "DEFAULT_ADMIN=${ADMIN_EMAIL}" > ./quiet-notes-functions-dist/.env
 
 pnpm --filter 'quiet-notes-tools' write-env

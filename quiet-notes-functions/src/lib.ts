@@ -4,7 +4,7 @@ import functions from "firebase-functions";
 import { QNRole, QNUserRecord } from "quiet-notes-lib";
 
 export const isDefaultAdmin = ({ email }: UserRecord): boolean =>
-  email === functions.config().quiet_notes.default_admin;
+  email === process.env.DEFAULT_ADMIN;
 
 export const assertIsAdmin = async (
   context: functions.https.CallableContext,
