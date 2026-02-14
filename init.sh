@@ -44,7 +44,7 @@ check_port() {
   return $?
 }
 
-# Wait for the three critical services
+# Wait for the three critical Firebase services
 MAX_WAIT=60
 ELAPSED=0
 AUTH_READY=false
@@ -81,13 +81,13 @@ done
 
 # Check if we timed out
 if ! ($AUTH_READY && $FUNCTIONS_READY && $FIRESTORE_READY); then
-  echo -e "${RED}Emulators failed to start within ${MAX_WAIT} seconds${NC}"
+  echo -e "${RED}Firebase emulators failed to start within ${MAX_WAIT} seconds${NC}"
   echo -e "${RED}Check firebase-emulators.log for details${NC}"
   cleanup
   exit 1
 fi
 
-echo -e "${GREEN}All emulators ready!${NC}"
+echo -e "${GREEN}All Firebase emulators ready!${NC}"
 echo ""
 echo -e "${GREEN}Starting Vite dev server...${NC}"
 
@@ -97,15 +97,7 @@ VITE_PID=$!
 
 echo "VITE_PID=$VITE_PID" >> "$PID_FILE"
 
-echo ""
-echo -e "${GREEN}Development environment started successfully!${NC}"
-echo ""
-echo -e "Firebase Emulators:"
-echo -e "  Authentication:  ${YELLOW}http://127.0.0.1:4000/auth${NC}"
-echo -e "  Functions:       ${YELLOW}http://127.0.0.1:4000/functions${NC}"
-echo -e "  Firestore:       ${YELLOW}http://127.0.0.1:4000/firestore${NC}"
-echo ""
-echo -e "Waiting for Vite dev server to be ready..."
+echo -e "${YELLOW}Waiting for Vite dev server...${NC}"
 
 # Wait for Vite to output its URL in the log
 VITE_MAX_WAIT=150  # 150 * 0.2s = 30 seconds total
@@ -126,10 +118,17 @@ while [ $VITE_ELAPSED -lt $VITE_MAX_WAIT ]; do
 done
 
 if [ -z "$VITE_URL" ]; then
-  echo -e "${YELLOW}Warning: Could not detect Vite URL. Check vite-dev.log for details.${NC}"
+  echo -e "${YELLOW}Warning: Could not detect Vite URL${NC}"
   VITE_URL="http://localhost:3000 (assumed)"
 fi
 
+echo ""
+echo -e "${GREEN}Development environment started successfully!${NC}"
+echo ""
+echo -e "Firebase Emulators:"
+echo -e "  Authentication:  ${YELLOW}http://127.0.0.1:4000/auth${NC}"
+echo -e "  Functions:       ${YELLOW}http://127.0.0.1:4000/functions${NC}"
+echo -e "  Firestore:       ${YELLOW}http://127.0.0.1:4000/firestore${NC}"
 echo ""
 echo -e "Vite Dev Server:"
 echo -e "  App:             ${YELLOW}${VITE_URL}${NC}"
