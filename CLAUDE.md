@@ -18,6 +18,7 @@ Quiet Notes is a collaborative note-taking application built with React, Firebas
 ### Initial Setup
 
 1. **Install dependencies:**
+
    ```bash
    pnpm install
    ```
@@ -40,6 +41,7 @@ Quiet Notes is a collaborative note-taking application built with React, Firebas
 ### Running Locally with Emulators
 
 **Option 1: Single command (recommended)**
+
 ```bash
 # Terminal 1: Start emulators
 ./emulate.sh
@@ -49,6 +51,7 @@ cd quiet-notes-web && pnpm start:emulated
 ```
 
 **Option 2: Manual emulator start**
+
 ```bash
 # Terminal 1: Start specific emulators
 firebase emulators:start --only auth,firestore,hosting,functions
@@ -115,7 +118,6 @@ pnpm --filter quiet-notes-web... build
 - Functions: 5001
 - Firestore: 8080
 - Hosting: 5002
-- Storage: 9199
 
 ### Environment Files
 
@@ -128,6 +130,7 @@ The `bootstrap.sh` script generates three environment files via `quiet-notes-too
 Vite automatically loads `.env.emulated.local` when running with `--mode emulated`.
 
 To regenerate environment files after changing Firebase project:
+
 ```bash
 pnpm --filter quiet-notes-tools write-env
 ```
@@ -145,11 +148,13 @@ The application uses RxJS and `@react-rxjs/core` instead of Redux or Context API
 5. **Sharing**: Use `shareReplay(1)` to multicast and cache
 
 Example flow in `notebook-state.ts`:
+
 ```
 User Actions (signals) → Merged Stream → scan() + Immer → shareReplay → React Hooks
 ```
 
 When adding state:
+
 - Define signals for discrete events (e.g., `createSignal<NoteAdded>()`)
 - Merge into a unified stream with `mergeWithKey()`
 - Use `scan()` to reduce events into state (use Immer's `produce()` for updates)
@@ -166,6 +171,7 @@ Notes implement vector clocks (`crdt/clock.ts`) for distributed conflict-free me
 - **Winner selection**: Use clock comparison to determine which note takes precedence
 
 When modifying note state:
+
 - Always increment the clock on local updates
 - Use `mergeClock()` when receiving remote updates
 - Never directly compare timestamps; use vector clock semantics
