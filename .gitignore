@@ -24,3 +24,8 @@ yarn-error.log*
 proxy-setup.json
 benchmark
 .playwright-mcp
+
+# Development environment
+.dev-pids
+firebase-emulators.log
+vite-dev.log
